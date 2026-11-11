@@ -245,10 +245,15 @@ nav.nav button.on{color:var(--ink);font-weight:700}
 .binput .frow .row{flex:1;max-width:210px}
 .prow .phc{display:flex;align-items:center;gap:6px}.phadd{position:relative;display:inline-flex;align-items:center;min-height:44px;padding:0 10px;overflow:hidden}.phadd input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
 .pht{width:44px;height:44px;border-radius:6px;overflow:hidden;background:var(--well);flex:none;padding:0}.pht img{width:100%;height:100%;object-fit:cover;display:block}
+.phall{margin-top:16px;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}.phall>span:first-child{display:flex;align-items:center;gap:8px}
 .bline{display:flex;align-items:center}.bline .fg{flex:1;min-width:0}.phb{flex:none;width:40px;height:44px;display:flex;align-items:center;justify-content:flex-end;color:var(--ink2)}
 .phv{position:fixed;inset:0;z-index:40;background:#000;display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
-.phv .phh{display:flex;justify-content:space-between;align-items:center;padding:0 12px 0 16px;min-height:52px;color:var(--ink);font-size:15px}.phv .phh button{min-height:44px;padding:0 8px;color:var(--ink2);font-size:15px}
-.phv .phi{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}.phv .phi img{max-width:100%;max-height:100%;object-fit:contain}
+.phv .phh{display:flex;justify-content:space-between;align-items:center;padding:0 12px 0 16px;min-height:52px;color:var(--ink);font-size:15px;flex:none}.phv .phh button{min-height:44px;padding:0 8px;color:var(--ink2);font-size:15px}
+.phs{flex:1;min-height:0;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain}
+.php{height:100%;scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column}
+.phm{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:6px 16px 10px;flex:none}.phm b{font-size:16px;font-weight:600}.phm span{font-size:15px;color:var(--ink2);text-align:right}.phm small{display:block;font-size:11.5px;color:var(--ink3)}
+.phv .phi{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding-bottom:12px}.phv .phi img{max-width:100%;max-height:100%;object-fit:contain}
+body.phon{overflow:hidden}
 .binput .frow .row input{font-size:20px}
 .brow .fg .fatc{margin-left:auto;margin-right:22px;color:var(--ink2)}
 .brow .fg small{margin-left:4px;font-size:12px;color:var(--ink3)}
@@ -410,7 +415,7 @@ button.mekv{width:100%;text-align:left}
 .pbl{margin-top:8px}.pbh{display:grid;grid-template-columns:minmax(0,1fr) 62px 62px;gap:8px;font-size:11px;color:var(--ink3);padding:0 0 4px;text-align:right}.pbr{display:grid;grid-template-columns:40px minmax(0,1fr) 62px 62px;gap:12px;align-items:center;width:100%;text-align:left;padding:9px 0;border-top:1px solid var(--line2)}
 .pbr .xic{width:40px;height:40px}.pbr .nm{min-width:0}.pbr .nm b{display:block;font-size:15.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pbr .nm span{font-size:12px;color:var(--ink3)}.pbr .nm i{font-style:normal;color:var(--gold);margin-left:4px}
 .pbr .v{font-family:var(--num);font-size:18px;font-weight:600;text-align:right}.pbr .v:last-child{color:var(--ink2);font-weight:500}.pbr .v.gold{color:var(--gold)}
-.mx2{display:flex;gap:14px;margin-top:2px}.mx2>span{font-family:var(--num);font-size:20px;font-weight:600;white-space:nowrap}.mx2 i{font-style:normal;font-family:var(--sans);font-size:10.5px;font-weight:400;color:var(--ink3);margin-right:4px}.met>.mx2{display:flex;flex-direction:column;gap:0;font-size:inherit;color:var(--ink)}.mekv .mx2>span{font-size:16px}.mekv .mx2>span:last-child,.met .mx2>span:last-child{color:var(--ink2)}.mekv>span:first-child .d{margin-left:8px;font-size:12px;color:var(--ink3)}.pbr .v small{font-size:11px;font-weight:400;color:var(--ink3)}
+.mx2{display:flex;gap:14px;margin-top:2px}.mx2>span{font-family:var(--num);font-size:20px;font-weight:600;white-space:nowrap}.mx2 i{font-style:normal;font-family:var(--sans);font-size:10.5px;font-weight:400;color:var(--ink3);margin-right:4px}.met>.mx2{display:flex;flex-direction:column;gap:0;font-size:inherit;color:var(--ink)}.mekv .mx2>span{font-size:16px}.mekv .mx2>span:last-child,.met .mx2>span:last-child{color:var(--ink2)}.mekv{align-items:flex-start}.mekv .v{text-align:right}.mepb{display:block;margin-top:2px;font-size:11px;color:var(--ink3)}.mepb b{font-weight:500;color:var(--ink2);font-size:12px}.mepb b.gold{color:var(--gold)}.mekv>span:first-child .d{margin-left:8px;font-size:12px;color:var(--ink3)}.pbr .v small{font-size:11px;font-weight:400;color:var(--ink3)}
 .merow{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:52px;border-top:1px solid var(--line2);font-size:15px;text-align:left}.merow .d{color:var(--ink3);font-size:13px}
 .ft{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;margin-top:12px}
 .ft button{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;height:104px;font-size:10.5px;color:var(--ink3)}
@@ -644,8 +649,8 @@ const store = {
   saveRoutines() { return db ? db.doc('meta/routines').set({ list: S.routines }).catch(err) : Promise.resolve(); },
   saveBody(date) {
     if (!db) return Promise.resolve();
-    if (S.body[date] == null) return db.doc('body/' + date).delete().catch(err);
-    const o = { date, kg: S.body[date] }; if (S.fat[date] != null) o.fat = S.fat[date]; if (S.bsrc[date]) o.src = S.bsrc[date]; if (S.bph[date]) o.ph = 1;
+    if (S.body[date] == null && !S.bph[date]) return db.doc('body/' + date).delete().catch(err);
+    const o = { date }; if (S.body[date] != null) o.kg = S.body[date]; if (S.fat[date] != null) o.fat = S.fat[date]; if (S.bsrc[date]) o.src = S.bsrc[date]; if (S.bph[date]) o.ph = 1;
     return db.doc('body/' + date).set(o).catch(err);
   },
   // 写真は body とは別の photos/<日付> に置く（一覧の読み込みを軽くするため）。body 側には ph:1 の印だけ
@@ -679,14 +684,24 @@ function shrinkPhoto(file) {
     im.src = url;
   });
 }
+// 写真を全画面で開く。縦にスクロールすると過去の写真へさかのぼる（新しい順）。画像は見える近くに来たら読む
 function openPhoto(d) {
   closePhoto(); S.phv = d;
-  const w = document.createElement('div'); w.id = 'phv'; w.className = 'phv'; w.setAttribute('role', 'dialog'); w.setAttribute('aria-label', shortD(d) + 'の写真');
-  w.innerHTML = '<div class="phh"><span class="n">' + jpFull(d) + (S.body[d] != null ? '　' + n1(S.body[d]) + ' kg' : '') + '</span><button type="button" data-act="phclose" aria-label="閉じる">閉じる</button></div><div class="phi"><span class="sub">読み込んでいます…</span></div>';
-  document.body.appendChild(w);
-  getPh(d).then(img => { if (S.phv !== d) return; const b = w.querySelector('.phi'); b.innerHTML = img ? '<img alt="' + shortD(d) + 'の写真" src="' + img + '">' : '<span class="sub">写真を読み込めませんでした</span>'; });
+  const ds = Object.keys(S.bph).sort().reverse(), w = document.createElement('div');
+  w.id = 'phv'; w.className = 'phv'; w.setAttribute('role', 'dialog'); w.setAttribute('aria-label', '体の写真');
+  const first = ds[ds.length - 1];
+  w.innerHTML = '<div class="phh"><span class="sub">写真 ' + ds.length + '枚</span><button type="button" data-act="phclose">閉じる</button></div><div class="phs">' + ds.map((x, i) => {
+    const kg = S.body[x], gap = first && x !== first ? dayGap(first, x) : 0;
+    return '<section class="php" data-d="' + x + '"><div class="phm"><b class="n">' + jpFull(x) + '</b><span class="n">' + (kg != null ? n1(kg) + ' kg' : '体重なし') + (i < ds.length - 1 && kg != null && S.body[ds[i + 1]] != null ? '<small>' + sgn1(kg - S.body[ds[i + 1]]) + '（前の写真から）</small>' : '') + '</span></div><div class="phi"><span class="sub">読み込んでいます…</span></div></section>';
+  }).join('') + '</div>';
+  document.body.appendChild(w); document.body.classList.add('phon');
+  const sc = w.querySelector('.phs'), load = sec => { if (sec.dataset.ok) return; sec.dataset.ok = '1'; const x = sec.dataset.d; getPh(x).then(img => { const b = sec.querySelector('.phi'); b.innerHTML = img ? '<img alt="' + shortD(x) + 'の写真" src="' + img + '">' : '<span class="sub">写真を読み込めませんでした</span>'; }); };
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) load(e.target); }), { root: sc, rootMargin: '100% 0px' }) : null;
+  sc.querySelectorAll('.php').forEach(sec => io ? io.observe(sec) : load(sec));
+  const cur = sc.querySelector('.php[data-d="' + d + '"]'); if (cur) sc.scrollTop = cur.offsetTop;
+  w._io = io;
 }
-function closePhoto() { const w = $('#phv'); if (w) w.remove(); S.phv = null; }
+function closePhoto() { const w = $('#phv'); if (w) { if (w._io) w._io.disconnect(); w.remove(); } document.body.classList.remove('phon'); S.phv = null; }
 function err(e) { toast(e && e.code === 'quota_exceeded' ? '保存できる件数の上限に達しました' : '保存できませんでした。通信状況を確認してもう一度お試しください'); }
 
 /* ---------- calc（変更なし） ---------- */
@@ -1200,6 +1215,8 @@ function vBody() {
     '<button type="button" class="bp" data-act="bsave">' + (S.body[S.bodyDate] != null ? '上書き' : '記録') + '</button>' +
     '<div class="frow"><span class="lab">体脂肪率 %（任意）</span><div class="row"><button type="button" data-hold="bf" data-d="-1" aria-label="0.1%減らす">−</button><input id="bFat" type="number" inputmode="decimal" step="0.1" placeholder="—" value="' + S.fatIn + '" aria-label="体脂肪率 %"><button type="button" data-hold="bf" data-d="1" aria-label="0.1%増やす">＋</button></div></div>' + photoRow() + '</div>' +
     '';
+  const nph = Object.keys(S.bph).length;
+  if (nph) h += '<button type="button" class="merow phall" data-act="phopen" data-d="' + Object.keys(S.bph).sort().pop() + '"><span>' + CAM + '写真をさかのぼって見る</span><span class="d n">' + nph + '枚 ›</span></button>';
   if (ds.length) {
     const rev = ds.slice().reverse().slice(0, S.bLim), anyPh = rev.some(d => S.bph[d]);
     let curM = '';
@@ -1525,18 +1542,14 @@ function vMe() {
   const byName = n => S.list.find(e => e.name === n), lastOf = a => a && a.length ? a[a.length - 1] : null;
   const b3 = BIG3.map(n => { const e = byName(n); return { n, e, x: e && lastOf(K.ser[e.id]), w: e && lastOf(K.serW[e.id]) }; });
   const totE = b3.reduce((a, x) => a + (x.x ? x.x.v : 0), 0), totW = b3.reduce((a, x) => a + (x.w ? x.w.v : 0), 0), nb = b3.filter(x => x.x).length, nw = b3.filter(x => x.w).length, bd = Object.keys(S.body).sort().pop();
+  const pbv = x => x ? '<b class="n' + (dayGap(x.d, t0) <= 30 ? ' gold' : '') + '">' + n1(x.v) + '</b>' : '<b class="n">—</b>';
+  const pbLine = id => (K.pb[id] || K.pbW[id]) ? '<span class="mepb">自己ベスト ' + pbv(K.pb[id]) + ' · ' + pbv(K.pbW[id]) + '</span>' : '';
   const pair = (e, w) => '<span class="mx2"><span><i>推定</i>' + (e != null ? n1(e) : '—') + '</span><span><i>実測</i>' + (w != null ? n1(w) : '—') + '</span></span>';
   h += '<div class="sect">今の自分</div><div class="meg2"><div class="met"><span>BIG3 合計（直近）</span>' + (nb || nw ? pair(nb ? totE : null, nw ? totW : null) : '<b class="n">—</b>') + (nb && nb < 3 ? '<em>' + nb + '種目</em>' : '') + '</div>' +
     '<button type="button" class="met" data-act="gobody"><span>体重</span><b class="n">' + (bd ? n1(S.body[bd]) : '—') + '<small> kg</small></b>' + (bd ? '<em class="n">' + shortD(bd) + '</em>' : '') + '</button></div>';
-  h += '<div class="rows" style="margin-top:10px">' + b3.map(x => { const ok = x.e && (x.x || x.w), dd = [x.x, x.w].filter(Boolean).map(y => y.d).sort().pop(); return '<' + (ok ? 'button type="button" data-act="pbopen" data-id="' + x.e.id + '"' : 'div') + ' class="kv mekv"><span>' + x.n + (ok ? '<span class="d n">' + shortD(dd) + '</span>' : '') + '</span><span class="v">' + (ok ? pair(x.x && x.x.v, x.w && x.w.v) : '<span class="d">記録なし</span>') + '</span></' + (ok ? 'button' : 'div') + '>'; }).join('') + '</div>';
+  h += '<div class="rows" style="margin-top:10px">' + b3.map(x => { const ok = x.e && (x.x || x.w), dd = [x.x, x.w].filter(Boolean).map(y => y.d).sort().pop(); return '<' + (ok ? 'button type="button" data-act="pbopen" data-id="' + x.e.id + '"' : 'div') + ' class="kv mekv"><span>' + x.n + (ok ? '<span class="d n">' + shortD(dd) + '</span>' : '') + '</span><span class="v">' + (ok ? pair(x.x && x.x.v, x.w && x.w.v) + pbLine(x.e.id) : '<span class="d">記録なし</span>') + '</span></' + (ok ? 'button' : 'div') + '>'; }).join('') + '</div>';
   // 種目ごとの推移（旧グラフタブ）
   h += '<div class="sect" style="margin-top:28px">種目ごとの推移</div>' + graphList();
-  // 自己ベストの棚
-  const upd = id => [K.pb[id], K.pbW[id]].filter(Boolean).map(x => x.d).sort().pop();
-  const pbs = Object.keys(Object.assign({}, K.pb, K.pbW)).filter(id => K.m[id]).sort((a, b) => upd(b).localeCompare(upd(a)) || ((K.pb[b] || K.pbW[b]).v - (K.pb[a] || K.pbW[a]).v)), show = S.mePb ? pbs : pbs.slice(0, 5);
-  h += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:28px"><div class="sect" style="margin:0">自己ベストの棚 <span class="n" style="color:var(--ink3);font-weight:400">' + pbs.length + '</span></div>' + (pbs.length > 5 ? '<button type="button" class="bt" data-act="mepb">' + (S.mePb ? '閉じる' : 'すべて見る') + '</button>' : '') + '</div>';
-  const pv = x => { if (!x) return '<span class="v n">—</span>'; const g = dayGap(x.d, t0) <= 30; return '<span class="v n' + (g ? ' gold' : '') + '">' + n1(x.v) + '</span>'; };
-  h += pbs.length ? '<div class="pbl"><div class="pbh"><span></span><span>推定</span><span>実測</span></div>' + show.map(id => { const e = K.m[id], d = upd(id), nw = dayGap(d, t0) <= 30; return '<button type="button" class="pbr" data-act="pbopen" data-id="' + id + '">' + xic(e) + '<span class="nm"><b>' + esc(e.name) + '</b><span class="n">' + shortD(d) + (nw ? ' <i>更新</i>' : '') + '</span></span>' + pv(K.pb[id]) + pv(K.pbW[id]) + '</button>'; }).join('') + '</div><p class="note" style="margin-top:8px">単位は kg。30日以内に更新した値は金色。</p>' : '<p class="sub" style="margin:8px 0 0">記録すると、種目ごとの自己ベストが並びます。</p>';
   // 管理
   h += '<div class="sect" style="margin-top:28px">管理</div><div class="rows" style="margin-top:6px"><button type="button" class="merow" data-act="goex"><span>種目の管理</span><span class="d n">' + S.list.length + '種目 ›</span></button><button type="button" class="merow" data-act="tabgo" data-v="cal"><span>振り返り・あしあと</span><span class="d">›</span></button></div>';
   h += '<div class="sect" style="margin-top:24px">バックアップ</div><div class="bkrow"><button type="button" class="bo" style="min-height:44px" data-act="bkcopy">書き出す（コピー）</button><button type="button" class="bo" style="min-height:44px" data-act="bkimp">読み込む</button></div>';
@@ -2217,11 +2230,9 @@ document.addEventListener('click', ev => {
   }
   else if (a === 'bdel') {
     if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = 'もう一度押して削除'; return; }
-    S.bOpen = null; const d = b.dataset.d, old = S.body[d], oldF = S.fat[d], oldP = !!S.bph[d]; let img = null;
-    // 写真付きの日は、元に戻せるよう写真を手元に読んでから消す
-    if (oldP) getPh(d).then(x => { img = x; delete S.bph[d]; if (S.body[d] == null) store.delPhoto(d); });
-    delete S.body[d]; store.saveBody(d); delete S.fat[d]; render();
-    toast(shortD(d) + 'の記録を削除しました', () => { S.body[d] = old; if (oldF != null) S.fat[d] = oldF; if (oldP && img) { S.bph[d] = 1; PH[d] = img; store.savePhoto(d, img); } store.saveBody(d); render(); }); }
+    // 体重と体脂肪率だけを消す。写真は残す（写真の削除は写真の欄から）
+    S.bOpen = null; const d = b.dataset.d, old = S.body[d], oldF = S.fat[d]; delete S.body[d]; delete S.fat[d]; store.saveBody(d); render();
+    toast(shortD(d) + 'の記録を削除しました', () => { S.body[d] = old; if (oldF != null) S.fat[d] = oldF; store.saveBody(d); render(); }); }
 });
 document.addEventListener('change', ev => {
   const t = ev.target;
@@ -2229,7 +2240,6 @@ document.addEventListener('change', ev => {
   else if (t.id === 'impFile' && t.files && t.files[0]) { const fr = new FileReader(); fr.onload = () => { const x = $('#impTx'); if (x) x.value = String(fr.result || ''); }; fr.readAsText(t.files[0]); }
   else if (t.id === 'bPh' && t.files && t.files[0]) {
     const d = S.bodyDate, f = t.files[0]; t.value = '';
-    if (S.body[d] == null) { toast('先にこの日の体重を記録してください'); return; }
     toast('写真を保存しています…');
     shrinkPhoto(f).then(img => store.savePhoto(d, img).then(() => { S.bph[d] = 1; PH[d] = img; store.saveBody(d); render(); toast('写真を保存しました'); }))
       .catch(e => toast(e && e.message === 'read' ? 'この写真は読み込めませんでした' : '写真を保存できませんでした。通信状況を確認してもう一度お試しください'));
@@ -2305,7 +2315,7 @@ else C.use('db').then(d => {
     if (!busy()) render();
   }, fail);
   db.collection('body').onSnapshot(q => {
-    const o = {}, f = {}, sr = {}, ph = {}; q.docs.forEach(x => { const v = x.data(); if (v && v.kg != null) { o[x.id] = +v.kg; if (v.fat != null && !isNaN(+v.fat)) f[x.id] = +v.fat; if (v.src) sr[x.id] = v.src; if (v.ph) ph[x.id] = 1; } });
+    const o = {}, f = {}, sr = {}, ph = {}; q.docs.forEach(x => { const v = x.data(); if (!v) return; if (v.ph) ph[x.id] = 1; if (v.kg != null) { o[x.id] = +v.kg; if (v.fat != null && !isNaN(+v.fat)) f[x.id] = +v.fat; if (v.src) sr[x.id] = v.src; } });
     S.body = o; S.fat = f; S.bsrc = sr; S.bph = ph; S.loaded.b = true; if (!busy()) render();
   }, fail);
 }).catch(() => { S.dbOk = false; S.loaded = { ex: true, s: true, b: true }; render(); });

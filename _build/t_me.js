@@ -8,7 +8,7 @@ console.log(await p.evaluate(()=>[document.querySelector('.menote').innerText,do
 await T('[data-act=goex]');await p.waitForTimeout(200);console.log(await p.evaluate(()=>[__t.S.tab,document.querySelector('nav .on').textContent]));
 await T('[data-act=gome]');await p.waitForTimeout(200);
 await p.fill('#meNm','テスト');await p.keyboard.press('Enter');await p.waitForTimeout(100);console.log(await p.evaluate(()=>[__t.S.meNm,localStorage.getItem('wk_pref')]));
-await T('.pbr');await p.waitForTimeout(300);console.log(await p.evaluate(()=>[__t.S.tab,__t.S.gOpen,!document.querySelector('#gcard').hidden]));
+await T('.mekv[data-act=pbopen]');await p.waitForTimeout(300);console.log(await p.evaluate(()=>[__t.S.tab,__t.S.gOpen,!document.querySelector('#gcard').hidden]));
 await p.evaluate(()=>{__t.S.gOpen=false;__t.S.tab='cal';__t.render();window.scrollTo(0,99999)});await p.waitForTimeout(200);
 await p.screenshot({path:__dirname+'/out/me2.png'});
 await T('.ft');await p.waitForTimeout(200);console.log(await p.evaluate(()=>[__t.S.calM,__t.S.calU,document.querySelector('#plab .h2').textContent]));

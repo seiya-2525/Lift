@@ -49,7 +49,7 @@ function startDb(user) {
     if (!busy()) render();
   }, fail);
   fs.collection(base + 'body').onSnapshot(q => {
-    const o = {}, f = {}, sr = {}, ph = {}; q.docs.forEach(x => { const v = x.data(); if (v && v.kg != null) { o[x.id] = +v.kg; if (v.fat != null && !isNaN(+v.fat)) f[x.id] = +v.fat; if (v.src) sr[x.id] = v.src; if (v.ph) ph[x.id] = 1; } });
+    const o = {}, f = {}, sr = {}, ph = {}; q.docs.forEach(x => { const v = x.data(); if (!v) return; if (v.ph) ph[x.id] = 1; if (v.kg != null) { o[x.id] = +v.kg; if (v.fat != null && !isNaN(+v.fat)) f[x.id] = +v.fat; if (v.src) sr[x.id] = v.src; } });
     S.body = o; S.fat = f; S.bsrc = sr; S.bph = ph; S.loaded.b = true; if (!busy()) render();
   }, fail);
 }
