@@ -1,0 +1,124 @@
+<title>Lift フォント候補</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Barlow:wght@400;500;600&family=M+PLUS+1:wght@400;500;700&family=Oswald:wght@400;500;600&family=BIZ+UDPGothic:wght@400;700&family=Roboto+Condensed:wght@400;500;600&display=swap">
+<style>
+/* 1カラム。上に候補の切り替え（固定）、下にアプリと同じ黒基調の画面見本。単一テーマ（アプリが黒基調のため） */
+:root{
+  --bg:#0a0a0b; --raised:#141416; --well:#1f1f22; --line:#1c1c1f; --line2:#232326;
+  --ink:#f5f5f3; --ink2:#a6a6a8; --ink3:#7d7d82; --gold:#e2bd6b;
+  --sans:'Zen Kaku Gothic New','Hiragino Sans',sans-serif;
+  --num:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;margin:0}
+.wrap{max-width:420px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.pick{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:14px 0 12px;border-bottom:1px solid var(--line2);font-family:system-ui,-apple-system,'Hiragino Sans',sans-serif}
+.pick p{margin:0 0 8px;font-size:12px;color:var(--ink3)}
+.seg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.seg button{appearance:none;border:1px solid var(--line2);background:var(--raised);color:var(--ink2);border-radius:8px;min-height:44px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.seg button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.info{margin-top:10px;font-size:13px;color:var(--ink2)}
+.info b{color:var(--ink);font-weight:600}
+.n{font-family:var(--num);font-variant-numeric:tabular-nums}
+.title{font-size:28px;font-weight:700;margin:22px 0 12px;letter-spacing:.01em}
+.cv{background:var(--raised);border-radius:14px;padding:16px;border-top:3px solid var(--gold)}
+.cv .nm{font-size:22px;font-weight:700}
+.sub{font-size:12.5px;color:var(--ink3)}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line2)}
+.g3 b{display:block;font-family:var(--num);font-variant-numeric:tabular-nums;font-size:22px;font-weight:600}
+.g3 small{font-size:12px;font-weight:400;color:var(--ink2)}
+.g3 span{font-size:11px;color:var(--ink3)}
+.note{margin-top:12px;background:var(--raised);border-radius:10px;padding:12px 14px;font-size:14px;line-height:1.7}
+.sect{font-size:13px;font-weight:700;color:var(--ink2);margin:24px 0 8px}
+.kv{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-top:1px solid var(--line2)}
+.kv .k{font-size:14.5px;color:var(--ink2)}
+.kv .d{font-family:var(--num);font-size:12px;color:var(--ink3);margin-left:8px}
+.mx{display:flex;gap:14px}
+.mx span{font-family:var(--num);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600}
+.mx span:last-child{color:var(--ink2)}
+.mx i{font-style:normal;font-family:var(--sans);font-size:10.5px;font-weight:400;color:var(--ink3);margin-right:4px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.hero span{font-size:12px;color:var(--ink2)}
+.hero b{display:block;font-family:var(--num);font-variant-numeric:tabular-nums;font-size:36px;font-weight:500;line-height:1.1;letter-spacing:-.02em}
+.hero b small{font-size:13px;font-weight:400;color:var(--ink2);letter-spacing:0}
+.hero em{display:block;font-style:normal;font-size:11.5px;color:var(--ink3)}
+.hero em i{font-style:normal;color:var(--gold)}
+.set{display:grid;grid-template-columns:28px 1fr auto;align-items:baseline;gap:10px;padding:10px 0;border-top:1px solid var(--line2)}
+.set .i{font-family:var(--num);font-size:13px;color:var(--ink3)}
+.set .c{font-family:var(--num);font-variant-numeric:tabular-nums;font-size:20px;font-weight:500}
+.set .c small{font-size:12px;color:var(--ink3);font-weight:400}
+.set .m{font-size:11px;color:var(--ink3)}
+.tabs{display:flex;justify-content:space-between;margin-top:28px;padding-top:12px;border-top:1px solid var(--line2);font-size:11.5px;color:var(--ink3)}
+.tabs .on{color:var(--ink);font-weight:700}
+.foot{margin-top:18px;font-size:11.5px;color:var(--ink3);font-family:system-ui,-apple-system,sans-serif}
+</style>
+
+<div class="wrap">
+  <div class="pick">
+    <p>候補をタップすると、下の画面の文字が切り替わります（数字はすべて見本）</p>
+    <div class="seg" role="group" aria-label="フォント候補">
+      <button type="button" id="f0" data-f="0" aria-pressed="true">今</button>
+      <button type="button" id="f1" data-f="1" aria-pressed="false">A</button>
+      <button type="button" id="f2" data-f="2" aria-pressed="false">B</button>
+      <button type="button" id="f3" data-f="3" aria-pressed="false">C</button>
+      <button type="button" id="f4" data-f="4" aria-pressed="false">D</button>
+    </div>
+    <div class="info" id="info"></div>
+  </div>
+
+  <div class="title">マイページ</div>
+  <div class="cv">
+    <div class="nm">せいや</div>
+    <div class="sub">記録を始めて 1年8か月（2025年3月2日〜）</div>
+    <div class="g3">
+      <div><b>176</b><span>日数</span></div>
+      <div><b>2,044</b><span>セット</span></div>
+      <div><b>612.4<small> t</small></b><span>総挙上重量</span></div>
+    </div>
+  </div>
+  <div class="note">ベンチプレスで自己ベストを更新。推定MAX値 96.0 kg（+2.5）<br>スクワットが3回連続で伸びています。</div>
+
+  <div class="sect">今の自分</div>
+  <div class="kv"><span class="k">ベンチプレス<span class="d">11/10</span></span><span class="mx"><span><i>推定</i>96.0</span><span><i>実測</i>85.0</span></span></div>
+  <div class="kv"><span class="k">スクワット<span class="d">11/8</span></span><span class="mx"><span><i>推定</i>128.3</span><span><i>実測</i>115.0</span></span></div>
+  <div class="kv"><span class="k">デッドリフト<span class="d">11/5</span></span><span class="mx"><span><i>推定</i>147.5</span><span><i>実測</i>140.0</span></span></div>
+
+  <div class="sect">グラフ（ベンチプレス・MAX）</div>
+  <div class="sub">直近 · 2026年11月10日</div>
+  <div class="hero">
+    <div><span>推定MAX値</span><b>96.0<small> kg</small></b><em>自己ベスト <i>96.0</i> · 11/10</em></div>
+    <div><span>最大重量（実測）</span><b>85.0<small> kg</small></b><em>自己ベスト <i>87.5</i> · 9/28</em></div>
+  </div>
+
+  <div class="sect">記録</div>
+  <div class="set"><span class="i">W</span><span class="c">60<small> kg</small> × 10</span><span class="m">ウォームアップ</span></div>
+  <div class="set"><span class="i">1</span><span class="c">85<small> kg</small> × 5</span><span class="m">余裕あり</span></div>
+  <div class="set"><span class="i">2</span><span class="c">85<small> kg</small> × 4</span><span class="m"></span></div>
+  <div class="set"><span class="i">3</span><span class="c">82.5<small> kg</small> × 5</span><span class="m"></span></div>
+
+  <div class="tabs"><span>記録</span><span>グラフ</span><span>体重</span><span>振り返り</span><span class="on">マイページ</span></div>
+  <p class="foot">候補Aは端末に入っている文字を使うため、iPhone と Android で見た目が変わります。</p>
+</div>
+
+<script>
+const F = [
+  { s: "'Zen Kaku Gothic New','Hiragino Sans',sans-serif", n: "'IBM Plex Sans','Helvetica Neue',Arial,sans-serif", t: '今のフォント', d: '文字：Zen角ゴシック ／ 数字：IBM Plex Sans' },
+  { s: "-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif", n: "-apple-system,BlinkMacSystemFont,'Helvetica Neue',Roboto,sans-serif", t: 'A 端末標準', d: 'iPhoneの純正アプリと同じ文字（ヒラギノ／SF）。読み込みがなく一番速い' },
+  { s: "'Noto Sans JP','Hiragino Sans',sans-serif", n: "'Barlow','Helvetica Neue',Arial,sans-serif", t: 'B スポーツ計器風', d: '文字：Noto Sans JP ／ 数字：Barlow。数字がやや細身で角ばる' },
+  { s: "'M PLUS 1','Hiragino Sans',sans-serif", n: "'Oswald','Arial Narrow',sans-serif", t: 'C ジムの掲示風', d: '文字：M PLUS 1 ／ 数字：Oswald。縦長で力強い数字' },
+  { s: "'BIZ UDPGothic','Hiragino Sans',sans-serif", n: "'Roboto Condensed','Arial Narrow',sans-serif", t: 'D 落ち着いた記録帳', d: '文字：BIZ UDPゴシック ／ 数字：Roboto Condensed。読みやすさ重視' }
+];
+const info = document.getElementById('info'), root = document.documentElement;
+function pick(i) {
+  root.style.setProperty('--sans', F[i].s); root.style.setProperty('--num', F[i].n);
+  info.innerHTML = '<b>' + F[i].t + '</b>　' + F[i].d;
+  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.f === i)));
+  try { localStorage.setItem('lift_font_pick', String(i)); } catch (e) {}
+}
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => pick(+b.dataset.f)));
+let s0 = 0; try { s0 = +(localStorage.getItem('lift_font_pick') || 0) || 0; } catch (e) {}
+pick(s0 >= 0 && s0 < F.length ? s0 : 0);
+</script>
