@@ -1427,10 +1427,28 @@ async function importData(o) {
   let ns = 0, nb = 0;
   if (Array.isArray(o.exercises)) { const have = new Set(S.list.map(e => e.id)); o.exercises.forEach(e => { if (e && e.id && e.name && !have.has(e.id)) { S.list.push({ id: String(e.id).slice(0, 60), name: String(e.name).slice(0, 80), cat: CAT[e.cat] ? e.cat : 'free', step: +e.step || 2.5, parts: (Array.isArray(e.parts) ? e.parts : []).filter(p => PART[p]), ...(e.fav ? { fav: true } : {}), ...(e.db === true || e.db === false ? { db: e.db } : {}), ...(+e.rest > 0 ? { rest: +e.rest } : {}) }); } }); await store.saveList(); }
   if (Array.isArray(o.routines)) { const have = new Set(S.routines.map(r => r.id)); o.routines.forEach(r => { if (r && r.id && r.name && Array.isArray(r.exs) && !have.has(r.id)) S.routines.push({ id: String(r.id).slice(0, 60), name: String(r.name).slice(0, 60), exs: r.exs.map(String) }); }); await store.saveRoutines(); }
-  if (o.sessions && typeof o.sessions === 'object') for (const d of Object.keys(o.sessions)) { if (okD(d) && o.sessions[d] && Array.isArray(o.sessions[d].items)) { S.sessions[d] = cleanSession(d, o.sessions[d]); await store.saveSession(d); ns++; } }
-  if (o.body && typeof o.body === 'object') for (const d of Object.keys(o.body)) { const v = o.body[d]; if (okD(d) && v && +v.kg > 20 && +v.kg < 300) { S.body[d] = +(+v.kg).toFixed(1); if (v.fat != null && +v.fat > 2 && +v.fat < 60) S.fat[d] = +(+v.fat).toFixed(1); await store.saveBody(d); nb++; } }
+  // 書き込みは新しい日付から、20件ずつまとめて送る（1件ずつ待つと数分かかり、途中で閉じると古い日付までしか入らなかった）
+  const jobs = [], same = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+  if (o.sessions && typeof o.sessions === 'object') Object.keys(o.sessions).filter(d => okD(d) && o.sessions[d] && Array.isArray(o.sessions[d].items)).sort().reverse().forEach(d => {
+    const v = cleanSession(d, o.sessions[d]); ns++; if (S.sessions[d] && same(S.sessions[d], v)) return;
+    S.sessions[d] = v; jobs.push(() => store.saveSession(d));
+  });
+  if (o.body && typeof o.body === 'object') Object.keys(o.body).sort().reverse().forEach(d => {
+    const v = o.body[d]; if (!(okD(d) && v && +v.kg > 20 && +v.kg < 300)) return; nb++;
+    const kg = +(+v.kg).toFixed(1), fat = v.fat != null && +v.fat > 2 && +v.fat < 60 ? +(+v.fat).toFixed(1) : null;
+    if (S.body[d] === kg && (fat == null || S.fat[d] === fat)) return;
+    S.body[d] = kg; if (fat != null) S.fat[d] = fat; jobs.push(() => store.saveBody(d));
+  });
   let np = 0;
-  if (o.photos && typeof o.photos === 'object') for (const d of Object.keys(o.photos)) { const x = o.photos[d]; if (okD(d) && typeof x === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(x) && x.length < 260000) { try { await store.savePhoto(d, x); PH[d] = x; S.bph[d] = 1; await store.saveBody(d); np++; } catch (e) {} } }
+  if (o.photos && typeof o.photos === 'object') Object.keys(o.photos).sort().reverse().forEach(d => {
+    const x = o.photos[d]; if (!(okD(d) && typeof x === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(x) && x.length < 260000)) return;
+    np++; jobs.push(() => store.savePhoto(d, x).then(() => { PH[d] = x; S.bph[d] = 1; return store.saveBody(d); }).catch(() => { np--; }));
+  });
+  render();
+  for (let i = 0; i < jobs.length; i += 20) {
+    if (jobs.length > 20) toast('読み込んでいます ' + i + ' / ' + jobs.length + '件（画面を閉じないでください）');
+    await Promise.all(jobs.slice(i, i + 20).map(f => f()));
+  }
   render(); toast('読み込みました（記録' + ns + '日・体重' + nb + '日' + (np ? '・写真' + np + '枚' : '') + '）');
 }
 const calWk = d => addDays(d, -((parseD(d).getDay() + 6) % 7));

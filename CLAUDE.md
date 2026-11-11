@@ -25,6 +25,8 @@
 
 ## 現在の状態（2026-11-11）
 - 配布中の `index.html` は **v73**（2026-11-11 に配布）。v70：マイページ追加／v71：グラフタブをマイページに統合、体重に写真／v72：自己ベストの棚を廃止、写真をさかのぼって見る、体重なしでも写真／v73：「ファイルに保存」に写真を入れ、読み込みで写真も戻す。
+- `_build/src.html` は **v74**（読み込みの改善）。未配布。
+- 2026-11-11：配布版で体重が 2020-06-14 までしか出ない、と報告あり。旧来の読み込みは古い日付から1件ずつ通信の完了を待っており、途中で閉じると新しい日付が入らない作り（原因の可能性が高いが未確定）。練習用から再度読み込めば戻る見込み。
 - 次の修正は `_build/src.html` に入れ、確認版を作って許可をもらってから `python3 _build/build.py .` で反映する。
 - 元々は Claude のアーティファクト（練習用）が正本だった。今後はこのリポジトリを正本にする。src.html はアーティファクト用の形（`window.claude` の db を使う）のままで、build.py が Firebase 用に置き換える。
 
@@ -89,6 +91,7 @@ Playwright（Chromium）で、スマホ幅・タッチ操作を合成して確�
 | v71 | https://claude.ai/artifact/TMNpEbiZyzT6SUtDPryMgU | グラフタブをマイページに統合、体重の写真 |
 | v72 | https://claude.ai/artifact/TTfJMsKMwTXferLBD5RTnz | 自己ベストの棚を廃止、写真をさかのぼって見る、体重なしでも写真 |
 | v73 | https://claude.ai/artifact/8iFK1BuoNUbndborwTvDSj | 配布中の版。写真入りバックアップの読み込み（ファイル保存は配布版のみ） |
+| v74 | https://claude.ai/artifact/E68uPeiXxnhf7Mure7HkJJ | 読み込みを新しい日付から20件ずつまとめて送る（途中で止まって直近が抜けるのを防ぐ）、進み具合を表示 |
 
 ## 注意点
 - build.py は src.html 内の決まった文字列を目印に書き換える（`assert` で止まる）。特に、マイページ内の `data-act="bkimp">読み込む</button></div>';` と、起動部分の `const C = window.claude;` 〜 `.catch(() => { S.dbOk = false; …` は形を変えない。変えるなら build.py も直す。
