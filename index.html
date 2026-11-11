@@ -60,7 +60,7 @@ input::placeholder{color:var(--ink3)}
 .tabs button.on{color:var(--ink);font-weight:700;border-bottom-color:var(--ink)}
 .tabs button .c{font-family:var(--num);font-weight:500;color:var(--ink3);margin-left:2px}
 .tabs button.on .c{color:var(--ink2)}
-.tabs.sm button{font-size:15.5px}
+.tabs.sm button{font-size:15.5px}.gcard .tabs.sm{gap:0;justify-content:space-between}.gcard .tabs.sm button{font-size:13.5px;letter-spacing:-.02em}
 .cards{margin-top:22px;touch-action:pan-y}
 .cdc{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;text-align:left;min-height:86px;padding:10px 14px 24px;margin-top:-14px;border-radius:16px 16px 0 0;background:var(--raised);border:1px solid var(--edge);border-bottom:0;box-shadow:0 -6px 16px rgba(0,0,0,.55);overflow:hidden}
 .cdc:first-child{margin-top:0}
@@ -448,7 +448,7 @@ body.rt #app{padding-top:70px}
 <div id="bsheet" class="bsheet" hidden role="dialog" aria-modal="true"></div>
 <div id="toast" class="toast" hidden role="status"></div>
 
-<div id="login" class="login" hidden><img src="icon-192.png" alt=""><h1>筋トレログ</h1><p>重量と回数を記録して、推定1RMの推移を見られる筋トレ記録アプリです。記録はGoogleアカウントに紐づいて保存されます。</p><button type="button" class="gbtn" id="gLogin"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Googleでログイン</button><div class="lerr" id="lerr" role="alert"></div></div>
+<div id="login" class="login" hidden><img src="icon-192.png" alt=""><h1>筋トレログ</h1><p>重量と回数を記録して、推定MAX値の推移を見られる筋トレ記録アプリです。記録はGoogleアカウントに紐づいて保存されます。</p><button type="button" class="gbtn" id="gLogin"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Googleでログイン</button><div class="lerr" id="lerr" role="alert"></div></div>
 <script src="firebase-app-compat.js"></script>
 <script src="firebase-auth-compat.js"></script>
 <script src="firebase-firestore-compat.js"></script>
@@ -657,7 +657,7 @@ function effW(ex, set, date) {
   if (ex && ex.cat === 'body') { const bw = set.bw != null ? set.bw : bodyAt(date); return bw == null ? null : bw + (+set.w || 0); }
   return +set.w || 0;
 }
-const E1_MAX_REPS = 15; // 16回以上は推定誤差が大きいため推定1RMの計算から除外
+const E1_MAX_REPS = 15; // 16回以上は推定誤差が大きいため推定MAX値の計算から除外
 function e1(w, r) { if (w == null || !(w > 0) || !(r >= 1) || r > E1_MAX_REPS) return null; return r === 1 ? w : w * (1 + r / 30); }
 function history(exId) {
   const out = [];
@@ -797,7 +797,7 @@ function focusHTML(ex) {
     '<button type="button" class="ccl" data-act="trayclose" aria-label="カードを閉じる"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></div>' +
     '<div class="exhead"><div style="min-width:0;display:flex;align-items:center;gap:12px">' + xic(ex, true) + '<div style="min-width:0"><div class="h2">' + esc(ex.name) + '</div>' +
     '<div class="sub">' + (prev ? '前回 ' + (prev.date.slice(0, 4) === today().slice(0, 4) ? jpDay(prev.date).replace(/ .$/, '') : jpFull(prev.date)) + ' · ' + ps.length + 'セット' + (prev.rest ? ' · 休憩 ' + num(prev.rest) + '分' : '') : '前回の記録はありません') + '</div></div></div>' +
-    '<div class="r"><div class="lab">推定1RM</div><div class="big1' + (isPR ? ' gold' : '') + '">' + (todayBest == null ? (prevBest == null ? '—' : '<span style="color:var(--ink3)">' + n1(prevBest) + '</span>') : n1(todayBest)) + '<small> kg</small></div></div></div>';
+    '<div class="r"><div class="lab">推定MAX値</div><div class="big1' + (isPR ? ' gold' : '') + '">' + (todayBest == null ? (prevBest == null ? '—' : '<span style="color:var(--ink3)">' + n1(prevBest) + '</span>') : n1(todayBest)) + '<small> kg</small></div></div></div>';
   if (ex.cat === 'body') {
     const bw = bodyAt(S.date);
     h += bw == null
@@ -917,7 +917,7 @@ function showTip(id, clientX) {
 }
 
 /* ---------- graph ---------- */
-const METRICS = [['e1rm', '推定1RM', 'kg'], ['max', '最大重量', 'kg'], ['vol', 'ボリューム', 'kg'], ['freq', '頻度', '回/月']];
+const METRICS = [['e1rm', '推定MAX値', 'kg'], ['max', '最大重量（実測）', 'kg'], ['vol', 'ボリューム', 'kg'], ['freq', '頻度', '回/月']];
 const RANGES = [['3m', '3か月'], ['1y', '1年'], ['all', '全期間']];
 // 直近のトレーニングで行ったBIG3のうち先に行った種目。その日になければさかのぼる。BIG3の記録が無ければ直近の種目
 function defaultGraphEx(opts, u, m) {
@@ -934,7 +934,7 @@ function graphDetail() {
   if (!opts.length) return '<div class="title">グラフ</div><p class="sub" style="margin:8px 0 0">記録タブでセットを記録すると、ここに推移が表示されます。</p>';
   if (!S.gEx || !u[S.gEx]) S.gEx = defaultGraphEx(opts, u, m);
   const ex = m[S.gEx], ux = u[S.gEx];
-  let h = '<div class="gtop"><span class="gtt">推定1RM · 記録</span><button type="button" class="ccl" data-act="gclose" aria-label="閉じる"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="ghd">' + xic(ex, true) + '<div style="min-width:0"><div class="h2">' + esc(ex.name) + '</div><div class="sub">' + partsHTML(ex) + ' · ' + ux.days + '回 · ' + ux.n + 'セット</div></div></div>';
+  let h = '<div class="gtop"><span class="gtt">' + (METRICS.find(x => x[0] === S.gM) || METRICS[0])[1] + ' · 記録</span><button type="button" class="ccl" data-act="gclose" aria-label="閉じる"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="ghd">' + xic(ex, true) + '<div style="min-width:0"><div class="h2">' + esc(ex.name) + '</div><div class="sub">' + partsHTML(ex) + ' · ' + ux.days + '回 · ' + ux.n + 'セット</div></div></div>';
   h += '<div class="tabs sm" style="margin-top:18px" role="group" aria-label="指標">' + METRICS.map(x => '<button type="button" data-act="gm" data-v="' + x[0] + '" class="' + (S.gM === x[0] ? 'on' : '') + '">' + x[1] + '</button>').join('') + '</div>';
   const hist = history(S.gEx);
   const all = hist.filter(hh => work(hh.sets).length).map(hh => sessionStats(ex, hh));
@@ -951,12 +951,12 @@ function graphDetail() {
     const fmtv = v => S.gM === 'vol' ? grp(v) + ' kg' : n1(v) + ' kg';
     const heavy = (sets, date) => { let b = null; sets.forEach(s => { const w = effW(ex, s, date); if (w != null && +s.r > 0 && (!b || w > b.w || (w === b.w && +s.r > +b.s.r))) b = { w, s }; }); return b ? setKg(ex, b.s) : ''; };
     const tipOf = s => S.gM === 'max' ? heavy(s.sets, s.date) : S.gM === 'vol' ? grp(s.vol) + ' kg · ' + s.sets.length + 'セット' : n1(s.e1rm) + ' kg ← ' + best(s.sets, s.date);
-    pts = inR.filter(s => s[S.gM] != null).map(s => ({ d: s.date, y: s[S.gM], tip1: shortD(s.date) + (S.gM === 'e1rm' ? ' 推定1RM' : S.gM === 'max' ? ' 最大重量' : ' ボリューム'), tip2: tipOf(s) }));
+    pts = inR.filter(s => s[S.gM] != null).map(s => ({ d: s.date, y: s[S.gM], tip1: shortD(s.date) + (S.gM === 'e1rm' ? ' 推定MAX値' : S.gM === 'max' ? ' 最大重量（実測）' : ' ボリューム'), tip2: tipOf(s) }));
     if (!pts.length && ex.cat === 'body' && inR.length) { pts = inR.map(s => ({ d: s.date, y: s.reps, tip1: shortD(s.date), tip2: s.reps + '回' })); unit = '回'; fallback = true; }
   }
   const bestE = all.reduce((a, s) => s.e1rm != null && (!a || s.e1rm > a.v) ? { v: s.e1rm, d: s.date, s } : a, null);
   const bestV = all.reduce((a, s) => s.vol != null && s.vol > 0 && (!a || s.vol > a.v) ? { v: s.vol, d: s.date, s } : a, null);
-  // 自己ベストは表示中の指標に合わせる（推定1RM／最大重量／ボリューム）。回数・頻度のときは出さない
+  // 自己ベストは表示中の指標に合わせる（推定MAX値／最大重量／ボリューム）。回数・頻度のときは出さない
   const pbKey = S.gM === 'max' || S.gM === 'vol' ? S.gM : 'e1rm';
   const pbBest = S.gM === 'freq' || (typeof fallback !== 'undefined' && fallback) ? null : all.reduce((a, s) => s[pbKey] != null && (!a || s[pbKey] > a.v) ? { v: s[pbKey], d: s.date } : a, null);
   if (!pts.length) {
@@ -965,7 +965,7 @@ function graphDetail() {
   } else {
     const last = pts[pts.length - 1].y, first = pts[0].y;
     const fmtHero = v => S.gM === 'vol' ? grp(v) : S.gM === 'freq' || fallback ? String(v) : n1(v);
-    h += '<div class="herorow"><div><div class="sub">' + (S.gM === 'freq' ? '直近の月' : fallback ? '最多回数（体重未記録）' : '最新 ' + jpFull(pts[pts.length - 1].d)) + '</div>' +
+    h += '<div class="herorow"><div><div class="sub">' + (S.gM === 'freq' ? '直近の月' : fallback ? '最多回数（体重未記録）' : '直近の' + mt[1] + ' · ' + jpFull(pts[pts.length - 1].d)) + '</div>' +
       '<div class="hero">' + fmtHero(last) + '<small> ' + unit + '</small></div>' +
       (S.gM !== 'freq' && pts.length > 1 ? '<div class="sub n" style="margin-top:2px">期間内 ' + (last - first >= 0 ? '+' : '−') + fmtHero(Math.abs(last - first)) + ' ' + unit + '</div>' : '') + '</div>' +
       (pbBest ? '<div class="pb">自己ベスト<div class="v gold">' + (pbKey === 'vol' ? grp(pbBest.v) : n1(pbBest.v)) + ' kg</div><div class="sub" style="font-size:12px">' + jpFull(pbBest.d) + '</div></div>' : '') + '</div>';
@@ -982,8 +982,8 @@ function graphDetail() {
   }));
   const last4 = all.filter(s => s.date >= addDays(today(), -28)).length;
   h += '<div class="rows">';
-  if (bestE) h += '<div class="kv"><span>最高 推定1RM</span><span class="v">' + n1(bestE.v) + ' kg<span class="d">' + shortD(bestE.d) + '</span><small class="ds">' + esc(best(bestE.s.sets, bestE.d)) + '</small></span></div>';
-  if (pW) h += '<div class="kv"><span>最大重量</span><span class="v">' + esc(setKg(ex, pW.s)) + '<span class="d">' + shortD(pW.d) + '</span></span></div>';
+  if (bestE) h += '<div class="kv"><span>最高 推定MAX値</span><span class="v">' + n1(bestE.v) + ' kg<span class="d">' + shortD(bestE.d) + '</span><small class="ds">' + esc(best(bestE.s.sets, bestE.d)) + '</small></span></div>';
+  if (pW) h += '<div class="kv"><span>最大重量（実測）</span><span class="v">' + esc(setKg(ex, pW.s)) + '<span class="d">' + shortD(pW.d) + '</span></span></div>';
   if (bestV) h += '<div class="kv"><span>最大ボリューム</span><span class="v">' + grp(bestV.v) + ' kg<span class="d">' + shortD(bestV.d) + '</span><small class="ds">' + bestV.s.sets.length + 'セット</small></span></div>';
   h += '<div class="kv"><span>直近4週</span><span class="v">' + last4 + ' 回</span></div></div>';
   const hrev = hist.slice().reverse(), showAll = S.histAll === S.gEx, hshow = showAll ? hrev : hrev.slice(0, 3);
@@ -995,7 +995,7 @@ function graphDetail() {
       (hh.memo ? '<span class="hm">メモ：' + esc(hh.memo) + '</span>' : '') + (sm.length ? '<span class="hm sm">' + sm.map(esc).join('<br>') + '</span>' : '') + '</button>';
   }).join('') + '</div>';
 
-  h += '<p class="note" style="margin-top:14px">推定1RM ＝ 重量 ×（1 ＋ 回数 ÷ 30）。15回以下のセットのみ</p>';
+  h += '<p class="note" style="margin-top:14px">推定MAX値 ＝ 重量 ×（1 ＋ 回数 ÷ 30）。15回以下のセットのみ</p>';
   return h;
 }
 const sparkSVG = (vals, w, h) => {
@@ -1004,6 +1004,7 @@ const sparkSVG = (vals, w, h) => {
   const pts = vals.map((v, i) => [2 + i * (w - 4) / (vals.length - 1), h - 4 - (v - lo) / rg * (h - 8)]);
   return '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true"><path d="M' + pts.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' L') + '" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="' + pts[pts.length - 1][0].toFixed(1) + '" cy="' + pts[pts.length - 1][1].toFixed(1) + '" r="2.6" fill="currentColor"/></svg>';
 };
+function heavyOf(ex, hh) { let b = null; work(hh.sets).forEach(x => { const w = effW(ex, x, hh.date); if (w != null && +x.r > 0 && (!b || w > b.w || (w === b.w && +x.r > +b.s.r))) b = { w, s: x }; }); return b ? b.s : null; }
 function vGraph() {
   const m = exMap(), u = usage(), opts = S.list.filter(e => u[e.id]);
   let h = '<div class="title">グラフ</div>';
@@ -1014,13 +1015,21 @@ function vGraph() {
   shown.sort((a, b) => (isB(b) - isB(a)) || (isB(a) && isB(b) ? BIG3.indexOf(a.name) - BIG3.indexOf(b.name) : u[b.id].last.localeCompare(u[a.id].last)));
   h += '<div style="margin-top:14px">' + partTabs(S.gPart, 'gpart') + '</div><div class="cards">';
   h += shown.map(e => {
-    const st = history(e.id).map(hh => sessionStats(e, hh)).filter(x => x.date), val = x => x.e1rm != null ? x.e1rm : (x.reps != null ? x.reps : null);
-    const vs = st.filter(x => val(x) != null && (S.gAll || x.date >= cut)).slice(-12), ys = vs.map(val), isE = vs.length && vs[vs.length - 1].e1rm != null;
-    const last = ys.length ? ys[ys.length - 1] : null, dlt = ys.length > 1 ? last - ys[0] : null;
+    const hs = history(e.id).filter(hh => work(hh.sets).length), st = hs.map(hh => Object.assign(sessionStats(e, hh), { hv: heavyOf(e, hh) }));
+    const inW = x => S.gAll || x.date >= cut, vs = st.filter(x => inW(x)).slice(-12), lastS = vs.length ? vs[vs.length - 1] : null;
+    const isE = !!(lastS && lastS.e1rm != null), useW = !isE && !!(lastS && lastS.max != null);
+    const ser = isE ? vs.filter(x => x.e1rm != null).map(x => x.e1rm) : useW ? vs.filter(x => x.max != null).map(x => x.max) : vs.map(x => x.reps);
+    const dlt = ser.length > 1 ? ser[ser.length - 1] - ser[0] : null, up = dlt > 0 ? '+' : dlt < 0 ? '\u2212' : '\u00b1';
+    let big = '\u2014', lab = '', dtx = '';
+    if (lastS) {
+      if (isE) { big = n1(lastS.e1rm); lab = '推定MAX値 kg'; dtx = dlt != null ? up + n1(Math.abs(dlt)) : ''; }
+      else if (useW && lastS.hv) { big = esc(setTxt(e, lastS.hv).replace(' × ', '×')); lab = e.cat === 'body' ? '荷重(kg)×回' : 'kg×回'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
+      else { big = String(lastS.reps); lab = '最大回数'; dtx = dlt != null ? up + Math.abs(dlt) + '回' : ''; }
+    }
     return '<button type="button" class="cdc gc4" data-act="gopen" data-id="' + e.id + '" style="--pc:' + PCOL[partsOf(e)[0]] + '">' + xic(e) +
       '<span style="min-width:0"><span class="nm">' + esc(e.name) + '</span><span class="sb n">最終 ' + shortD(u[e.id].last) + ' · ' + u[e.id].days + '回</span></span>' +
-      '<span class="spk">' + sparkSVG(ys, 56, 28) + '</span>' +
-      '<span class="vr"><b>' + (last == null ? '—' : isE ? n1(last) : last) + '</b>' + (last == null ? '' : isE ? 'kg' : '回') + (dlt != null ? '<span class="dl ' + (dlt > 0 ? 'up' : '') + '">' + (dlt > 0 ? '+' : dlt < 0 ? '−' : '±') + (isE ? n1(Math.abs(dlt)) : Math.abs(dlt)) + '</span>' : '') + '</span></button>';
+      '<span class="spk">' + sparkSVG(ser, 56, 28) + '</span>' +
+      '<span class="vr"><b>' + big + '</b>' + lab + (dtx ? '<span class="dl ' + (dlt > 0 ? 'up' : '') + '">' + dtx + '</span>' : '') + '</span></button>';
   }).join('') + '</div>';
   if (!shown.length) h += '<div class="empty">該当する種目がありません</div>';
   const hid = pool.length - pool.filter(e => isB(e) || u[e.id].last >= cut).length;
@@ -1481,7 +1490,7 @@ function recordSet(s) {
   syncNextInput(); render();
   if (S.restAuto && !s.wu && date === today()) startTimer(restFor(exMap()[exId]), exId);
   if (isPR) { nextCls = 'gold'; if (navigator.vibrate) try { navigator.vibrate([60, 40, 60]); } catch (e) {} }
-  toast(isPR ? '自己ベスト更新！ 推定1RM ' + n1(nv) + ' kg' : (i + 1) + 'セット目を記録しました', () => {
+  toast(isPR ? '自己ベスト更新！ 推定MAX値 ' + n1(nv) + ' kg' : (i + 1) + 'セット目を記録しました', () => {
     const it2 = (S.sessions[date] || { items: [] }).items.find(x => x.ex === exId); if (!it2) return;
     const k = it2.sets.lastIndexOf(s); if (k < 0) return;
     it2.sets.splice(k, 1); if (!it2.sets.length) S.sessions[date].items = S.sessions[date].items.filter(x => x !== it2);
@@ -1601,6 +1610,25 @@ function recordSet(s) {
     } else { e0.style.transition = 'transform .18s,opacity .18s'; e0.style.transform = ''; e0.style.opacity = ''; }
   };
   document.addEventListener('touchend', end, { passive: true }); document.addEventListener('touchcancel', end, { passive: true });
+})();
+
+/* グラフのカード：横スワイプで指標（推定MAX値／最大重量／ボリューム／頻度）を切り替え */
+(function () {
+  let st = null;
+  document.addEventListener('touchstart', ev => {
+    st = null; const el = $('#gcard'); if (!el || el.hidden || ev.touches.length !== 1 || !ev.target.closest('#gcard') || ev.target.closest('[data-chart], input')) return;
+    st = { x: ev.touches[0].clientX, y: ev.touches[0].clientY };
+  }, { passive: true });
+  document.addEventListener('touchend', ev => {
+    const s0 = st; st = null; if (!s0 || !ev.changedTouches.length) return;
+    const dx = ev.changedTouches[0].clientX - s0.x, dy = ev.changedTouches[0].clientY - s0.y;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    window.__swAt = Date.now();
+    const i = METRICS.findIndex(x => x[0] === S.gM), j = i + (dx < 0 ? 1 : -1); if (j < 0 || j >= METRICS.length) return;
+    const top = $('#gcard').scrollTop; S.gM = METRICS[j][0]; render();
+    const g = $('#gcard'); if (g) { g.scrollTop = top; const t = g.querySelector('.tabs.sm'); if (t && t.animate) t.animate([{ transform: 'translateX(' + (dx < 0 ? 40 : -40) + 'px)', opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 200, easing: 'ease-out' }); }
+  }, { passive: true });
+  document.addEventListener('touchcancel', () => { st = null; });
 })();
 
 /* 重量・回数の数字が欄からはみ出すときは文字を縮める */
