@@ -88,6 +88,7 @@ Playwright（Chromium）で、スマホ幅・タッチ操作を合成して確�
 | v70 | https://claude.ai/artifact/PUmumgSB7t6YnyS2ndZiPb | マイページ、MAX 統合、フォント C、マイページへ戻る操作 |
 | v71 | https://claude.ai/artifact/TMNpEbiZyzT6SUtDPryMgU | グラフタブをマイページに統合、体重の写真 |
 | v72 | https://claude.ai/artifact/TTfJMsKMwTXferLBD5RTnz | 自己ベストの棚を廃止、写真をさかのぼって見る、体重なしでも写真 |
+| v73 | https://claude.ai/artifact/8iFK1BuoNUbndborwTvDSj | 配布中の版。写真入りバックアップの読み込み（ファイル保存は配布版のみ） |
 
 ## 注意点
 - build.py は src.html 内の決まった文字列を目印に書き換える（`assert` で止まる）。特に、マイページ内の `data-act="bkimp">読み込む</button></div>';` と、起動部分の `const C = window.claude;` 〜 `.catch(() => { S.dbOk = false; …` は形を変えない。変えるなら build.py も直す。
