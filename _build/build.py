@@ -29,7 +29,7 @@ function startDb(user) {
   const fs = firebase.firestore(), base = 'users/' + user.uid + '/';
   const clean = o => JSON.parse(JSON.stringify(o));
   db = {
-    doc: p => { const r = fs.doc(base + p); return { set: d => r.set(clean(d)), delete: () => r.delete(), onSnapshot: (a, b) => r.onSnapshot(a, b) }; },
+    doc: p => { const r = fs.doc(base + p); return { set: d => r.set(clean(d)), delete: () => r.delete(), get: () => r.get(), onSnapshot: (a, b) => r.onSnapshot(a, b) }; },
     collection: p => { const r = fs.collection(base + p); return { onSnapshot: (a, b) => r.onSnapshot(a, b) }; }
   };
   S.user = { email: user.email || '', name: user.displayName || '' };
@@ -49,8 +49,8 @@ function startDb(user) {
     if (!busy()) render();
   }, fail);
   fs.collection(base + 'body').onSnapshot(q => {
-    const o = {}, f = {}, sr = {}; q.docs.forEach(x => { const v = x.data(); if (v && v.kg != null) { o[x.id] = +v.kg; if (v.fat != null && !isNaN(+v.fat)) f[x.id] = +v.fat; if (v.src) sr[x.id] = v.src; } });
-    S.body = o; S.fat = f; S.bsrc = sr; S.loaded.b = true; if (!busy()) render();
+    const o = {}, f = {}, sr = {}, ph = {}; q.docs.forEach(x => { const v = x.data(); if (v && v.kg != null) { o[x.id] = +v.kg; if (v.fat != null && !isNaN(+v.fat)) f[x.id] = +v.fat; if (v.src) sr[x.id] = v.src; if (v.ph) ph[x.id] = 1; } });
+    S.body = o; S.fat = f; S.bsrc = sr; S.bph = ph; S.loaded.b = true; if (!busy()) render();
   }, fail);
 }
 (function () {
