@@ -1100,7 +1100,7 @@ function graphList() {
     let big = '\u2014', lab = '', dtx = '';
     if (lastS) {
       if (isE) { big = n1(lastS.e1rm) + '<small>kg</small>'; lab = '推定MAX値'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
-      else if (useW && lastS.hv) { const t = setTxt(e, lastS.hv).split(' × '); big = esc(t[0]) + '<small>kg</small>×' + esc(t[1] || '') + '<small>回</small>'; lab = e.cat === 'body' ? '荷重×回数' : '重さ×回数'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
+      else if (useW && lastS.hv) { const t = setTxt(e, lastS.hv).split(' × '); big = esc(t[0]) + '<small>kg</small>×' + esc(t[1] || '') + '<small>回</small>'; lab = '最大重量'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
       else { big = String(lastS.reps) + '<small>回</small>'; lab = '最大回数'; dtx = dlt != null ? up + Math.abs(dlt) + '回' : ''; }
     }
     return '<button type="button" class="cdc gc4" data-act="gopen" data-id="' + e.id + '" style="--pc:' + PCOL[partsOf(e)[0]] + '">' + xic(e) +

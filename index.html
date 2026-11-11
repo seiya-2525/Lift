@@ -106,6 +106,7 @@ body.rtm #app{padding-top:40px}
 .ghd{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
 .gc4{grid-template-columns:44px minmax(0,1fr) auto auto}
 .gc4 .spk{color:var(--ink2);display:flex;align-items:center}
+.gc4 .vr b small{font-size:11px;font-weight:400;color:var(--ink3);margin-left:1px}.gc4 .vr .lb{display:block}
 .gc4 .vr .dl{display:block;font-size:11px;color:var(--ink3)}.gc4 .vr .dl.up{color:#7fd6a0}
 body.go{overflow:hidden}
 #tray [data-tm]{display:none!important}
@@ -655,6 +656,7 @@ const S = {
 (function () { try { const o = JSON.parse(LS.get('wk_pref') || '{}'); if (o.rs >= 15 && o.rs <= 600) S.restSec = o.rs; if (o.ra === false) S.restAuto = false; if (o.bar > 0) S.plBar = o.bar; if (o.aw === false) S.awake = false; if (o.gl >= 1 && o.gl <= 7) S.goal = o.gl; if (typeof o.nm === 'string') S.meNm = o.nm.slice(0, 20); } catch (e) {} })();
 const savePrefs = () => LS.set('wk_pref', JSON.stringify({ rs: S.restSec, ra: S.restAuto, bar: S.plBar, aw: S.awake, gl: S.goal, nm: S.meNm || '' }));
 let db = null;
+let gCW = null, pCW = null; // 戻る操作の受け口（CloseWatcher）。グラフの詳細カード用と写真用
 const exMap = () => { const m = {}; S.list.forEach(e => m[e.id] = e); return m; };
 
 /* ---------- store ---------- */
@@ -720,8 +722,9 @@ function openPhoto(d) {
   sc.querySelectorAll('.php').forEach(sec => io ? io.observe(sec) : load(sec));
   const cur = sc.querySelector('.php[data-d="' + d + '"]'); if (cur) sc.scrollTop = cur.offsetTop;
   w._io = io;
+  pCW = watchClose(() => { pCW = null; closePhoto(); });
 }
-function closePhoto() { const w = $('#phv'); if (w) { if (w._io) w._io.disconnect(); w.remove(); } document.body.classList.remove('phon'); S.phv = null; }
+function closePhoto() { if (pCW) { const c = pCW; pCW = null; try { c.destroy(); } catch (e) {} } const w = $('#phv'); if (w) { if (w._io) w._io.disconnect(); w.remove(); } document.body.classList.remove('phon'); S.phv = null; }
 function err(e) { toast(e && e.code === 'quota_exceeded' ? '保存できる件数の上限に達しました' : '保存できませんでした。通信状況を確認してもう一度お試しください'); }
 
 /* ---------- calc（変更なし） ---------- */
@@ -795,6 +798,7 @@ function render() {
   updTabFade(); { const on = document.querySelector('#extabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'nearest' }); updTabFade(); }
   const gcEl = $('#gcard'), showG = S.tab === 'me' && S.gOpen && !!S.gEx && ready;
   if (S.tab !== 'me') S.gOpen = false;
+  if (!showG && gCW) { const w = gCW; gCW = null; try { w.destroy(); } catch (e) {} }
   if (gcEl) { const keep = gcEl.scrollTop; gcEl.hidden = !showG; if (showG) { gcEl.innerHTML = '<i class="cst" style="background:' + PCOL[partsOf(exMap()[S.gEx] || {})[0]] + '"></i>' + graphDetail(); gcEl.scrollTop = keep; } else gcEl.innerHTML = ''; document.body.classList.toggle('go', showG); }
   const showTray = S.tab === 'log' && ready && S.sel && (S.trayOpen || S.editIdx != null); if (showTray) S.trayFull = true;
   $('#tray').hidden = !showTray;
@@ -1115,14 +1119,14 @@ function graphList() {
     const dlt = ser.length > 1 ? ser[ser.length - 1] - ser[0] : null, up = dlt > 0 ? '+' : dlt < 0 ? '\u2212' : '\u00b1';
     let big = '\u2014', lab = '', dtx = '';
     if (lastS) {
-      if (isE) { big = n1(lastS.e1rm); lab = '推定MAX値 kg'; dtx = dlt != null ? up + n1(Math.abs(dlt)) : ''; }
-      else if (useW && lastS.hv) { big = esc(setTxt(e, lastS.hv).replace(' × ', '×')); lab = e.cat === 'body' ? '荷重(kg)×回' : 'kg×回'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
-      else { big = String(lastS.reps); lab = '最大回数'; dtx = dlt != null ? up + Math.abs(dlt) + '回' : ''; }
+      if (isE) { big = n1(lastS.e1rm) + '<small>kg</small>'; lab = '推定MAX値'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
+      else if (useW && lastS.hv) { const t = setTxt(e, lastS.hv).split(' × '); big = esc(t[0]) + '<small>kg</small>×' + esc(t[1] || '') + '<small>回</small>'; lab = '最大重量'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
+      else { big = String(lastS.reps) + '<small>回</small>'; lab = '最大回数'; dtx = dlt != null ? up + Math.abs(dlt) + '回' : ''; }
     }
     return '<button type="button" class="cdc gc4" data-act="gopen" data-id="' + e.id + '" style="--pc:' + PCOL[partsOf(e)[0]] + '">' + xic(e) +
       '<span style="min-width:0"><span class="nm">' + esc(e.name) + '</span><span class="sb n">最終 ' + shortD(u[e.id].last) + ' · ' + u[e.id].days + '回</span></span>' +
       '<span class="spk">' + sparkSVG(ser, 56, 28) + '</span>' +
-      '<span class="vr"><b>' + big + '</b>' + lab + (dtx ? '<span class="dl ' + (dlt > 0 ? 'up' : '') + '">' + dtx + '</span>' : '') + '</span></button>';
+      '<span class="vr"><b>' + big + '</b><span class="lb">' + lab + '</span>' + (dtx ? '<span class="dl ' + (dlt > 0 ? 'up' : '') + '">' + dtx + '</span>' : '') + '</span></button>';
   }).join('') + '</div>';
   if (!shown.length) h += '<div class="empty">該当する種目がありません</div>';
   const hid = pool.length - pool.filter(e => isB(e) || u[e.id].last >= cut).length;
@@ -2041,10 +2045,15 @@ function closeTray() { S.trayFull = false; if (S.editIdx != null) { endEdit(); S
 // マイページから別の画面へ飛んだとき、閉じる・戻る操作でマイページの元の位置へ戻す
 function markRet() { S.ret = S.tab === 'me' ? { tab: 'me', y: window.scrollY } : null; }
 function goRet() { const r = S.ret; if (!r || S.tab === r.tab && !S.gOpen) { S.ret = null; return false; } S.ret = null; S.gOpen = false; S.tab = r.tab; render(); window.scrollTo(0, r.y); setTimeout(() => { if (S.tab === r.tab) window.scrollTo(0, r.y); }, 60); return true; }
-function closeG() { S.gOpen = false; if (!goRet()) render(); }
+function closeG() { if (gCW) { const w = gCW; gCW = null; try { w.destroy(); } catch (e) {} } S.gOpen = false; if (!goRet()) render(); }
+// カードを下へ滑らせてから閉じる（∨ボタン・戻る操作の共通）
+function closeGAnim() { const el = $('#gcard'); if (!el || el.hidden) { closeG(); return; } el.classList.add('snap'); el.style.transform = 'translateY(100%)'; setTimeout(() => { el.style.transform = ''; el.classList.remove('snap'); closeG(); }, 180); }
+// 対応ブラウザ（Android の Chrome など）では、戻る操作を「履歴を戻る」ではなく「閉じる」として受け取る
+function watchClose(fn) { if (typeof CloseWatcher !== 'function') return null; try { const w = new CloseWatcher(); w.onclose = fn; return w; } catch (e) { return null; } }
+function openG() { S.gOpen = true; S.histAll = null; render(); const g = $('#gcard'); if (g) g.scrollTop = 0; if (!gCW) gCW = watchClose(() => { gCW = null; closeGAnim(); }); }
 window.__backClose = function () {
   if (S.phv) { closePhoto(); return true; }
-  if (S.gOpen) { closeG(); return true; }
+  if (S.gOpen) { closeGAnim(); return true; }
   if (S.sheet) { closeSheet(); return true; }
   if (S.picking) { S.picking = null; renderSheet(); return true; }
   if (S.trayOpen && S.trayFull) { closeTray(); return true; }
@@ -2095,8 +2104,8 @@ document.addEventListener('click', ev => {
   else if (a === 'card') { if (Date.now() - (window.__swAt || 0) < 350) return; readInputs(); selectEx(b.dataset.id); S.trayOpen = true; render(); }
   else if (a === 'sel') { readInputs(); selectEx(b.dataset.id); render(); if (S.sheet && S.sheet.kind === 'exlist') closeSheet(); }
   else if (a === 'pick') { S.picking = 'log'; S.pickQ = ''; renderSheet(); }
-  else if (a === 'gopen') { S.gEx = b.dataset.id; S.gOpen = true; S.histAll = null; render(); const g = $('#gcard'); if (g) g.scrollTop = 0; }
-  else if (a === 'gclose') closeG();
+  else if (a === 'gopen') { S.gEx = b.dataset.id; openG(); }
+  else if (a === 'gclose') closeGAnim();
   else if (a === 'goret') goRet();
   else if (a === 'gall') { S.gAll = !S.gAll; render(); }
   else if (a === 'gpart') { S.gPart = b.dataset.v; render(); }
@@ -2197,7 +2206,7 @@ document.addEventListener('click', ev => {
   else if (a === 'gome') { S.tab = 'me'; render(); window.scrollTo(0, 0); }
   else if (a === 'tabgo') { markRet(); S.tab = b.dataset.v; render(); window.scrollTo(0, 0); }
   else if (a === 'mepb') { S.mePb = !S.mePb; render(); }
-  else if (a === 'pbopen') { S.gEx = b.dataset.id; S.gM = 'e1rm'; S.gOpen = true; S.histAll = null; render(); const g = $('#gcard'); if (g) g.scrollTop = 0; }
+  else if (a === 'pbopen') { S.gEx = b.dataset.id; S.gM = 'e1rm'; openG(); }
   else if (a === 'calmj') { const k = b.dataset.m; calSet(k === today().slice(0, 7) ? today() : k + '-01'); S.calU = 'm'; S.calD = null; render(); window.scrollTo(0, 0); }
   else if (a === 'bkcopy') {
     const t = backupJSON(); let ok = false;
