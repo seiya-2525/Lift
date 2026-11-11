@@ -32,7 +32,7 @@ function startDb(user) {
   S.user = { email: user.email || '', name: user.displayName || '' };
   S.dbOk = true; render();
   const fail = () => { S.loaded = { ex: true, s: true, b: true }; render(); toast('記録を読み込めませんでした。開き直してください'); };
-  const busy = () => !!(sw || holdI || holdT || S.sheet || (document.activeElement && ['exMemo', 'inN', 'exQ', 'pickQ', 'bsName', 'bIn', 'bFat'].includes(document.activeElement.id)));
+  const busy = () => !!(sw || holdI || holdT || S.sheet || (document.activeElement && ['exMemo', 'inN', 'exQ', 'pickQ', 'bsName', 'bIn', 'bFat', 'meNm'].includes(document.activeElement.id)));
   fs.doc(base + 'meta/exercises').onSnapshot(snap => {
     if (!snap.exists && !snap.metadata.fromCache && !S.seeded) { S.seeded = true; S.list = clean(SEED); store.saveList(); S.loaded.ex = true; render(); return; }
     S.list = snap.exists && Array.isArray(snap.data().list) ? JSON.parse(JSON.stringify(snap.data().list)) : [];
