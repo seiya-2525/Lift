@@ -84,7 +84,10 @@ i0=s.index('<script>\n'); s=s[:i0]+LOGIN+'\n<script src="firebase-app-compat.js"
 rep("""data-act="bkimp">読み込む</button></div>';""","""data-act="bkimp">読み込む</button></div><div class="bkrow" style="margin-top:8px"><button type="button" class="bo" style="min-height:44px;grid-column:1/-1" data-act="bkdl">ファイルに保存</button></div>' +
     '<div class="acct"><div class="sect">アカウント</div><div class="em">' + esc(S.user && S.user.email || '') + '</div><button type="button" class="bo" style="min-height:44px;width:100%" data-act="logout">ログアウト</button></div>';""")
 rep("  else if (a === 'expsel') {","""  else if (a === 'bkdl') {
-    try { const u = URL.createObjectURL(new Blob([backupJSON()], { type: 'application/json' })), l = document.createElement('a'); l.href = u; l.download = 'kintore-log-' + today() + '.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); toast('保存しました'); } catch (e) { openSheetKind('export'); }
+    // 写真が未読み込みなら先に全部読み、もう一度押してもらう（iPhone は時間がたつとダウンロードを止めるため、保存は押した直後に行う）
+    const miss = Object.keys(S.bph).filter(d => !phReady(d));
+    if (miss.length) { toast('写真' + miss.length + '枚を準備しています…'); Promise.all(miss.map(getPh)).then(() => toast('準備できました。もう一度「ファイルに保存」を押してください')); return; }
+    try { const u = URL.createObjectURL(new Blob([backupJSON(true)], { type: 'application/json' })), l = document.createElement('a'); l.href = u; l.download = 'kintore-log-' + today() + '.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); toast('保存しました'); } catch (e) { openSheetKind('export'); }
   }
   else if (a === 'logout') { if (window.signOutApp) window.signOutApp(); }
   else if (a === 'expsel') {""")

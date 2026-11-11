@@ -1401,9 +1401,12 @@ function goalHTML() {
   return '<div class="goal"><div><div class="lab">今週の目標（月曜はじまり）</div><div class="gcnt n"><b>' + c + '</b> / ' + S.goal + ' 回' + (c > S.goal ? '（+' + (c - S.goal) + '）' : '') + '</div><div class="gdots">' + dots + '</div></div>' +
     '<div class="gr"><div class="sub">' + (streak ? '連続 <b class="n" style="color:var(--gold)">' + streak + '</b> 週達成' : '連続達成なし') + '</div><span class="adj"><button type="button" data-act="goaladj" data-n="-1" aria-label="目標を減らす">−</button><span class="n">' + S.goal + '回</span><button type="button" data-act="goaladj" data-n="1" aria-label="目標を増やす">＋</button></span></div></div>';
 }
-function backupJSON() {
+// withPh：写真も入れる（ファイル保存用。読み込み済みの写真だけが入るので、先に getPh で全部読んでおく）
+function backupJSON(withPh) {
   const body = {}; Object.keys(S.body).forEach(d => { body[d] = { kg: S.body[d] }; if (S.fat[d] != null) body[d].fat = S.fat[d]; });
-  return JSON.stringify({ app: 'wk-log', v: 1, at: new Date().toISOString(), exercises: S.list, routines: S.routines, sessions: S.sessions, body });
+  const o = { app: 'wk-log', v: 1, at: new Date().toISOString(), exercises: S.list, routines: S.routines, sessions: S.sessions, body };
+  if (withPh) { o.photos = {}; Object.keys(S.bph).forEach(d => { const x = phReady(d); if (x) o.photos[d] = x; }); }
+  return JSON.stringify(o);
 }
 function exportSheet() {
   const t = backupJSON();
@@ -1426,7 +1429,9 @@ async function importData(o) {
   if (Array.isArray(o.routines)) { const have = new Set(S.routines.map(r => r.id)); o.routines.forEach(r => { if (r && r.id && r.name && Array.isArray(r.exs) && !have.has(r.id)) S.routines.push({ id: String(r.id).slice(0, 60), name: String(r.name).slice(0, 60), exs: r.exs.map(String) }); }); await store.saveRoutines(); }
   if (o.sessions && typeof o.sessions === 'object') for (const d of Object.keys(o.sessions)) { if (okD(d) && o.sessions[d] && Array.isArray(o.sessions[d].items)) { S.sessions[d] = cleanSession(d, o.sessions[d]); await store.saveSession(d); ns++; } }
   if (o.body && typeof o.body === 'object') for (const d of Object.keys(o.body)) { const v = o.body[d]; if (okD(d) && v && +v.kg > 20 && +v.kg < 300) { S.body[d] = +(+v.kg).toFixed(1); if (v.fat != null && +v.fat > 2 && +v.fat < 60) S.fat[d] = +(+v.fat).toFixed(1); await store.saveBody(d); nb++; } }
-  render(); toast('読み込みました（記録' + ns + '日・体重' + nb + '日）');
+  let np = 0;
+  if (o.photos && typeof o.photos === 'object') for (const d of Object.keys(o.photos)) { const x = o.photos[d]; if (okD(d) && typeof x === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(x) && x.length < 260000) { try { await store.savePhoto(d, x); PH[d] = x; S.bph[d] = 1; await store.saveBody(d); np++; } catch (e) {} } }
+  render(); toast('読み込みました（記録' + ns + '日・体重' + nb + '日' + (np ? '・写真' + np + '枚' : '') + '）');
 }
 const calWk = d => addDays(d, -((parseD(d).getDay() + 6) % 7));
 function calRange() {
