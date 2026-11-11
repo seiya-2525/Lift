@@ -6,6 +6,7 @@
 - 返答は日本語で、短く。表を使う。専門用語は初心者向けに言い換える。
 - 推測を事実のように書かない。確認できていないことは、そう伝える。
 - **`main` への push（＝配布版の更新）は、毎回利用者の許可を取ってから行う。** 利用者は開き直すだけで最新になる。
+- **修正のたびに、新しい版の確認用アーティファクトを作り、リンクを渡して確認を促す。** 版ごとに別のアーティファクト（題名「筋トレログ v◯◯」）。作り方は下の「確認用アーティファクト」。
 - デザインは黒基調、商用アプリ水準。「AIっぽさ」を出さない。画面内の使い方の注釈は必要な箇所だけ。
 
 ## ファイル
@@ -73,6 +74,16 @@ Playwright（Chromium）で、スマホ幅・タッチ操作を合成して確�
 - `python3 _build/build.py && node _build/t_boot.js`：偽の Firebase で配布版の起動を確認（「seeded n 45」が出れば初回の種目投入まで通っている）。
 - `python3 _build/mk_test.py && node _build/t_me.js`：見本データでマイページと振り返りを確認。
 - `sample.json` は作り物のデータ。**利用者の実際の記録はリポジトリに入れない**（公開リポジトリ）。
+
+## 確認用アーティファクト
+1. `python3 _build/mk_preview.py v71 <スクラッチ>` で `lift_v71.html` と見本データの batch（`seed/w*.json`）を作る。
+2. Artifact で `lift_v71.html` を新しく公開（`capabilities: {db: {}}`、アイコン dumbbell）。src.html はそのまま動く（`window.claude` の db を使う）。
+3. ArtifactData の batch で `seed/w*.json` を入れる（中身は作り物の sample.json）。
+4. リンクを渡し、見てほしい点を表で示す。本人の記録で見たいときは、練習用で「書き出す」→ 確認版で「読み込む」。
+
+| 版 | リンク | 内容 |
+|---|---|---|
+| v70 | https://claude.ai/artifact/PUmumgSB7t6YnyS2ndZiPb | マイページ、MAX 統合、フォント C、マイページへ戻る操作 |
 
 ## 注意点
 - build.py は src.html 内の決まった文字列を目印に書き換える（`assert` で止まる）。特に、マイページ内の `data-act="bkimp">読み込む</button></div>';` と、起動部分の `const C = window.claude;` 〜 `.catch(() => { S.dbOk = false; …` は形を変えない。変えるなら build.py も直す。
