@@ -374,7 +374,7 @@ body.rt #app{padding-top:70px}
 .rtnrow .rtnbtn span{font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* calendar & part sets */
 .calnav{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
-.calnav .h2{font-size:18px}
+.calnav .h2{font-size:18px}.nlab{flex:1;min-width:0;will-change:transform}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin-top:10px}
 .cal .wd{font-size:11px;color:var(--ink3);text-align:center;padding-bottom:6px}
 .cal .cd{min-height:50px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;border-top:1px solid var(--line);font-family:var(--num);font-size:14px;color:var(--ink3)}
@@ -1376,7 +1376,7 @@ function vCal() {
     info[d] = { n, parts: Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]).slice(0, 3) }; mDays++; mSets += n;
   });
   let h = '<div class="title">振り返り</div>' + goalHTML();
-  h += '<div class="calnav"><button type="button" class="icon" data-act="calm" data-n="-1" aria-label="前の月">‹</button><div style="text-align:center"><div class="h2">' + Y + '年' + M + '月</div><div class="sub n">' + mDays + '日 · ' + mSets + 'セット</div></div><button type="button" class="icon" data-act="calm" data-n="1" aria-label="次の月"' + (S.calM >= t0.slice(0, 7) ? ' disabled' : '') + '>›</button></div>';
+  h += '<div class="calnav"><button type="button" class="icon" data-act="calm" data-n="-1" aria-label="前の月">‹</button><div class="nlab" id="mlab" style="text-align:center"><div class="h2">' + Y + '年' + M + '月</div><div class="sub n">' + mDays + '日 · ' + mSets + 'セット</div></div><button type="button" class="icon" data-act="calm" data-n="1" aria-label="次の月"' + (S.calM >= t0.slice(0, 7) ? ' disabled' : '') + '>›</button></div>';
   h += '<div class="cal">' + [1, 2, 3, 4, 5, 6, 0].map(w => '<div class="wd">' + WD[w] + '</div>').join('');
   for (let k = 0; k < (first.getDay() + 6) % 7; k++) h += '<div class="cd"></div>';
   for (let d = 1; d <= dim; d++) {
@@ -1394,7 +1394,7 @@ function vCal() {
   });
   const mx = Math.max(1, ...Object.values(pc));
   h += '<div class="pcard" id="pcard"><div class="seg2" role="group" aria-label="期間の単位"><button type="button" data-act="calu" data-v="w" class="' + (U === 'w' ? 'on' : '') + '">週</button><button type="button" data-act="calu" data-v="m" class="' + (U === 'm' ? 'on' : '') + '">月</button></div>' +
-    '<div class="calnav" style="margin-top:6px"><button type="button" class="icon" data-act="calo" data-n="-1" aria-label="前へ">‹</button><div style="text-align:center"><div class="h2">' + R.lab + '</div><div class="sub n">' + (U === 'w' && R.lab.indexOf('〜') < 0 ? shortD(a) + ' 〜 ' + shortD(b) + ' · ' : '') + Object.keys(days).length + '日 · ' + tot + 'セット</div></div><button type="button" class="icon" data-act="calo" data-n="1" aria-label="次へ"' + (R.cur ? ' disabled' : '') + '>›</button></div><div style="margin-top:8px">';
+    '<div class="calnav" style="margin-top:6px"><button type="button" class="icon" data-act="calo" data-n="-1" aria-label="前へ">‹</button><div class="nlab" id="plab" style="text-align:center"><div class="h2">' + R.lab + '</div><div class="sub n">' + (U === 'w' && R.lab.indexOf('〜') < 0 ? shortD(a) + ' 〜 ' + shortD(b) + ' · ' : '') + Object.keys(days).length + '日 · ' + tot + 'セット</div></div><button type="button" class="icon" data-act="calo" data-n="1" aria-label="次へ"' + (R.cur ? ' disabled' : '') + '>›</button></div><div style="margin-top:8px">';
   PARTS.forEach(p => { if (p[0] === 'other' && !pc.other) return; const c = pc[p[0]] || 0; h += '<div class="prow"><span style="color:' + PCOL[p[0]] + '">' + p[1] + '</span><span class="bar"><i style="width:' + (c / mx * 100) + '%;background:' + PCOL[p[0]] + '"></i></span><span class="n">' + c + '</span></div>'; });
   h += '</div></div>';
 
@@ -1584,12 +1584,12 @@ function recordSet(s) {
   document.addEventListener('touchstart', ev => {
     x0 = null; if (S.tab !== 'cal' || !ev.target.closest || ev.touches.length !== 1) return;
     const c = ev.target.closest('.cal,.calnav,.pcard'); if (!c) return;
-    const pc = ev.target.closest('.pcard'); kind = pc ? 'p' : 'm'; el = pc || $('.cal'); x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY; lock = null;
+    const pc = ev.target.closest('.pcard'); kind = pc ? 'p' : 'm'; el = pc ? $('#plab') : $('#mlab'); x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY; lock = null;
   }, { passive: true });
   document.addEventListener('touchmove', ev => {
     if (x0 == null || !el) return; const dx = ev.touches[0].clientX - x0, dy = ev.touches[0].clientY - y0;
     if (lock == null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) lock = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-    if (lock === 'x') { const atEnd = dx < 0 && (kind === 'p' ? calRange().cur : S.calM >= today().slice(0, 7)); el.style.transition = 'none'; el.style.transform = 'translateX(' + (atEnd ? dx / 4 : dx) + 'px)'; el.style.opacity = String(1 - Math.min(.5, Math.abs(dx) / 400)); }
+    if (lock === 'x') { const atEnd = dx < 0 && (kind === 'p' ? calRange().cur : S.calM >= today().slice(0, 7)); el.style.transition = 'none'; el.style.transform = 'translateX(' + (atEnd ? dx / 4 : dx) + 'px)'; el.style.opacity = String(1 - Math.min(.7, Math.abs(dx) / 200)); }
   }, { passive: true });
   const end = ev => {
     if (x0 == null) return; const dx = (ev.changedTouches && ev.changedTouches.length ? ev.changedTouches[0].clientX : x0) - x0, e0 = el, was = lock, k = kind; x0 = null; lock = null;
@@ -1597,7 +1597,7 @@ function recordSet(s) {
     if (was === 'x') window.__swAt = Date.now();
     if (was === 'x' && Math.abs(dx) > 60 && (k === 'p' ? calStep(n) : calMonth(n))) {
       render();
-      ['.cal', '#pcard'].forEach(q => { const c = $(q); if (c && c.animate) c.animate([{ transform: 'translateX(' + (n * 60) + 'px)', opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 200, easing: 'ease-out' }); });
+      [k === 'p' ? '#plab' : '#mlab'].forEach(q => { const c = $(q); if (c && c.animate) c.animate([{ transform: 'translateX(' + (n * 40) + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 200, easing: 'ease-out' }); });
     } else { e0.style.transition = 'transform .18s,opacity .18s'; e0.style.transform = ''; e0.style.opacity = ''; }
   };
   document.addEventListener('touchend', end, { passive: true }); document.addEventListener('touchcancel', end, { passive: true });
