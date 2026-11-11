@@ -1,6 +1,9 @@
 import json,re,shutil,os
-SRC='/tmp/claude-0/-home-claude/ad341c87-ac34-5779-8476-39fc5fad45ec/scratchpad/app/index.html'
-OUT='/tmp/claude-0/dist'
+import sys
+HERE=os.path.dirname(os.path.abspath(__file__))
+SRC=os.path.join(HERE,'src.html')
+# 出力先。引数なしなら _build/out（確認用）。配布するときは `python3 build.py ..` でリポジトリ直下へ
+OUT=os.path.abspath(sys.argv[1]) if len(sys.argv)>1 else os.path.join(HERE,'out')
 s=open(SRC,encoding='utf-8').read()
 def rep(a,b,n=1):
     global s
@@ -72,8 +75,8 @@ function startDb(user) {
   } catch (e) { S.dbOk = false; S.loaded = { ex: true, s: true, b: true }; render(); showLogin('起動できませんでした。開き直してください'); }
 })();
 window.signOutApp = () => firebase.auth().signOut().then(() => location.reload());"""
-cfg=open('/tmp/claude-0/dist-src/config.json').read()
-seed=open('/tmp/claude-0/dist-src/seed.json').read()
+cfg=open(os.path.join(HERE,'config.json'),encoding='utf-8').read()
+seed=open(os.path.join(HERE,'seed.json'),encoding='utf-8').read()
 s=s[:i]+boot.replace('__SEED__',seed).replace('__CONFIG__',cfg)+s[j:]
 # ---- scripts ----
 i0=s.index('<script>\n'); s=s[:i0]+LOGIN+'\n<script src="firebase-app-compat.js"></script>\n<script src="firebase-auth-compat.js"></script>\n<script src="firebase-firestore-compat.js"></script>\n'+s[i0:]
@@ -89,6 +92,8 @@ rep("  else if (a === 'expsel') {","""  else if (a === 'bkdl') {
 k=s.index('</style>')+len('</style>'); s='<!doctype html>\n<html lang="ja"><head>\n'+s[:k]+'\n</head><body>'+s[k:]+"\n<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}</script>\n</body></html>"
 os.makedirs(OUT,exist_ok=True)
 open(OUT+'/index.html','w',encoding='utf-8').write(s)
+# firebase-*-compat.js（v10.14.1）はリポジトリ直下に置いてある。確認用の出力先にはコピーする
 for f in ['app','auth','firestore']:
-    shutil.copy('/tmp/claude-0/dist-src/node_modules/firebase/firebase-%s-compat.js'%f,OUT+'/')
+    n='firebase-%s-compat.js'%f; a=os.path.join(HERE,'..',n); b=os.path.join(OUT,n)
+    if os.path.exists(a) and os.path.abspath(a)!=os.path.abspath(b): shutil.copy(a,b)
 print(len(s))

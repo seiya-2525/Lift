@@ -1,4 +1,7 @@
-s=open('/tmp/claude-0/-home-claude/ad341c87-ac34-5779-8476-39fc5fad45ec/scratchpad/app/index.html',encoding='utf-8').read()
+# 練習用ソース（src.html）を、Playwright で直接開けるテスト用の test.html にする
+import os
+H=os.path.dirname(os.path.abspath(__file__))
+s=open(os.path.join(H,'src.html'),encoding='utf-8').read()
 s=s.replace("let db = null;","let db = null;window.__t={get S(){return S},render:()=>render()};",1).replace('<style>','<style>[hidden]{display:none!important}',1)
 s='<!doctype html><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1">'+s
-open('test.html','w',encoding='utf-8').write(s)
+open(os.path.join(H,'test.html'),'w',encoding='utf-8').write(s)

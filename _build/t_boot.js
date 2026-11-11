@@ -12,10 +12,10 @@ window.firebase={initializeApp(){},firestore:()=>fs,auth:Object.assign(()=>({onA
 })();`;
 (async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:400,height:860},deviceScaleFactor:2,hasTouch:true,isMobile:true,serviceWorkers:'block'});const p=await ctx.newPage();const errs=[];p.on('pageerror',e=>errs.push(String(e)));p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});
 for(const f of ['app','auth','firestore'])await p.route('**/firebase-'+f+'-compat.js',r=>r.fulfill({contentType:'application/javascript',body:f==='app'?fake:'/**/'}));
-await p.goto('file:///tmp/claude-0/dist/index.html');await p.waitForTimeout(400);
-console.log('login shown',await p.evaluate(()=>!document.getElementById('login').hidden));await p.screenshot({path:'/tmp/claude-0/login.png'});
+await p.goto('file://'+__dirname+'/out/index.html');await p.waitForTimeout(400);
+console.log('login shown',await p.evaluate(()=>!document.getElementById('login').hidden));await p.screenshot({path:__dirname+'/out/login.png'});
 await p.tap('#gLogin');await p.waitForTimeout(600);
 console.log('after',await p.evaluate(()=>[document.getElementById('login').hidden,Object.keys(__store).filter(k=>k.includes('meta')),document.body.innerText.slice(0,80)]));
 console.log('seeded n',await p.evaluate(()=>__store['users/u1/meta/exercises'].list.length));
-await p.screenshot({path:'/tmp/claude-0/boot1.png'});
+await p.screenshot({path:__dirname+'/out/boot1.png'});
 console.log(errs);await b.close()})();
