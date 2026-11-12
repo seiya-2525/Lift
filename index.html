@@ -36,6 +36,7 @@ button:disabled{cursor:default}
 .n{font-family:var(--num);font-variant-numeric:tabular-nums}
 #app{max-width:600px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));padding-block:18px 280px;display:flex;flex-direction:column}
 #app.notray{padding-bottom:100px}
+#app.gtab{touch-action:pan-y;overflow-x:clip;min-height:calc(100dvh - 16px)}
 .title{font-size:28px;font-weight:700;line-height:1.2;letter-spacing:.01em;text-wrap:balance}
 .h2{font-size:22px;font-weight:700;line-height:1.3}
 .sub{font-size:13px;color:var(--ink3)}
@@ -834,7 +835,7 @@ function render() {
   const showTray = S.tab === 'log' && ready && S.sel && (S.trayOpen || S.editIdx != null); if (showTray) S.trayFull = true;
   $('#tray').hidden = !showTray;
   $('#tray').classList.toggle('full', !!(showTray && S.trayFull)); document.body.classList.toggle('tf', !!(showTray && S.trayFull));
-  app.classList.toggle('notray', !showTray);
+  app.classList.toggle('notray', !showTray); app.classList.toggle('gtab', S.tab === 'graph');
   if (showTray) renderTray();
   renderSheet(); renderBSheet(); wakeSync(); paintTimer();
 }
@@ -1152,7 +1153,7 @@ function graphList() {
   const shown = S.gAll ? pool : pool.filter(e => isB(e) || u[e.id].last >= cut);
   shown.sort((a, b) => (isB(b) - isB(a)) || (isB(a) && isB(b) ? BIG3.indexOf(a.name) - BIG3.indexOf(b.name) : u[b.id].last.localeCompare(u[a.id].last)));
   const b3 = S.gPart === 'all' ? shown.filter(isB) : [], rest = shown.filter(e => !b3.includes(e));
-  h += '<div id="gSwipe" style="min-height:62vh"><div id="gTabs" style="margin-top:14px">' + partTabs(S.gPart, 'gpart') + '</div><div id="gListWrap">';
+  h += '<div id="gSwipe"><div id="gTabs" style="margin-top:14px">' + partTabs(S.gPart, 'gpart') + '</div><div id="gListWrap">';
   if (b3.length) h += '<div class="sech" style="margin-top:20px"><div class="sect">BIG3</div></div><div class="b3g">' + b3.map(e => { const g = gInfo(e, cut);
     return '<button type="button" class="b3t" data-act="gopen" data-id="' + e.id + '"><span class="k">' + esc(e.name) + '</span><b>' + g.big + '</b><span class="spk">' + sparkSVG(g.ser, 90, 24) + '</span><span class="s">' + g.lab + '</span><span class="s n">' + (g.dtx ? g.dtx.replace('class="dl', 'class="') : '&nbsp;') + '</span></button>'; }).join('') + '</div>';
   if (rest.length) h += '<div class="sech" style="margin-top:24px"><div class="sect">' + (S.gAll ? 'すべての種目' : S.gPart === 'all' ? '直近3か月の種目' : '種目') + '</div></div><div style="margin-top:8px">' + rest.map(e => { const g = gInfo(e, cut);
@@ -2028,7 +2029,7 @@ document.addEventListener('pointercancel', () => { if (sw) { sw.row.classList.re
   document.addEventListener('touchstart', ev => {
     st = null;
     if (S.tab !== 'graph' || S.gOpen || S.picking || S.sheet || ev.touches.length !== 1) return;
-    if (!ev.target.closest('#gSwipe') || ev.target.closest('.tabs, input')) return;
+    if (!ev.target.closest('#app') || ev.target.closest('.tabs, input')) return;
     st = { x: ev.touches[0].clientX, y: ev.touches[0].clientY, mode: 'pending', dx: 0, t: Date.now() };
   }, { passive: true });
   document.addEventListener('touchmove', ev => {

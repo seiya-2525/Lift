@@ -21,7 +21,19 @@ await swipe(200,y,170,y);console.log('短い左（30px）→動かない',await 
 await swipe(180,y,200,y+260);console.log('縦スクロール→動かない',await part());
 await p.evaluate(()=>{__t.S.gPart='other';__t.render()});await swipe(300,y,60,y);console.log('右端（その他）で左→動かない',await part());
 await p.evaluate(()=>{__t.S.gPart='chest';__t.render()});
-await swipe(300,40,60,40);console.log('上部（タブの行）で左→動かない',await part());
+const ty=await p.evaluate(()=>{const r=document.querySelector('#gTabs .tabs').getBoundingClientRect();return r.y+r.height/2});
+await swipe(300,ty,60,ty);console.log('タブの行で左→部位は変わらない（タブ自体のスクロール）',await part());
+await swipe(300,40,60,40);console.log('見出しの高さで左→胸から背中になる',await part());
+await p.evaluate(()=>{__t.S.gPart='chest';__t.render()});
+await swipe(300,690,60,690);console.log('画面の下の方（y=690、ナビの上）で左→背中になる',await part());
+await p.evaluate(()=>{__t.S.gPart='chest';__t.render()});
+// 指を動かしている最中に、見出しが揺れず、画面が横に動かないこと
+const pt=(x,y)=>[{x,y,id:1}];
+await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:pt(300,y)});
+for(let i=1;i<=8;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:pt(300-30*i,y)});
+console.log('ドラッグ中',await p.evaluate(()=>{const t=document.querySelector('#app .title').getBoundingClientRect(),w=document.querySelector('#gListWrap').getBoundingClientRect();return {titleX:t.x,scrollX:scrollX,pageW:document.documentElement.scrollWidth,listShiftedX:Math.round(w.x),touchAction:getComputedStyle(document.querySelector('#app')).touchAction,overflowX:getComputedStyle(document.querySelector('#app')).overflowX}}));
+await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await p.waitForTimeout(450);
+await p.evaluate(()=>{__t.S.gPart='chest';__t.render()});
 await p.evaluate(()=>{__t.S.gPart='all';__t.render();const e=document.querySelector('.b3t');e&&e.click()});await p.waitForTimeout(300);
 console.log('詳細カードを開く',await p.evaluate(()=>[__t.S.gOpen,!document.querySelector('#gcard').hidden]));
 await swipe(300,y,60,y);console.log('詳細カード上で左→部位は変わらない',await p.evaluate(()=>__t.S.gPart));
