@@ -200,7 +200,9 @@ nav.nav button{display:flex;flex-direction:column;align-items:center;justify-con
 nav.nav button svg{width:22px;height:22px;flex:none}
 /* 記録は中央の丸ボタン。記録の入力中・詳細カードを開いている間は、下の内容に重ならないよう小さくして枠内に収める */
 nav.nav .rec{position:relative;justify-content:flex-end;padding-bottom:7px;color:var(--ink2)}
-nav.nav .rec i{position:absolute;left:50%;top:-16px;width:48px;height:48px;margin-left:-24px;border-radius:50%;background:var(--ink);color:var(--onlight);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 5px var(--bg)}
+nav.nav .rec i{position:absolute;left:50%;top:-16px;box-sizing:border-box;width:48px;height:48px;margin-left:-24px;border-radius:50%;background:var(--well);color:var(--ink);border:1px solid var(--dash);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 5px var(--bg)}
+/* 記録タブを選んでいる間だけ、丸を白く塗る（選択中だとわかるように） */
+nav.nav .rec.on i{background:var(--ink);color:var(--onlight);border-color:var(--ink)}
 nav.nav .rec i svg{width:24px;height:24px}
 body.tf nav.nav .rec i,body.go nav.nav .rec i{top:5px;width:32px;height:32px;margin-left:-16px;box-shadow:none}body.tf nav.nav .rec i svg,body.go nav.nav .rec i svg{width:18px;height:18px}
 nav.nav button.on{color:var(--ink);font-weight:700}
