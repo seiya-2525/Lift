@@ -63,6 +63,11 @@ input::placeholder{color:var(--ink3)}
 .cdc.rest .vv{display:none}
 .cdc.add{display:flex;justify-content:center;min-height:60px;padding:10px 14px;border:1px dashed var(--dash);border-radius:16px;background:var(--bg);color:var(--ink2);font-weight:600;box-shadow:none}
 .cdc.add::before{display:none}
+/* 記録の一覧：カードの長押しで種目を外す。記録のある種目は、カードの位置で確認してから外す */
+.cdc[data-cdlp]{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.cdc.lpon{transform:scale(.985);transition:transform .2s}
+.cdx{position:relative;margin-top:-14px;padding:14px 14px 26px;border-radius:16px 16px 0 0;background:var(--raised);border:1px solid var(--danger);border-bottom:0;box-shadow:0 -6px 16px rgba(0,0,0,.55)}.cdx:first-child{margin-top:0}
+.cdx p{margin:0 0 12px;font-size:14px;line-height:1.6}.cdx p b{font-weight:700}.cdx .r{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.cdx .r button{min-height:44px;border-radius:8px;font-size:14px;font-weight:700}.cdx .r .no{border:1px solid var(--edge)}.cdx .r .yes{background:var(--danger);color:#1a0604}
 .tpill{display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:15px;background:var(--rest);color:#04130d;font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:700;font-size:13px;white-space:nowrap}
 .tray .cst{position:absolute;left:0;right:0;top:0;height:4px}
 .tray.full{background:var(--bg);border-top:0;box-shadow:none}
@@ -860,10 +865,11 @@ function vLog() {
     const ex = m[id], it = sess.items.find(i => i.ex === id), all = it ? it.sets : [], ws = work(all), wn = all.length - ws.length;
     let v = 0, b = null; ws.forEach(x => { const w = effW(ex, x, S.date); if (w != null) v += w * (+x.r || 0); if (!b || +x.w > +b.w || (+x.w === +b.w && +x.r > +b.r)) b = x; });
     const sub = ws.length ? ws.length + 'セット' + (wn ? ' ＋ W' + wn : '') + (b ? ' · 最高 ' + esc(setTxt(ex, b)) : '') : wn ? 'ウォームアップ ' + wn + 'セット' : 'まだ記録なし';
-    return '<button type="button" class="cdc" data-act="card" data-id="' + id + '" style="--pc:' + (ex ? PCOL[partsOf(ex)[0]] : 'var(--ink3)') + '"><i class="cg" data-tg="' + id + '"></i>' + (ex ? xic(ex) : '<span class="xic"></span>') +
+    if (S.cdDel === id && !isRO()) return '<div class="cdx" role="group" aria-label="種目を外す"><p><b>' + esc(ex ? ex.name : '不明な種目') + '</b>を外しますか。' + (all.length ? 'この日の ' + all.length + 'セットの記録も消えます。' : '') + '</p><div class="r"><button type="button" class="no" data-act="cdno">やめる</button><button type="button" class="yes" data-act="cdyes" data-id="' + id + '">外す</button></div></div>';
+    return '<button type="button" class="cdc" data-act="card" data-id="' + id + '"' + (isRO() || !it ? '' : ' data-cdlp="' + id + '"') + ' style="--pc:' + (ex ? PCOL[partsOf(ex)[0]] : 'var(--ink3)') + '"><i class="cg" data-tg="' + id + '"></i>' + (ex ? xic(ex) : '<span class="xic"></span>') +
       '<span style="min-width:0"><span class="nm">' + esc(ex ? ex.name : '不明な種目') + '</span><span class="sb n">' + sub + '</span></span>' +
       '<span class="vr"><span class="tpill" data-tm="' + id + '" hidden></span><span class="vv n">' + (v ? '<b>' + grp(v) + '</b>kg' : '') + '</span></span></button>';
-  }).join('') + (isRO() ? '<button type="button" class="cdc add" data-act="pastedit">この日の記録を編集</button>' : '<button type="button" class="cdc add" data-act="pick">＋ 種目を追加</button>' + (S.date !== today() ? '<button type="button" class="cdc add" data-act="pastdone" style="margin-top:8px;min-height:48px">編集を終える</button>' : '')) + '</div>';
+  }).join('') + (isRO() ? '<button type="button" class="cdc add" data-act="pastedit">この日の記録を編集</button>' : '<button type="button" class="cdc add" data-act="pick">＋ 種目を追加</button>' + (sess.items.some(i => !i.sets.length) ? '<div class="note" style="text-align:center">カードを長押しで種目を外せます</div>' : '') + (S.date !== today() ? '<button type="button" class="cdc add" data-act="pastdone" style="margin-top:8px;min-height:48px">編集を終える</button>' : '')) + '</div>';
   return h;
 }
 
@@ -1874,7 +1880,7 @@ document.addEventListener('focusin', ev => {
   const t = ev.target;
   if (t && t.tagName === 'INPUT' && t.type === 'number') setTimeout(() => { try { t.select(); } catch (e) {} }, 0);
 });
-document.addEventListener('contextmenu', ev => { if (ev.target.closest('[data-hold],[data-lp]')) ev.preventDefault(); });
+document.addEventListener('contextmenu', ev => { if (ev.target.closest('[data-hold],[data-lp],[data-cdlp]')) ev.preventDefault(); });
 /* long-press a body row to open its delete panel */
 let lpT = null, lpX = 0, lpY = 0;
 const lpCancel = () => { clearTimeout(lpT); lpT = null; };
@@ -1885,6 +1891,38 @@ document.addEventListener('pointerdown', ev => {
 });
 document.addEventListener('pointermove', ev => { if (lpT && Math.hypot(ev.clientX - lpX, ev.clientY - lpY) > 8) lpCancel(); });
 ['pointerup', 'pointercancel', 'scroll'].forEach(n => document.addEventListener(n, lpCancel, true));
+
+/* 記録の一覧：カードを長押しで種目を外す。記録なしの種目はすぐ外して「元に戻す」を出す。記録のある種目は確認を出す */
+let cdT = null, cdX = 0, cdY = 0, cdFired = false, cdEl = null;
+const cdCancel = () => { clearTimeout(cdT); cdT = null; if (cdEl) cdEl.classList.remove('lpon'); cdEl = null; };
+function dropItem(id) {
+  const date = S.date, sess = S.sessions[date]; if (!sess) return;
+  const k = sess.items.findIndex(i => i.ex === id); if (k < 0) return;
+  const it = sess.items[k], rtn = sess.rtn, m = exMap();
+  readInputs(); endEdit();
+  sess.items.splice(k, 1); if (!sess.items.length) delete sess.rtn;
+  if (S.sel === id) { S.sel = sess.items.length ? sess.items[Math.min(k, sess.items.length - 1)].ex : null; S.trayOpen = false; }
+  S.cdDel = null; store.saveSession(date); render();
+  toast('「' + (m[id] ? m[id].name : '種目') + '」を外しました', () => {
+    const s2 = S.sessions[date] || (S.sessions[date] = { date, items: [] });
+    if (s2.items.some(i => i.ex === id)) return;
+    s2.items.splice(Math.min(k, s2.items.length), 0, it); if (rtn && !s2.rtn) s2.rtn = rtn; store.saveSession(date); render();
+  });
+}
+document.addEventListener('pointerdown', ev => {
+  const c = ev.target.closest('[data-cdlp]'); if (!c || ev.pointerType === 'mouse' && ev.button !== 0) return;
+  cdX = ev.clientX; cdY = ev.clientY; cdCancel(); cdFired = false; cdEl = c;
+  cdT = setTimeout(() => {
+    cdT = null; if (cdEl) cdEl.classList.remove('lpon'); cdEl = null; cdFired = true;
+    const id = c.dataset.cdlp, it = (S.sessions[S.date] || { items: [] }).items.find(i => i.ex === id); if (!it) return;
+    if (navigator.vibrate) try { navigator.vibrate(15); } catch (e) {}
+    if (!it.sets.length) dropItem(id); else { S.cdDel = id; render(); }
+  }, 550);
+  setTimeout(() => { if (cdT && cdEl) cdEl.classList.add('lpon'); }, 180);
+});
+document.addEventListener('pointermove', ev => { if (cdT && Math.hypot(ev.clientX - cdX, ev.clientY - cdY) > 8) cdCancel(); });
+['pointercancel', 'scroll'].forEach(n => document.addEventListener(n, cdCancel, true));
+document.addEventListener('pointerup', () => { cdCancel(); if (cdFired) { window.__swAt = Date.now(); cdFired = false; } }, true);
 
 /* swipe-left to reveal delete */
 let sw = null, swJustDragged = false;
@@ -2086,11 +2124,13 @@ document.addEventListener('click', ev => {
   const a = b.dataset.act;
   if (open && a !== 'delset' && a !== 'bdel') { open.classList.remove('open'); return; }
   document.querySelectorAll('.swipe.open').forEach(r => r.classList.remove('open'));
-  if (a === 'day') { const d = addDays(S.date, +b.dataset.n); if (d <= today()) { endEdit(); S.date = d; S.sel = null; const s = curSession(); if (s.items.length) selectEx(s.items[0].ex); render(); } }
+  if (a === 'day') { const d = addDays(S.date, +b.dataset.n); if (d <= today()) { endEdit(); S.cdDel = null; S.date = d; S.sel = null; const s = curSession(); if (s.items.length) selectEx(s.items[0].ex); render(); } }
   else if (a === 'exlist') { readInputs(); openSheetKind('exlist'); }
   else if (a === 'pastedit') { readInputs(); S.pastEdit = S.date; if (S.sel && (S.trayOpen)) selectEx(S.sel); render(); }
   else if (a === 'pastdone') { endEdit(); S.pastEdit = null; render(); }
-  else if (a === 'card') { if (Date.now() - (window.__swAt || 0) < 350) return; readInputs(); selectEx(b.dataset.id); S.trayOpen = true; render(); }
+  else if (a === 'card') { if (Date.now() - (window.__swAt || 0) < 350) return; S.cdDel = null; readInputs(); selectEx(b.dataset.id); S.trayOpen = true; render(); }
+  else if (a === 'cdno') { S.cdDel = null; render(); }
+  else if (a === 'cdyes') dropItem(b.dataset.id);
   else if (a === 'sel') { readInputs(); selectEx(b.dataset.id); render(); if (S.sheet && S.sheet.kind === 'exlist') closeSheet(); }
   else if (a === 'pick') { S.picking = 'log'; S.pickQ = ''; renderSheet(); }
   else if (a === 'gopen') { S.gEx = b.dataset.id; openG(); }
