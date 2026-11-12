@@ -1,0 +1,28 @@
+// グラフタブの左右スワイプで部位が切り替わるかを確認する（python3 _build/mk_test.py の後に node _build/t_graph.js）
+const {chromium}=require('playwright');const D=require('./sample.json');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:360,height:780},hasTouch:true,isMobile:true,deviceScaleFactor:2});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('file://'+__dirname+'/test.html');
+await p.evaluate(D=>{const S=__t.S;S.list=D.list;S.sessions=D.sessions;S.body=D.body;S.dbOk=true;S.loaded={ex:true,s:true,b:true};S.tab='graph';__t.render()},D);
+await p.touchscreen.tap(180,8);await p.waitForTimeout(150);
+const cdp=await p.context().newCDPSession(p);
+const swipe=async(x0,y0,x1,y1,steps=8)=>{const pt=(x,y)=>[{x,y,id:1}];
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:pt(x0,y0)});
+  for(let i=1;i<=steps;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:pt(x0+(x1-x0)*i/steps,y0+(y1-y0)*i/steps)});
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await p.waitForTimeout(450)};
+const part=()=>p.evaluate(()=>[__t.S.gPart,document.querySelector('#gTabs .tabs button.on').textContent,document.querySelectorAll('#gListWrap .grow, #gListWrap .b3t').length,document.documentElement.scrollWidth]);
+const y=500;
+console.log('start',await part());
+await swipe(300,y,60,y);console.log('左へ→胸になる',await part());
+await swipe(300,y,60,y);console.log('左へ→背中になる',await part());
+await swipe(60,y,300,y);console.log('右へ→胸に戻る',await part());
+await swipe(60,y,300,y);console.log('右へ→すべてに戻る',await part());
+await swipe(60,y,300,y);console.log('右へ（左端）→動かない',await part());
+await swipe(200,y,170,y);console.log('短い左（30px）→動かない',await part());
+await swipe(180,y,200,y+260);console.log('縦スクロール→動かない',await part());
+await p.evaluate(()=>{__t.S.gPart='other';__t.render()});await swipe(300,y,60,y);console.log('右端（その他）で左→動かない',await part());
+await p.evaluate(()=>{__t.S.gPart='chest';__t.render()});
+await swipe(300,40,60,40);console.log('上部（タブの行）で左→動かない',await part());
+await p.evaluate(()=>{__t.S.gPart='all';__t.render();const e=document.querySelector('.b3t');e&&e.click()});await p.waitForTimeout(300);
+console.log('詳細カードを開く',await p.evaluate(()=>[__t.S.gOpen,!document.querySelector('#gcard').hidden]));
+await swipe(300,y,60,y);console.log('詳細カード上で左→部位は変わらない',await p.evaluate(()=>__t.S.gPart));
+console.log('errors',errs);await b.close()})();

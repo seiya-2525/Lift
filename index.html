@@ -1152,7 +1152,7 @@ function graphList() {
   const shown = S.gAll ? pool : pool.filter(e => isB(e) || u[e.id].last >= cut);
   shown.sort((a, b) => (isB(b) - isB(a)) || (isB(a) && isB(b) ? BIG3.indexOf(a.name) - BIG3.indexOf(b.name) : u[b.id].last.localeCompare(u[a.id].last)));
   const b3 = S.gPart === 'all' ? shown.filter(isB) : [], rest = shown.filter(e => !b3.includes(e));
-  h += '<div style="margin-top:14px">' + partTabs(S.gPart, 'gpart') + '</div>';
+  h += '<div id="gSwipe" style="min-height:62vh"><div id="gTabs" style="margin-top:14px">' + partTabs(S.gPart, 'gpart') + '</div><div id="gListWrap">';
   if (b3.length) h += '<div class="sech" style="margin-top:20px"><div class="sect">BIG3</div></div><div class="b3g">' + b3.map(e => { const g = gInfo(e, cut);
     return '<button type="button" class="b3t" data-act="gopen" data-id="' + e.id + '"><span class="k">' + esc(e.name) + '</span><b>' + g.big + '</b><span class="spk">' + sparkSVG(g.ser, 90, 24) + '</span><span class="s">' + g.lab + '</span><span class="s n">' + (g.dtx ? g.dtx.replace('class="dl', 'class="') : '&nbsp;') + '</span></button>'; }).join('') + '</div>';
   if (rest.length) h += '<div class="sech" style="margin-top:24px"><div class="sect">' + (S.gAll ? 'すべての種目' : S.gPart === 'all' ? '直近3か月の種目' : '種目') + '</div></div><div style="margin-top:8px">' + rest.map(e => { const g = gInfo(e, cut);
@@ -1161,7 +1161,7 @@ function graphList() {
   if (!shown.length) h += '<div class="empty">該当する種目がありません</div>';
   const hid = pool.length - pool.filter(e => isB(e) || u[e.id].last >= cut).length;
   if (hid > 0 || S.gAll) h += '<button type="button" class="bo" data-act="gall" style="width:100%;margin-top:14px;min-height:48px">' + (S.gAll ? '直近3か月の種目だけ表示' : 'すべての種目（あと' + hid + '）') + '</button>';
-  return h;
+  return h + '</div></div>';
 }
 function vGraph() { return '<div class="title">グラフ</div>' + graphList(); }
 function monthsBetween(a, b) {
@@ -2013,6 +2013,50 @@ document.addEventListener('pointercancel', () => { if (sw) { sw.row.classList.re
       const w2 = wrap();
       if (w2 && !reduce) { w2.style.transition = 'none'; w2.style.transform = 'translateX(' + (-sign * 60) + 'px)'; w2.style.opacity = '0'; void w2.offsetWidth; w2.style.transition = 'transform .18s ease-out, opacity .18s'; w2.style.transform = ''; w2.style.opacity = ''; }
       const on = document.querySelector('.sticky .tabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' });
+    }, dur + 10);
+  }
+  document.addEventListener('touchend', end);
+  document.addEventListener('touchcancel', () => { const w = wrap(); st = null; if (w) { w.style.transform = ''; w.style.opacity = ''; } });
+})();
+
+/* グラフタブ：一覧を左右にスワイプして部位を切り替え（タブの並び順どおり。端では動かない） */
+(function () {
+  let st = null;
+  const keys = () => ['all'].concat(PARTS.map(p => p[0]));
+  const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const wrap = () => $('#gListWrap');
+  document.addEventListener('touchstart', ev => {
+    st = null;
+    if (S.tab !== 'graph' || S.gOpen || S.picking || S.sheet || ev.touches.length !== 1) return;
+    if (!ev.target.closest('#gSwipe') || ev.target.closest('.tabs, input')) return;
+    st = { x: ev.touches[0].clientX, y: ev.touches[0].clientY, mode: 'pending', dx: 0, t: Date.now() };
+  }, { passive: true });
+  document.addEventListener('touchmove', ev => {
+    if (!st || st.mode === 'ignore' || !ev.touches.length) return;
+    const dx = ev.touches[0].clientX - st.x, dy = ev.touches[0].clientY - st.y;
+    if (st.mode === 'pending') {
+      if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
+      st.mode = Math.abs(dx) > Math.abs(dy) * 1.4 ? 'h' : 'ignore';
+      if (st.mode === 'ignore') return;
+    }
+    st.dx = dx;
+    const w = wrap(); if (w) { w.style.transition = ''; w.style.transform = 'translateX(' + dx * 0.6 + 'px)'; w.style.opacity = String(Math.max(0.5, 1 - Math.abs(dx) / 500)); }
+  }, { passive: true });
+  function end() {
+    const s0 = st; st = null; if (!s0 || s0.mode !== 'h') return;
+    const w = wrap(); if (!w) return;
+    window.__swAt = Date.now();
+    const dx = s0.dx, fast = Math.abs(dx) > 40 && Date.now() - s0.t < 250;
+    const ks = keys(), i = ks.indexOf(S.gPart), n = i + (dx < 0 ? 1 : -1);
+    const reset = () => { w.style.transition = reduce ? '' : 'transform .18s ease-out, opacity .18s'; w.style.transform = ''; w.style.opacity = ''; };
+    if ((Math.abs(dx) < 70 && !fast) || n < 0 || n >= ks.length) { reset(); return; }
+    const sign = dx < 0 ? -1 : 1, dur = reduce ? 0 : 140;
+    w.style.transition = 'transform ' + dur + 'ms ease-in, opacity ' + dur + 'ms'; w.style.transform = 'translateX(' + sign * 90 + 'px)'; w.style.opacity = '0';
+    setTimeout(() => {
+      S.gPart = ks[n]; render();
+      const w2 = wrap();
+      if (w2 && !reduce) { w2.style.transition = 'none'; w2.style.transform = 'translateX(' + (-sign * 60) + 'px)'; w2.style.opacity = '0'; void w2.offsetWidth; w2.style.transition = 'transform .18s ease-out, opacity .18s'; w2.style.transform = ''; w2.style.opacity = ''; }
+      const on = document.querySelector('#gTabs .tabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' });
     }, dur + 10);
   }
   document.addEventListener('touchend', end);
