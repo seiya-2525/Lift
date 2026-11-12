@@ -694,20 +694,24 @@ function getPh(d) {
   PH[d] = pr; return pr;
 }
 const phReady = d => PH[d] && !PH[d].then ? PH[d] : null;
-// 写真を長辺1080px・約190KB以下のJPEGに縮める
+// 写真を長辺640px・約50KB（文字列で約68,000字）以下のJPEGに縮める。毎日1枚でも無料の保存容量に収めるため
 function shrinkPhoto(file) {
   return new Promise((ok, ng) => {
     const url = URL.createObjectURL(file), im = new Image();
     im.onload = () => {
-      let mx = 1080, q = 0.8, out = '';
-      for (let i = 0; i < 8; i++) {
+      const LIM = 68000;
+      let mx = 640, out = '';
+      for (let r = 0; r < 4 && !out; r++) {
         const k = Math.min(1, mx / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas');
-        c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
-        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); out = c.toDataURL('image/jpeg', q);
-        if (out.length < 190000) break;
-        if (q > 0.55) q -= 0.1; else { mx = Math.round(mx * 0.8); q = 0.72; }
+        c.width = Math.max(1, Math.round(im.naturalWidth * k)); c.height = Math.max(1, Math.round(im.naturalHeight * k));
+        const g = c.getContext('2d'); g.imageSmoothingQuality = 'high'; g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+        g.drawImage(im, 0, 0, c.width, c.height);
+        // 画質を二分探索して、上限に収まる最も高い画質を選ぶ
+        let lo = 0.3, hi = 0.92;
+        for (let i = 0; i < 6; i++) { const q = (lo + hi) / 2, o = c.toDataURL('image/jpeg', q); if (o.length <= LIM) { out = o; lo = q; } else hi = q; }
+        if (!out) { const o = c.toDataURL('image/jpeg', 0.3); if (o.length <= LIM) out = o; else mx = Math.round(mx * 0.8); }
       }
-      URL.revokeObjectURL(url); out.length < 250000 ? ok(out) : ng(new Error('big'));
+      URL.revokeObjectURL(url); out ? ok(out) : ng(new Error('big'));
     };
     im.onerror = () => { URL.revokeObjectURL(url); ng(new Error('read')); };
     im.src = url;
