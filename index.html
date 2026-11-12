@@ -205,8 +205,16 @@ body.rtm .tray.full{top:calc(env(safe-area-inset-top,0px) + 31px)}
 .acts{display:grid;grid-template-columns:1fr 2.2fr;gap:10px}
 /* nav */
 nav.nav{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line2);z-index:6;padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.nav .in{max-width:600px;margin:0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-nav.nav button{min-height:58px;color:var(--ink3);font-size:12px}
+nav.nav .in{max-width:600px;margin:0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav.nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;color:var(--ink3);font-size:10.5px}
+nav.nav button svg{width:22px;height:22px;flex:none}
+/* 記録は中央の丸ボタン。記録の入力中・詳細カードを開いている間は、下の内容に重ならないよう小さくして枠内に収める */
+nav.nav .rec{position:relative;justify-content:flex-end;padding-bottom:7px;color:var(--ink2)}
+nav.nav .rec i{position:absolute;left:50%;top:-16px;box-sizing:border-box;width:48px;height:48px;margin-left:-24px;border-radius:50%;background:var(--well);color:var(--ink);border:1px solid var(--dash);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 5px var(--bg)}
+/* 記録タブを選んでいる間だけ、丸を白く塗る（選択中だとわかるように） */
+nav.nav .rec.on i{background:var(--ink);color:var(--onlight);border-color:var(--ink)}
+nav.nav .rec i svg{width:24px;height:24px}
+body.tf nav.nav .rec i,body.go nav.nav .rec i{top:5px;width:32px;height:32px;margin-left:-16px;box-shadow:none}body.tf nav.nav .rec i svg,body.go nav.nav .rec i svg{width:18px;height:18px}
 nav.nav button.on{color:var(--ink);font-weight:700}
 /* graph & body */
 .pick{align-self:flex-start;text-align:left}
@@ -218,7 +226,8 @@ nav.nav button.on{color:var(--ink);font-weight:700}
 .pb .v{font-family:var(--num);font-size:17px;font-weight:600}
 .mxrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}.mxc span{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)}.mxc b{display:block;font-family:var(--num);font-size:34px;font-weight:500;line-height:1.1;letter-spacing:-.02em}.mxc b small{font-size:13px;font-weight:400;color:var(--ink2)}.mxc em{display:block;font-style:normal;font-size:11.5px;color:var(--ink3);margin-top:2px}.mxc em i{font-style:normal;color:var(--gold)}
 .lgd{display:flex;gap:16px;margin-top:4px;font-size:11.5px;color:var(--ink3)}.lgd span{display:flex;align-items:center;gap:6px}
-.lg1,.lg2{display:inline-block;width:14px;height:0;border-top:2px solid var(--ink)}.lg2{border-top:1.5px dashed var(--ink3)}
+.lg1,.lg2{display:inline-block;width:14px;height:0;border-top:2px solid var(--ink)}.lg2{border-top:1.5px dashed var(--ink3)}.lg3{display:inline-block;width:8px;height:10px;border-radius:2px;background:var(--dim)}
+.mxrow.c3{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.mxrow.c3 .mxc{display:block;text-align:left;min-height:64px;min-width:0}.mxrow.c3 .mxc span{font-size:11.5px;white-space:nowrap}.mxrow.c3 .mxc b{font-size:27px;white-space:nowrap}.mxrow.c3 .mxc b span{display:inline;font-size:inherit;color:inherit}.mxrow.c3 .mxc.off{opacity:.35}
 .deltas{display:grid;grid-template-columns:auto auto;column-gap:14px;row-gap:2px;font-size:13px;text-align:right}
 .retb{display:inline-flex;align-items:center;min-height:44px;margin:-6px 0 -8px -2px;padding:0 8px 0 2px;font-size:14px;color:var(--ink2)}
 .chartwrap{position:relative;margin-top:6px;touch-action:pan-y}
@@ -418,7 +427,19 @@ body.rt #app{padding-top:70px}
 input[type=text].menm{font-size:24px;font-weight:700;background:none;padding:0;min-height:36px;border-radius:0;color:var(--ink)}
 .meg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line2)}
 .meg3 b{display:block;font-family:var(--num);font-size:22px;font-weight:600}.meg3 b small{font-size:12px;font-weight:400;color:var(--ink2)}.meg3 span{font-size:11px;color:var(--ink3)}
-.menote{margin-top:12px;padding:12px 14px;border-left:3px solid var(--gold);border-radius:0 10px 10px 0;background:var(--raised);font-size:14.5px;line-height:1.7;color:var(--ink)}
+.menote{display:flex;gap:12px;align-items:flex-start;margin-top:18px;font-size:14.5px;line-height:1.7;color:var(--ink)}.menote .av{flex:none;width:36px;height:36px;border-radius:50%;background:var(--well);display:flex;align-items:center;justify-content:center}.menote .av svg{width:18px;height:18px}.menote .lb{display:block;font-size:12px;color:var(--ink3);line-height:1.4}
+.mehd .dt{font-size:12px;color:var(--ink3)}
+.wkc{margin-top:14px;padding:16px 16px 14px;border:1px solid var(--edge);border-radius:18px;background:var(--raised)}
+.wkt{display:flex;justify-content:space-between;align-items:flex-end}.wkt span{display:block;font-size:12px;color:var(--ink2)}.wkt b{font-family:var(--num);font-size:48px;font-weight:500;line-height:1.05}.wkt b small{font-size:18px;font-weight:400;color:var(--ink2)}.wkt .r{text-align:right}.wkt .r b{font-size:24px}.wkt .r b small{font-size:13px}
+.wkd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:14px;text-align:center;font-size:11px;color:var(--ink2)}.wkd i{display:block;box-sizing:border-box;width:34px;height:34px;margin:0 auto 5px;border-radius:50%;border:1px dashed var(--dash)}.wkd .past i{border:0;background:var(--well)}.wkd .now{color:var(--ink);font-weight:700}.wkd .now i{border:2px solid var(--ink)}.wkd .done i{border:0;background:var(--ink)}
+.sech{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:26px}.sech .sect{margin:0}.sech .r{font-size:12px;color:var(--ink3);text-align:right}.sech .r b{font-family:var(--num);font-size:16px;font-weight:600;color:var(--ink)}
+.b3g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.b3t{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px 10px 10px 12px;border-radius:14px;background:var(--raised);min-width:0}.b3t .k{font-size:11px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.b3t b{font-family:var(--num);font-size:24px;font-weight:500;line-height:1.1;white-space:nowrap;overflow:hidden}.b3t b small{font-size:11px;font-weight:400;color:var(--ink3);margin-left:1px}.b3t .spk{display:block;height:24px;color:var(--ink2)}.b3t .spk svg{display:block;width:100%;height:24px}.b3t .s{font-size:10.5px;color:var(--ink3);white-space:nowrap}.b3t .s .up{color:#7fd6a0}
+.bwt{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;margin-top:8px;padding:12px 14px;border-radius:14px;background:var(--raised);text-align:left;min-height:64px}.bwt .k{display:block;font-size:11px;color:var(--ink2)}.bwt b{font-family:var(--num);font-size:24px;font-weight:500;line-height:1.1}.bwt b small{font-size:12px;font-weight:400;color:var(--ink3)}.bwt .spk{display:block;color:var(--ink2)}.bwt .spk svg{display:block;width:100%;height:28px}.bwt .d{font-size:12px;color:var(--ink3)}
+.pbr2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;min-height:56px;border-top:1px solid var(--line2);text-align:left}.pbr2:last-child{border-bottom:1px solid var(--line2)}.pbr2 .nm{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pbr2 .dd{display:block;font-size:12px;color:var(--ink3)}.pbr2 .v{font-family:var(--num);font-size:20px;font-weight:500}.pbr2 .v small{font-size:12px;font-weight:400;color:var(--ink3)}.pbr2 .v.gold small{color:var(--gold)}
+.metot{margin-top:22px;text-align:center;font-size:12px;color:var(--ink3)}
+/* グラフタブ：種目の一覧は細線区切りの行 */
+.grow{display:grid;grid-template-columns:minmax(0,1fr) 56px auto;gap:12px;align-items:center;width:100%;min-height:64px;border-top:1px solid var(--line2);text-align:left}.grow:last-child{border-bottom:1px solid var(--line2)}.grow .nm{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.grow .sb{display:block;font-size:12px;color:var(--ink3)}.grow .spk{display:flex;color:var(--ink2)}.grow .vr{min-width:76px;text-align:right;font-size:11px;color:var(--ink3);white-space:nowrap}.grow .vr b{display:block;font-family:var(--num);font-size:18px;font-weight:500;color:var(--ink)}.grow .vr b small{font-size:11px;font-weight:400;color:var(--ink3);margin-left:1px}.grow .vr .dl{margin-left:6px}.grow .vr .dl.up{color:#7fd6a0}
 .meg2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .met{display:block;text-align:left;padding:12px 14px;border-radius:12px;background:var(--raised);min-width:0}
 .met>span{display:block;font-size:11.5px;color:var(--ink3)}.met b{display:block;font-family:var(--num);font-size:24px;font-weight:600;margin-top:2px}.met b small{font-size:12px;font-weight:400;color:var(--ink2)}.met em{display:block;font-style:normal;font-size:11px;color:var(--ink3)}
@@ -469,10 +490,11 @@ button.mekv{width:100%;text-align:left}
 <div id="tray" class="tray" hidden></div>
 <div id="gcard" class="gcard" hidden></div>
 <nav class="nav" aria-label="画面"><div class="in">
-  <button type="button" data-tab="log" class="on">記録</button>
-  <button type="button" data-tab="body">体重</button>
-  <button type="button" data-tab="cal">振り返り</button>
-  <button type="button" data-tab="me">マイページ</button>
+  <button type="button" data-tab="graph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M6 15l4-4 3 3 5-6"/></svg>グラフ</button>
+  <button type="button" data-tab="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg>振り返り</button>
+  <button type="button" data-tab="log" class="rec on"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></i>記録</button>
+  <button type="button" data-tab="body"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 9.5a5 5 0 0 1 7 0M12 10.5l1.5-2"/></svg>体重</button>
+  <button type="button" data-tab="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-5.5 7-5.5s6 1.5 7 5.5"/></svg>マイページ</button>
 </div></nav>
 <div id="rtbar" class="rtbar" hidden role="timer"></div>
 <div id="sheet" class="sheet" hidden></div>
@@ -793,11 +815,11 @@ function render() {
   if (S.dbOk === false) html += '<div class="banner">この画面ではデータを保存できません。記録は閉じると消えます。</div>';
   if (S.dbOk == null || (S.dbOk && !ready)) html += '<p class="sub" style="margin:0">記録を読み込んでいます…</p>';
   else { if (S.ret && S.tab !== S.ret.tab) html += '<button type="button" class="retb" data-act="goret">‹ マイページ</button>';
-  html += ({ log: vLog, ex: vEx, body: vBody, cal: vCal, me: vMe })[S.tab](); }
+  html += ({ log: vLog, ex: vEx, body: vBody, cal: vCal, me: vMe, graph: vGraph })[S.tab](); }
   app.innerHTML = html;
   updTabFade(); { const on = document.querySelector('#extabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'nearest' }); updTabFade(); }
-  const gcEl = $('#gcard'), showG = S.tab === 'me' && S.gOpen && !!S.gEx && ready;
-  if (S.tab !== 'me') S.gOpen = false;
+  const gcEl = $('#gcard'), showG = (S.tab === 'me' || S.tab === 'graph') && S.gOpen && !!S.gEx && ready;
+  if (S.tab !== 'me' && S.tab !== 'graph') S.gOpen = false;
   if (!showG && gCW) { const w = gCW; gCW = null; try { w.destroy(); } catch (e) {} }
   if (gcEl) { const keep = gcEl.scrollTop; gcEl.hidden = !showG; if (showG) { gcEl.innerHTML = '<i class="cst" style="background:' + PCOL[partsOf(exMap()[S.gEx] || {})[0]] + '"></i>' + graphDetail(); gcEl.scrollTop = keep; } else gcEl.innerHTML = ''; document.body.classList.toggle('go', showG); }
   const showTray = S.tab === 'log' && ready && S.sel && (S.trayOpen || S.editIdx != null); if (showTray) S.trayFull = true;
@@ -938,7 +960,9 @@ function niceTicks(lo, hi) {
 function chart(id, pts, o) {
   o = o || {};
   const W = 358, PW = 326, H = o.h || 210, T = 14, B = 26;
-  const ys = pts.map(p => p.y).concat(pts.map(p => p.y2)).filter(v => v != null);
+  const hd = o.hide || {};
+  const ys = (hd.e ? [] : pts.map(p => p.y)).concat(hd.m ? [] : pts.map(p => p.y2)).filter(v => v != null);
+  if (!ys.length) ys.push(0, 1);
   let lo = Math.min(...ys), hi = Math.max(...ys);
   if (o.bars) lo = 0;
   const ticks = niceTicks(lo, hi); lo = ticks[0]; hi = ticks[ticks.length - 1];
@@ -958,7 +982,7 @@ function chart(id, pts, o) {
     '<text x="' + W + '" y="' + (Y(v) + 4) + '" text-anchor="end" font-size="11" font-family="Oswald,Arial Narrow,sans-serif" fill="var(--ink3)">' + f(v) + '</text>'; });
   breaks.forEach(i => { const bx = (xs[i - 1] + xs[i]) / 2; s += '<line x1="' + bx + '" x2="' + bx + '" y1="' + T + '" y2="' + (H - B) + '" stroke="var(--edge)" stroke-dasharray="2 4"/>'; });
   const lab = (x, txt, anchor) => '<text x="' + x + '" y="' + (H - 6) + '" text-anchor="' + anchor + '" font-size="11" font-family="Oswald,Arial Narrow,sans-serif" fill="var(--ink3)">' + txt + '</text>';
-  const ylab = d => { const x = parseD(d); return pts.length > 1 && dayDiff(pts[0].d, pts[pts.length - 1].d) < 330 ? (x.getMonth() + 1) + '/' + x.getDate() : x.getFullYear() + '/' + (x.getMonth() + 1); };
+  const ylab = d => { const x = parseD(d); if (o.mon) return pts.length > 1 && dayDiff(pts[0].d, pts[pts.length - 1].d) < 330 ? (x.getMonth() + 1) + '月' : x.getFullYear() + '/' + (x.getMonth() + 1); return pts.length > 1 && dayDiff(pts[0].d, pts[pts.length - 1].d) < 330 ? (x.getMonth() + 1) + '/' + x.getDate() : x.getFullYear() + '/' + (x.getMonth() + 1); };
   if (segStart.length > 1) {
     segStart.forEach((st, k) => { const en = k + 1 < segStart.length ? segStart[k + 1] - 1 : pts.length - 1; const y0 = pts[st].d.slice(0, 4), y1 = pts[en].d.slice(0, 4);
       const txt = y0 === y1 ? y0 : y0 + '–' + y1.slice(2); const anchor = k === 0 ? 'start' : k === segStart.length - 1 ? 'end' : 'start';
@@ -971,30 +995,40 @@ function chart(id, pts, o) {
     const bw = Math.max(2, Math.min(14, (PW - 12) / pts.length - 2));
     pts.forEach((p, i) => { const y = Y(p.y); s += '<rect x="' + (xs[i] - bw / 2) + '" y="' + y + '" width="' + bw + '" height="' + Math.max(0, Y(lo) - y) + '" rx="1" fill="' + (i === pts.length - 1 ? 'var(--ink)' : 'var(--ink3)') + '"/>'; });
   } else {
+    // 複合グラフ：ボリュームは棒（独自の縮尺で、グラフの下側 38% まで）。右の目盛りは重量のもの
+    if (o.vb && !hd.v) {
+      const vm = Math.max(...pts.map(p => p.v || 0)); let gap = PW; for (let i = 1; i < xs.length; i++) gap = Math.min(gap, xs[i] - xs[i - 1]);
+      const bw = Math.max(2, Math.min(12, gap - 1.5)), base = H - B, full = (H - T - B) * .38;
+      if (vm > 0) pts.forEach((p, i) => { if (!p.v) return; const bh = Math.max(1, p.v / vm * full); s += '<rect x="' + (xs[i] - bw / 2).toFixed(1) + '" y="' + (base - bh).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + bh.toFixed(1) + '" rx="1" fill="' + (i === pts.length - 1 ? 'var(--dim)' : 'var(--edge)') + '"/>'; });
+    }
     const line = (key, st) => { let path = '', pen = false; pts.forEach((p, i) => { if (p[key] == null) return; path += (!pen || breaks.includes(i) ? 'M' : 'L') + xs[i].toFixed(1) + ' ' + Y(p[key]).toFixed(1) + ' '; pen = true; }); return path ? '<path d="' + path + '" fill="none" ' + st + ' stroke-linejoin="round" stroke-linecap="round"/>' : ''; };
-    if (pts.some(p => p.y2 != null)) s += line('y2', 'stroke="var(--ink3)" stroke-width="1.4" stroke-dasharray="3 3"');
+    if (!hd.m && pts.some(p => p.y2 != null)) s += line('y2', 'stroke="var(--ink3)" stroke-width="1.4" stroke-dasharray="3 3"');
+    if (!hd.e) {
     s += line('y', 'stroke="var(--ink)" stroke-width="1.6"');
     if (pts.length <= 24) pts.forEach((p, i) => { if (p.y != null) s += '<circle cx="' + xs[i].toFixed(1) + '" cy="' + Y(p.y).toFixed(1) + '" r="2.5" fill="var(--bg)" stroke="var(--ink2)" stroke-width="1.2"/>'; });
     if (o.prIdx != null && o.prIdx >= 0) { const px = xs[o.prIdx], py = Y(pts[o.prIdx].y); s += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="4.5" fill="var(--gold)"/>' +
       '<text x="' + Math.min(px + 8, PW - 24).toFixed(1) + '" y="' + Math.max(py - 6, 11).toFixed(1) + '" font-size="11" font-family="Oswald,Arial Narrow,sans-serif" fill="var(--gold)">' + (o.fmt ? o.fmt(pts[o.prIdx].y) : pts[o.prIdx].y) + '</text>'; }
     let li = pts.length - 1; while (li > 0 && pts[li].y == null) li--; if (li !== o.prIdx && pts[li].y != null) s += '<circle cx="' + xs[li].toFixed(1) + '" cy="' + Y(pts[li].y).toFixed(1) + '" r="4" fill="var(--ink)"/>';
+    }
   }
   s += '<g id="tip-' + id + '" visibility="hidden" pointer-events="none"><line y1="' + T + '" y2="' + (H - B) + '" stroke="var(--ink2)" stroke-width="1"/><circle r="4" fill="var(--bg)" stroke="var(--ink)" stroke-width="1.6"/>' +
     '<rect width="150" height="40" rx="4" fill="var(--well)"/><text class="t1" font-size="11" font-family="Oswald,Arial Narrow,sans-serif" fill="var(--ink2)"></text><text class="t2" font-size="12" font-family="Oswald,Arial Narrow,sans-serif" fill="var(--ink)"></text></g>';
   s += '</svg>';
-  CH[id] = { pts, xs, Y, W, PW, T, H, B };
+  CH[id] = { pts, xs, Y, W, PW, T, H, B, pick: o.pick, hd };
   return '<div class="chartwrap" data-chart="' + id + '">' + s + '</div>';
 }
 function showTip(id, clientX) {
   const c = CH[id], svg = $('#svg-' + id), g = $('#tip-' + id); if (!c || !svg || !g) return;
   const r = svg.getBoundingClientRect(); const x = (clientX - r.left) / r.width * c.W;
   let bi = 0, bd = Infinity; c.xs.forEach((xx, i) => { const d = Math.abs(xx - x); if (d < bd) { bd = d; bi = i; } });
-  const p = c.pts[bi], px = c.xs[bi], py = c.Y(p.y != null ? p.y : p.y2);
+  const p = c.pts[bi], px = c.xs[bi], pv = c.hd && c.hd.e ? (p.y2 != null ? p.y2 : p.y) : (p.y != null ? p.y : p.y2), py = pv != null ? c.Y(pv) : c.H - c.B;
   g.setAttribute('visibility', 'visible');
   const ln = g.querySelector('line'); ln.setAttribute('x1', px); ln.setAttribute('x2', px);
   const ci = g.querySelector('circle'); ci.setAttribute('cx', px); ci.setAttribute('cy', py);
   const bx = px > c.PW / 2 ? px - 158 : px + 8, by = Math.max(c.T, Math.min(py - 48, c.H - c.B - 44));
-  const rc = g.querySelector('rect'); rc.setAttribute('x', bx); rc.setAttribute('y', by);
+  const rc = g.querySelector('rect');
+  if (c.pick) { rc.setAttribute('visibility', 'hidden'); c.pick(p, bi === c.pts.length - 1); return; }
+  rc.setAttribute('x', bx); rc.setAttribute('y', by);
   const t1 = g.querySelector('.t1'), t2 = g.querySelector('.t2');
   t1.setAttribute('x', bx + 8); t1.setAttribute('y', by + 15); t1.textContent = p.tip1 || '';
   t2.setAttribute('x', bx + 8); t2.setAttribute('y', by + 31); t2.textContent = p.tip2 || '';
@@ -1017,57 +1051,39 @@ function graphDetail() {
   const opts = S.list.filter(e => u[e.id]);
   if (!opts.length) return '<div class="title">グラフ</div><p class="sub" style="margin:8px 0 0">記録タブでセットを記録すると、ここに推移が表示されます。</p>';
   if (!S.gEx || !u[S.gEx]) S.gEx = defaultGraphEx(opts, u, m);
-  if (!METRICS.some(x => x[0] === S.gM)) S.gM = 'e1rm';
-  const ex = m[S.gEx], ux = u[S.gEx];
-  let h = '<div class="gtop"><span class="gtt">' + (METRICS.find(x => x[0] === S.gM) || METRICS[0])[1] + ' · 記録</span><button type="button" class="ccl" data-act="gclose" aria-label="閉じる"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="ghd">' + xic(ex, true) + '<div style="min-width:0"><div class="h2">' + esc(ex.name) + '</div><div class="sub">' + partsHTML(ex) + ' · ' + ux.days + '回 · ' + ux.n + 'セット</div></div></div>';
-  h += '<div class="tabs sm" style="margin-top:18px" role="group" aria-label="指標">' + METRICS.map(x => '<button type="button" data-act="gm" data-v="' + x[0] + '" class="' + (S.gM === x[0] ? 'on' : '') + '">' + x[1] + '</button>').join('') + '</div>';
+  const ex = m[S.gEx], ux = u[S.gEx], hd = S.gHide || (S.gHide = {});
+  let h = '<div class="gtop"><span class="gtt">推移 · 記録</span><button type="button" class="ccl" data-act="gclose" aria-label="閉じる"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="ghd">' + xic(ex, true) + '<div style="min-width:0"><div class="h2">' + esc(ex.name) + '</div><div class="sub">' + partsHTML(ex) + ' · ' + ux.days + '回 · ' + ux.n + 'セット</div></div></div>';
   const hist = history(S.gEx);
   const all = hist.filter(hh => work(hh.sets).length).map(hh => sessionStats(ex, hh));
   const from = S.gR === '3m' ? addDays(today(), -91) : S.gR === '1y' ? addDays(today(), -365) : '0000';
   const inR = all.filter(s => s.date >= from);
-  const mt = METRICS.find(x => x[0] === S.gM);
-  let pts, bars = false, unit = mt[2], fallback = false;
   const best = (sets, date) => { let b = null; sets.forEach(s => { const v = e1(effW(ex, s, date), +s.r); if (!b || (v || 0) > (b.v || 0)) b = { v, s }; }); return b ? setTxt(ex, b.s) : ''; };
-  if (S.gM === 'freq') {
-    const c = {}; inR.forEach(s => { const k = s.date.slice(0, 7); c[k] = (c[k] || 0) + 1; });
-    pts = monthsBetween(inR.length ? inR[0].date.slice(0, 7) : null, inR.length ? inR[inR.length - 1].date.slice(0, 7) : null).map(k => ({ d: k + '-15', y: c[k] || 0, tip1: k.replace('-', '/'), tip2: (c[k] || 0) + '回' }));
-    bars = true;
-  } else {
-    const heavy = (sets, date) => { let b = null; sets.forEach(s => { const w = effW(ex, s, date); if (w != null && +s.r > 0 && (!b || w > b.w || (w === b.w && +s.r > +b.s.r))) b = { w, s }; }); return b ? setKg(ex, b.s) : ''; };
-    if (S.gM === 'vol') pts = inR.filter(s => s.vol != null).map(s => ({ d: s.date, y: s.vol, tip1: shortD(s.date) + ' ボリューム', tip2: grp(s.vol) + ' kg · ' + s.sets.length + 'セット' }));
-    else {
-      // MAX：推定MAX値（実線）と最大重量（実測・点線）を同じグラフに重ねる
-      pts = inR.filter(s => s.e1rm != null || s.max != null).map(s => ({ d: s.date, y: s.e1rm, y2: s.max, tip1: shortD(s.date) + ' 推定 ' + (s.e1rm != null ? n1(s.e1rm) + ' kg' : '—'), tip2: '実測 ' + (s.max != null ? heavy(s.sets, s.date) : '—') }));
-      if (!pts.some(p => p.y != null)) pts = [];
-    }
-    if (!pts.length && ex.cat === 'body' && inR.length) { pts = inR.map(s => ({ d: s.date, y: s.reps, tip1: shortD(s.date), tip2: s.reps + '回' })); unit = '回'; fallback = true; }
-  }
+  // 複合グラフ：1日（その種目を行った日）ごとに、推定MAX値（実線）・最大重量（実測・点線）・ボリューム（棒）
+  let fallback = false;
+  let pts = inR.filter(s => s.e1rm != null || s.max != null).map(s => ({ d: s.date, y: s.e1rm, y2: s.max, v: s.vol || null }));
+  if (!pts.length && ex.cat === 'body' && inR.length) { pts = inR.map(s => ({ d: s.date, y: s.reps, tip1: shortD(s.date), tip2: s.reps + '回' })); fallback = true; }
   const bestE = all.reduce((a, s) => s.e1rm != null && (!a || s.e1rm > a.v) ? { v: s.e1rm, d: s.date, s } : a, null);
   const bestV = all.reduce((a, s) => s.vol != null && s.vol > 0 && (!a || s.vol > a.v) ? { v: s.vol, d: s.date, s } : a, null);
-  // 自己ベストは表示中の指標に合わせる（推定MAX値／最大重量／ボリューム）。回数・頻度のときは出さない
-  const pbKey = S.gM === 'vol' ? 'vol' : 'e1rm';
-  const pbBest = S.gM === 'freq' || (typeof fallback !== 'undefined' && fallback) ? null : all.reduce((a, s) => s[pbKey] != null && (!a || s[pbKey] > a.v) ? { v: s[pbKey], d: s.date } : a, null);
+  const rng = '<div class="toggle" style="margin-top:16px">' + RANGES.map(x => '<button type="button" data-act="gr" data-v="' + x[0] + '" class="' + (S.gR === x[0] ? 'on' : '') + '">' + x[1] + '</button>').join('') + '</div>';
   if (!pts.length) {
-    h += '<div style="margin-top:24px"><div class="h2" style="font-size:18px">この期間の記録はありません</div><p class="sub" style="margin:6px 0 0">最後の記録は ' + (all.length ? jpFull(all[all.length - 1].date) : '—') + '。</p></div>';
-    h += '<div class="toggle" style="margin-top:14px">' + RANGES.map(x => '<button type="button" data-act="gr" data-v="' + x[0] + '" class="' + (S.gR === x[0] ? 'on' : '') + '">' + x[1] + '</button>').join('') + '</div>';
+    h += '<div style="margin-top:24px"><div class="h2" style="font-size:18px">この期間の記録はありません</div><p class="sub" style="margin:6px 0 0">最後の記録は ' + (all.length ? jpFull(all[all.length - 1].date) : '—') + '。</p></div>' + rng;
+  } else if (fallback) {
+    const last = pts[pts.length - 1].y, first = pts[0].y;
+    h += '<div class="herorow"><div><div class="sub">最多回数（体重未記録）</div><div class="hero">' + last + '<small> 回</small></div>' +
+      (pts.length > 1 ? '<div class="sub n" style="margin-top:2px">期間内 ' + (last - first >= 0 ? '+' : '−') + Math.abs(last - first) + ' 回</div>' : '') + '</div></div>' + rng;
+    let prIdx = -1, bv = -Infinity; pts.forEach((p, i) => { if (p.y > bv) { bv = p.y; prIdx = i; } });
+    h += chart('g', pts, { prIdx, label: ex.name + 'の回数の推移' });
   } else {
-    const isMax = S.gM === 'e1rm' && !fallback, py = pts.filter(p => p.y != null);
-    const last = py[py.length - 1].y, first = py[0].y;
-    const fmtHero = v => S.gM === 'vol' ? grp(v) : S.gM === 'freq' || fallback ? String(v) : n1(v);
-    if (isMax) {
-      const lp = pts[pts.length - 1], pM = all.reduce((a, s) => s.max != null && (!a || s.max > a.v) ? { v: s.max, d: s.date } : a, null);
-      const cell = (k, v, b) => '<div class="mxc"><span>' + k + '</span><b class="n">' + (v != null ? n1(v) : '—') + '<small> kg</small></b>' + (b ? '<em class="n">自己ベスト <i>' + n1(b.v) + '</i> · ' + shortD(b.d) + '</em>' : '') + '</div>';
-      h += '<div class="sub" style="margin-top:20px">直近 · ' + jpFull(lp.d) + '</div><div class="mxrow">' + cell('<i class="lg1"></i>推定MAX値', lp.y, pbBest) + cell('<i class="lg2"></i>最大重量（実測）', lp.y2, pM) + '</div>';
-    } else {
-    h += '<div class="herorow"><div><div class="sub">' + (S.gM === 'freq' ? '直近の月' : fallback ? '最多回数（体重未記録）' : '直近の' + mt[1] + ' · ' + jpFull(pts[pts.length - 1].d)) + '</div>' +
-      '<div class="hero">' + fmtHero(last) + '<small> ' + unit + '</small></div>' +
-      (S.gM !== 'freq' && pts.length > 1 ? '<div class="sub n" style="margin-top:2px">期間内 ' + (last - first >= 0 ? '+' : '−') + fmtHero(Math.abs(last - first)) + ' ' + unit + '</div>' : '') + '</div>' +
-      (pbBest ? '<div class="pb">自己ベスト<div class="v gold">' + (pbKey === 'vol' ? grp(pbBest.v) : n1(pbBest.v)) + ' kg</div><div class="sub" style="font-size:12px">' + jpFull(pbBest.d) + '</div></div>' : '') + '</div>';
-    }
-    h += '<div class="toggle" style="margin-top:16px">' + RANGES.map(x => '<button type="button" data-act="gr" data-v="' + x[0] + '" class="' + (S.gR === x[0] ? 'on' : '') + '">' + x[1] + '</button>').join('') + '</div>';
-    let prIdx = -1; if (!bars) { let bv = -Infinity; pts.forEach((p, i) => { if (p.y != null && p.y > bv) { bv = p.y; prIdx = i; } }); }
-    h += chart('g', pts, { bars, big: S.gM === 'vol', prIdx, fmt: v => S.gM === 'vol' ? grp(v) : fallback ? v : n1(v), label: ex.name + 'の' + mt[1] + 'の推移' });
-    if (S.gM === 'e1rm' && !fallback) h += '<div class="lgd"><span><i class="lg1"></i>推定MAX値</span><span><i class="lg2"></i>最大重量（実測）</span></div>';
+    const lp = pts[pts.length - 1], fe = v => v != null ? n1(v) : '—', fv = v => v != null ? grp(v) : '—';
+    const cell = (k, id, lg, name, val) => '<button type="button" class="mxc' + (hd[k] ? ' off' : '') + '" data-act="gtog" data-v="' + k + '" aria-pressed="' + (hd[k] ? 'false' : 'true') + '"><span><i class="' + lg + '"></i>' + name + '</span><b class="n"><span id="' + id + '">' + val + '</span><small> kg</small></b></button>';
+    h += '<div class="sub" id="gvd" style="margin-top:20px">直近 · ' + jpFull(lp.d) + '</div><div class="mxrow c3">' + cell('e', 'gve', 'lg1', '推定MAX値', fe(lp.y)) + cell('m', 'gvm', 'lg2', '最大重量', fe(lp.y2)) + cell('v', 'gvv', 'lg3', 'ボリューム', fv(lp.v)) + '</div>' + rng;
+    let prIdx = -1, bv = -Infinity; pts.forEach((p, i) => { if (p.y != null && p.y > bv) { bv = p.y; prIdx = i; } });
+    const pick = (p, isLast) => { const set = (id, t) => { const e = $('#' + id); if (e) e.textContent = t; }; set('gvd', (isLast ? '直近 · ' : '') + jpFull(p.d)); set('gve', fe(p.y)); set('gvm', fe(p.y2)); set('gvv', fv(p.v)); };
+    h += chart('g', pts, { prIdx, vb: true, hide: hd, pick, fmt: n1, label: ex.name + 'の推移。線は推定MAX値と最大重量、棒はボリューム' });
+    // 月ごとの回数
+    const c = {}; inR.forEach(s => { const k = s.date.slice(0, 7); c[k] = (c[k] || 0) + 1; });
+    const fp = monthsBetween(inR[0].date.slice(0, 7), inR[inR.length - 1].date.slice(0, 7)).map(k => ({ d: k + '-15', y: c[k] || 0, tip1: k.replace('-', '/'), tip2: (c[k] || 0) + '回' }));
+    h += '<div class="sect" style="margin-top:22px">月ごとの回数</div>' + chart('f', fp, { bars: true, mon: true, h: 120, label: ex.name + 'の月ごとの回数' });
   }
   // 自己ベストと最近
   let pW = null, pR = null;
@@ -1101,38 +1117,43 @@ const sparkSVG = (vals, w, h) => {
   return '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true"><path d="M' + pts.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' L') + '" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="' + pts[pts.length - 1][0].toFixed(1) + '" cy="' + pts[pts.length - 1][1].toFixed(1) + '" r="2.6" fill="currentColor"/></svg>';
 };
 function heavyOf(ex, hh) { let b = null; work(hh.sets).forEach(x => { const w = effW(ex, x, hh.date); if (w != null && +x.r > 0 && (!b || w > b.w || (w === b.w && +x.r > +b.s.r))) b = { w, s: x }; }); return b ? b.s : null; }
-// マイページ内の「種目ごとの推移」。カードを押すと詳細カード（graphDetail）がマイページの上に開く
+// 推移の一覧で使う、種目ごとの直近の値・小さな線・期間内の増減
+function gInfo(e, cut) {
+  const hs = history(e.id).filter(hh => work(hh.sets).length), st = hs.map(hh => Object.assign(sessionStats(e, hh), { hv: heavyOf(e, hh) }));
+  const inW = x => S.gAll || x.date >= cut, vs = st.filter(x => inW(x)).slice(-12), lastS = vs.length ? vs[vs.length - 1] : null;
+  const isE = !!(lastS && lastS.e1rm != null), useW = !isE && !!(lastS && lastS.max != null);
+  const ser = isE ? vs.filter(x => x.e1rm != null).map(x => x.e1rm) : useW ? vs.filter(x => x.max != null).map(x => x.max) : vs.map(x => x.reps);
+  const dlt = ser.length > 1 ? ser[ser.length - 1] - ser[0] : null, up = dlt > 0 ? '+' : dlt < 0 ? '−' : '±';
+  let big = '—', lab = '', dtx = '';
+  if (lastS) {
+    if (isE) { big = n1(lastS.e1rm) + '<small>kg</small>'; lab = '推定MAX値'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
+    else if (useW && lastS.hv) { const t = setTxt(e, lastS.hv).split(' × '); big = esc(t[0]) + '<small>kg</small>×' + esc(t[1] || '') + '<small>回</small>'; lab = '最大重量'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
+    else { big = String(lastS.reps) + '<small>回</small>'; lab = '最大回数'; dtx = dlt != null ? up + Math.abs(dlt) + '回' : ''; }
+  }
+  return { ser, big, lab, dtx: dtx ? '<span class="dl' + (dlt > 0 ? ' up' : '') + '">' + dtx + '</span>' : '' };
+}
+// グラフタブの一覧。BIG3 は上にタイルで固定、ほかは細線区切りの行。押すと詳細カード（graphDetail）が開く
 function graphList() {
-  const m = exMap(), u = usage(), opts = S.list.filter(e => u[e.id]);
+  const u = usage(), opts = S.list.filter(e => u[e.id]);
   let h = '';
   if (!opts.length) return '<p class="sub" style="margin:8px 0 0">記録するとここに推移が出ます。</p>';
   const cut = addDays(today(), -91), isB = e => BIG3.includes(e.name);
   const pool = opts.filter(e => S.gPart === 'all' || partsOf(e).includes(S.gPart));
   const shown = S.gAll ? pool : pool.filter(e => isB(e) || u[e.id].last >= cut);
   shown.sort((a, b) => (isB(b) - isB(a)) || (isB(a) && isB(b) ? BIG3.indexOf(a.name) - BIG3.indexOf(b.name) : u[b.id].last.localeCompare(u[a.id].last)));
-  h += '<div style="margin-top:8px">' + partTabs(S.gPart, 'gpart') + '</div><div class="cards">';
-  h += shown.map(e => {
-    const hs = history(e.id).filter(hh => work(hh.sets).length), st = hs.map(hh => Object.assign(sessionStats(e, hh), { hv: heavyOf(e, hh) }));
-    const inW = x => S.gAll || x.date >= cut, vs = st.filter(x => inW(x)).slice(-12), lastS = vs.length ? vs[vs.length - 1] : null;
-    const isE = !!(lastS && lastS.e1rm != null), useW = !isE && !!(lastS && lastS.max != null);
-    const ser = isE ? vs.filter(x => x.e1rm != null).map(x => x.e1rm) : useW ? vs.filter(x => x.max != null).map(x => x.max) : vs.map(x => x.reps);
-    const dlt = ser.length > 1 ? ser[ser.length - 1] - ser[0] : null, up = dlt > 0 ? '+' : dlt < 0 ? '\u2212' : '\u00b1';
-    let big = '\u2014', lab = '', dtx = '';
-    if (lastS) {
-      if (isE) { big = n1(lastS.e1rm) + '<small>kg</small>'; lab = '推定MAX値'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
-      else if (useW && lastS.hv) { const t = setTxt(e, lastS.hv).split(' × '); big = esc(t[0]) + '<small>kg</small>×' + esc(t[1] || '') + '<small>回</small>'; lab = '最大重量'; dtx = dlt != null ? up + n1(Math.abs(dlt)) + 'kg' : ''; }
-      else { big = String(lastS.reps) + '<small>回</small>'; lab = '最大回数'; dtx = dlt != null ? up + Math.abs(dlt) + '回' : ''; }
-    }
-    return '<button type="button" class="cdc gc4" data-act="gopen" data-id="' + e.id + '" style="--pc:' + PCOL[partsOf(e)[0]] + '">' + xic(e) +
-      '<span style="min-width:0"><span class="nm">' + esc(e.name) + '</span><span class="sb n">最終 ' + shortD(u[e.id].last) + ' · ' + u[e.id].days + '回</span></span>' +
-      '<span class="spk">' + sparkSVG(ser, 56, 28) + '</span>' +
-      '<span class="vr"><b>' + big + '</b><span class="lb">' + lab + '</span>' + (dtx ? '<span class="dl ' + (dlt > 0 ? 'up' : '') + '">' + dtx + '</span>' : '') + '</span></button>';
-  }).join('') + '</div>';
+  const b3 = S.gPart === 'all' ? shown.filter(isB) : [], rest = shown.filter(e => !b3.includes(e));
+  h += '<div style="margin-top:14px">' + partTabs(S.gPart, 'gpart') + '</div>';
+  if (b3.length) h += '<div class="sech" style="margin-top:20px"><div class="sect">BIG3</div></div><div class="b3g">' + b3.map(e => { const g = gInfo(e, cut);
+    return '<button type="button" class="b3t" data-act="gopen" data-id="' + e.id + '"><span class="k">' + esc(e.name) + '</span><b>' + g.big + '</b><span class="spk">' + sparkSVG(g.ser, 90, 24) + '</span><span class="s">' + g.lab + '</span><span class="s n">' + (g.dtx ? g.dtx.replace('class="dl', 'class="') : '&nbsp;') + '</span></button>'; }).join('') + '</div>';
+  if (rest.length) h += '<div class="sech" style="margin-top:24px"><div class="sect">' + (S.gAll ? 'すべての種目' : S.gPart === 'all' ? '直近3か月の種目' : '種目') + '</div></div><div style="margin-top:8px">' + rest.map(e => { const g = gInfo(e, cut);
+    return '<button type="button" class="grow" data-act="gopen" data-id="' + e.id + '"><span style="min-width:0"><span class="nm">' + esc(e.name) + '</span><span class="sb n">最終 ' + shortD(u[e.id].last) + ' · ' + u[e.id].days + '回</span></span>' +
+      '<span class="spk">' + sparkSVG(g.ser, 56, 28) + '</span><span class="vr"><b>' + g.big + '</b>' + g.lab + g.dtx + '</span></button>'; }).join('') + '</div>';
   if (!shown.length) h += '<div class="empty">該当する種目がありません</div>';
   const hid = pool.length - pool.filter(e => isB(e) || u[e.id].last >= cut).length;
   if (hid > 0 || S.gAll) h += '<button type="button" class="bo" data-act="gall" style="width:100%;margin-top:14px;min-height:48px">' + (S.gAll ? '直近3か月の種目だけ表示' : 'すべての種目（あと' + hid + '）') + '</button>';
   return h;
 }
+function vGraph() { return '<div class="title">グラフ</div>' + graphList(); }
 function monthsBetween(a, b) {
   if (!a) return [];
   const out = []; let [y, m] = a.split('-').map(Number); const [by, bm] = b.split('-').map(Number);
@@ -1581,24 +1602,31 @@ function vMe() {
   const K = meStats(), t0 = today(), nmv = S.meNm || (S.user && S.user.name) || '';
   let since = '';
   if (K.first) { const a = parseD(K.first), b = parseD(t0); let mo = (b.getFullYear() - a.getFullYear()) * 12 + b.getMonth() - a.getMonth(); if (b.getDate() < a.getDate()) mo--; since = (mo >= 12 ? Math.floor(mo / 12) + '年' : '') + (mo % 12 || mo < 12 ? (mo % 12) + 'か月' : '') + '（' + jpFull(K.first) + '〜）'; }
-  let h = '<div class="title">マイページ</div>';
-  h += '<div class="mecv"><input type="text" id="meNm" class="menm" maxlength="20" placeholder="名前を入力" aria-label="名前" value="' + esc(nmv) + '"><div class="sub" style="margin-top:2px">' + (since ? '記録を始めて ' + since : 'まだ記録がありません') + '</div>' +
-    '<div class="meg3"><div><b class="n">' + grp(K.days) + '</b><span>日数</span></div><div><b class="n">' + grp(K.sets) + '</b><span>セット</span></div><div><b class="n">' + (K.vol >= 100000 ? grp(K.vol / 1000) : n1(K.vol / 1000)) + '<small> t</small></b><span>総挙上重量</span></div></div></div>';
-  h += '<div class="menote">' + meNotes(K).map(esc).join('<br>') + '</div>';
-  // 今の自分
+  const DBI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>';
+  let h = '<div class="mehd"><div class="dt n">' + jpFull(t0) + '（' + '日月火水木金土'[parseD(t0).getDay()] + '）</div><input type="text" id="meNm" class="menm" maxlength="20" placeholder="名前を入力" aria-label="名前" value="' + esc(nmv) + '"><div class="sub">' + (since ? '記録を始めて ' + since : 'まだ記録がありません') + '</div></div>';
+  // 今週：目標に対する回数、連続達成、月〜日の実施日
+  const w0 = weekKey(t0), did = d => !!(S.sessions[d] && S.sessions[d].items.some(i => work(i.sets).length));
+  h += '<div class="wkc"><div class="wkt"><div><span>今週</span><b class="n">' + K.c + '<small> / ' + S.goal + ' 回</small></b></div><div class="r"><span>目標の連続達成</span><b class="n">' + K.streak + '<small> 週</small></b></div></div><div class="wkd">' +
+    '月火水木金土日'.split('').map((nm, i) => { const d = addDays(w0, i), dn = did(d); return '<div class="' + (dn ? 'done' : d < t0 ? 'past' : '') + (d === t0 ? ' now' : '') + '"><i></i>' + nm + '</div>'; }).join('') + '</div></div>';
+  h += '<div class="menote"><span class="av">' + DBI + '</span><div><span class="lb">相棒</span>' + meNotes(K).map(esc).join('<br>') + '</div></div>';
+  // 今の自分：BIG3 は直近の推定MAX値を大きく、下に実測と自己ベスト
   const byName = n => S.list.find(e => e.name === n), lastOf = a => a && a.length ? a[a.length - 1] : null;
   const b3 = BIG3.map(n => { const e = byName(n); return { n, e, x: e && lastOf(K.ser[e.id]), w: e && lastOf(K.serW[e.id]) }; });
-  const totE = b3.reduce((a, x) => a + (x.x ? x.x.v : 0), 0), totW = b3.reduce((a, x) => a + (x.w ? x.w.v : 0), 0), nb = b3.filter(x => x.x).length, nw = b3.filter(x => x.w).length, bd = Object.keys(S.body).sort().pop();
-  const pbv = x => x ? '<b class="n' + (dayGap(x.d, t0) <= 30 ? ' gold' : '') + '">' + n1(x.v) + '</b>' : '<b class="n">—</b>';
-  const pbLine = id => (K.pb[id] || K.pbW[id]) ? '<span class="mepb">自己ベスト ' + pbv(K.pb[id]) + ' · ' + pbv(K.pbW[id]) + '</span>' : '';
-  const pair = (e, w) => '<span class="mx2"><span><i>推定</i>' + (e != null ? n1(e) : '—') + '</span><span><i>実測</i>' + (w != null ? n1(w) : '—') + '</span></span>';
-  h += '<div class="sect">今の自分</div><div class="meg2"><div class="met"><span>BIG3 合計（直近）</span>' + (nb || nw ? pair(nb ? totE : null, nw ? totW : null) : '<b class="n">—</b>') + (nb && nb < 3 ? '<em>' + nb + '種目</em>' : '') + '</div>' +
-    '<button type="button" class="met" data-act="gobody"><span>体重</span><b class="n">' + (bd ? n1(S.body[bd]) : '—') + '<small> kg</small></b>' + (bd ? '<em class="n">' + shortD(bd) + '</em>' : '') + '</button></div>';
-  h += '<div class="rows" style="margin-top:10px">' + b3.map(x => { const ok = x.e && (x.x || x.w), dd = [x.x, x.w].filter(Boolean).map(y => y.d).sort().pop(); return '<' + (ok ? 'button type="button" data-act="pbopen" data-id="' + x.e.id + '"' : 'div') + ' class="kv mekv"><span>' + x.n + (ok ? '<span class="d n">' + shortD(dd) + '</span>' : '') + '</span><span class="v">' + (ok ? pair(x.x && x.x.v, x.w && x.w.v) + pbLine(x.e.id) : '<span class="d">記録なし</span>') + '</span></' + (ok ? 'button' : 'div') + '>'; }).join('') + '</div>';
-  // 種目ごとの推移（旧グラフタブ）
-  h += '<div class="sect" style="margin-top:28px">種目ごとの推移</div>' + graphList();
+  const totE = b3.reduce((a, x) => a + (x.x ? x.x.v : 0), 0), nb = b3.filter(x => x.x).length;
+  const gd = x => x && dayGap(x.d, t0) <= 30 ? ' class="gold"' : '';
+  h += '<div class="sech"><div class="sect">今の自分</div><div class="r">直近の推定MAX値 · 合計 <b>' + (nb ? n1(totE) : '—') + '</b> kg' + (nb && nb < 3 ? '（' + nb + '種目）' : '') + '</div></div><div class="b3g">' +
+    b3.map(x => { const ok = x.e && (x.x || x.w), pb = x.e && K.pb[x.e.id];
+      return '<' + (ok ? 'button type="button" data-act="pbopen" data-id="' + x.e.id + '"' : 'div') + ' class="b3t"><span class="k">' + x.n + '</span><b>' + (x.x ? n1(x.x.v) + '<small>kg</small>' : '—') + '</b><span class="spk">' + (ok ? sparkSVG((K.ser[x.e.id] || []).slice(-12).map(y => y.v), 90, 24) : '') + '</span>' +
+        '<span class="s n">' + (ok ? '実測 ' + (x.w ? n1(x.w.v) : '—') : '記録なし') + '</span><span class="s n">' + (pb ? '自己ベスト <span' + gd(pb) + '>' + n1(pb.v) + '</span>' : '&nbsp;') + '</span></' + (ok ? 'button' : 'div') + '>'; }).join('') + '</div>';
+  const bds = Object.keys(S.body).sort(), bd = bds[bds.length - 1];
+  h += '<button type="button" class="bwt" data-act="gobody"><span><span class="k">体重</span><b class="n">' + (bd ? n1(S.body[bd]) : '—') + '<small> kg</small></b></span><span class="spk">' + sparkSVG(bds.slice(-30).map(d => S.body[d]), 180, 28) + '</span><span class="d n">' + (bd ? shortD(bd) : '') + '</span></button>';
+  // 最近の自己ベスト：更新日の新しい順（同じ日は値の大きい順）。30日以内は金色
+  const pbs = Object.keys(K.pb).filter(id => K.m[id]).sort((a, b) => K.pb[b].d.localeCompare(K.pb[a].d) || K.pb[b].v - K.pb[a].v), show = S.mePb ? pbs : pbs.slice(0, 3);
+  if (pbs.length) h += '<div class="sech"><div class="sect">最近の自己ベスト</div>' + (pbs.length > 3 ? '<button type="button" class="bt" data-act="mepb">' + (S.mePb ? '閉じる' : 'すべて見る（' + pbs.length + '）') + '</button>' : '') + '</div><div style="margin-top:8px">' +
+    show.map(id => { const x = K.pb[id], nw = dayGap(x.d, t0) <= 30; return '<button type="button" class="pbr2" data-act="pbopen" data-id="' + id + '"><span><span class="nm">' + esc(K.m[id].name) + '</span><span class="dd n">' + shortD(x.d) + (nw ? ' 更新' : '') + '</span></span><span class="v' + (nw ? ' gold' : '') + '">' + n1(x.v) + '<small> kg</small></span></button>'; }).join('') + '</div>';
+  h += '<div class="metot n">通算 ' + grp(K.days) + '日 · ' + grp(K.sets) + 'セット · ' + (K.vol >= 100000 ? grp(K.vol / 1000) : n1(K.vol / 1000)) + ' t</div>';
   // 管理
-  h += '<div class="sect" style="margin-top:28px">管理</div><div class="rows" style="margin-top:6px"><button type="button" class="merow" data-act="goex"><span>種目の管理</span><span class="d n">' + S.list.length + '種目 ›</span></button><button type="button" class="merow" data-act="tabgo" data-v="cal"><span>振り返り・あしあと</span><span class="d">›</span></button></div>';
+  h += '<div class="sect" style="margin-top:28px">管理</div><div class="rows" style="margin-top:6px"><button type="button" class="merow" data-act="goex"><span>種目の管理</span><span class="d n">' + S.list.length + '種目 ›</span></button></div>';
   h += '<div class="sect" style="margin-top:24px">バックアップ</div><div class="bkrow"><button type="button" class="bo" style="min-height:44px" data-act="bkcopy">書き出す（コピー）</button><button type="button" class="bo" style="min-height:44px" data-act="bkimp">読み込む</button></div><div class="bkrow" style="margin-top:8px"><button type="button" class="bo" style="min-height:44px;grid-column:1/-1" data-act="bkdl">ファイルに保存</button></div>' +
     '<div class="acct"><div class="sect">アカウント</div><div class="em">' + esc(S.user && S.user.email || '') + '</div><button type="button" class="bo" style="min-height:44px;width:100%" data-act="logout">ログアウト</button></div>';
   return h;
@@ -1816,24 +1844,6 @@ function recordSet(s) {
   document.addEventListener('touchend', end, { passive: true }); document.addEventListener('touchcancel', end, { passive: true });
 })();
 
-/* グラフのカード：横スワイプで指標（推定MAX値／最大重量／ボリューム／頻度）を切り替え */
-(function () {
-  let st = null;
-  document.addEventListener('touchstart', ev => {
-    st = null; const el = $('#gcard'); if (!el || el.hidden || ev.touches.length !== 1 || !ev.target.closest('#gcard') || ev.target.closest('[data-chart], input')) return;
-    st = { x: ev.touches[0].clientX, y: ev.touches[0].clientY };
-  }, { passive: true });
-  document.addEventListener('touchend', ev => {
-    const s0 = st; st = null; if (!s0 || !ev.changedTouches.length) return;
-    const dx = ev.changedTouches[0].clientX - s0.x, dy = ev.changedTouches[0].clientY - s0.y;
-    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    window.__swAt = Date.now();
-    const i = METRICS.findIndex(x => x[0] === S.gM), j = i + (dx < 0 ? 1 : -1); if (j < 0 || j >= METRICS.length) return;
-    const top = $('#gcard').scrollTop; S.gM = METRICS[j][0]; render();
-    const g = $('#gcard'); if (g) { g.scrollTop = top; const t = g.querySelector('.tabs.sm'); if (t && t.animate) t.animate([{ transform: 'translateX(' + (dx < 0 ? 40 : -40) + 'px)', opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 200, easing: 'ease-out' }); }
-  }, { passive: true });
-  document.addEventListener('touchcancel', () => { st = null; });
-})();
 
 document.addEventListener('change', ev => { if (ev.target && ev.target.id === 'meNm') { S.meNm = ev.target.value.trim().slice(0, 20); savePrefs(); } });
 document.addEventListener('keydown', ev => { if (ev.key === 'Enter' && ev.target && ev.target.id === 'meNm') ev.target.blur(); });
@@ -2239,6 +2249,7 @@ document.addEventListener('click', ev => {
   else if (a === 'gohist') { S.ret = null; S.gOpen = false; endEdit(); S.tab = 'log'; S.date = b.dataset.d; selectEx(S.gEx); S.trayOpen = true; render(); window.scrollTo(0, 0); }
   else if (a === 'gm') { S.gM = b.dataset.v; render(); }
   else if (a === 'gr') { S.gR = b.dataset.v; render(); }
+  else if (a === 'gtog') { const k = b.dataset.v, g0 = $('#gcard'), top = g0 ? g0.scrollTop : 0; S.gHide = S.gHide || {}; S.gHide[k] = !S.gHide[k]; render(); const g1 = $('#gcard'); if (g1) g1.scrollTop = top; }
   else if (a === 'br') { S.bR = b.dataset.v; render(); }
   else if (a === 'phopen') openPhoto(b.dataset.d);
   else if (a === 'phclose') closePhoto();
