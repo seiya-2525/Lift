@@ -15,7 +15,7 @@
 | `_build/src.html` | **ソースの正本。** 修正はここに入れる |
 | `_build/build.py` | 正本を配布用に変換する。`python3 _build/build.py` で `_build/out/` に出力（確認用）。`python3 _build/build.py .` でリポジトリ直下の `index.html` を更新（配布） |
 | `_build/config.json` `seed.json` | Firebase の設定（公開してよい値）、初回に入れる標準45種目 |
-| `_build/mk_test.py` `t_boot.js` `t_me.js` `sample.json` | テスト。下の「テスト」を参照 |
+| `_build/mk_test.py` `t_boot.js` `t_me.js` `t_swipe.js`（＋`t_swipe.expected.txt`） `sample.json` | テスト。下の「テスト」を参照 |
 | `index.html` | 配布中のファイル（変換後）。直接は編集しない |
 | `sw.js` | 画面を端末に保存して、電波が弱くても開けるようにする。通信を先に試し、3.5秒で保存済みに切り替える |
 | `manifest.webmanifest` `icon-*.png` | ホーム画面用。**変えない**（追加済みの人に影響する） |
@@ -25,6 +25,7 @@
 
 ## 現在の状態（2026-11-11）
 - 配布中の `index.html` は **v76**（2026-11-11 に配布）。v76：推移カードの「重さ×回数」の下の名前を「最大重量」に。v75：推移カードの数字と単位の並び、戻る操作でカードが下に閉じる。v74：読み込みを新しい日付から20件ずつ送る。v70：マイページ追加／v71：グラフタブをマイページに統合、体重に写真／v72：自己ベストの棚を廃止、写真をさかのぼって見る、体重なしでも写真／v73：「ファイルに保存」に写真を入れ、読み込みで写真も戻す。
+- `_build/src.html` は **v77**（スワイプ処理を `SWIPES` に一本化、使っていない処理・CSS を削除。見た目と動作は v76 と同じ）。未配布。
 - 体重が抜けた件は、練習用から読み込み直して解決（本人確認済み）。
 - 2026-11-11：配布版で体重が 2020-06-14 までしか出ない、と報告あり。旧来の読み込みは古い日付から1件ずつ通信の完了を待っており、途中で閉じると新しい日付が入らない作り（原因の可能性が高いが未確定）。練習用から再度読み込めば戻る見込み。
 - 次の修正は `_build/src.html` に入れ、確認版を作って許可をもらってから `python3 _build/build.py .` で反映する。
@@ -73,12 +74,13 @@
 Firebase プロジェクトは `muscle-app-6c412`（無料プラン）。承認済みドメインは `seiya-2525.github.io`。
 
 ## ソースの構造
-状態は全体変数 `S`。`render()` が `vLog/vEx/vBody/vCal/vMe` を呼ぶ（推移の一覧は `graphList`、写真は `shrinkPhoto/getPh/openPhoto`）。操作は `data-act` 属性で振り分ける。主な関数：`graphDetail`、`sessionStats`、`heavyOf`、`calRange/calStep/calMonth`、`footHTML`（あしあと）、`meStats/meNotes`、`catHits/catHTML`、`XI.key`（アイコン）。
+状態は全体変数 `S`。`render()` が `vLog/vEx/vBody/vCal/vMe` を呼ぶ（推移の一覧は `graphList`、写真は `shrinkPhoto/getPh/openPhoto`）。操作は `data-act` 属性で振り分ける。スワイプ（touch）は `SWIPES` の一覧に集めてあり、document の touch の受け口は1組だけ（`pullDown`＝下に引いて閉じる、`flick`＝横に払う、の共通部品あり）。行の左スライド（×）とつまみを引く操作は、マウスでも動くよう pointer で別に受けている。主な関数：`graphDetail`、`sessionStats`、`heavyOf`、`calRange/calStep/calMonth`、`footHTML`（あしあと）、`meStats/meNotes`、`catHits/catHTML`、`XI.key`（アイコン）。
 
 ## テスト
 Playwright（Chromium）で、スマホ幅・タッチ操作を合成して確かめる。
 - `python3 _build/build.py && node _build/t_boot.js`：偽の Firebase で配布版の起動を確認（「seeded n 45」が出れば初回の種目投入まで通っている）。
 - `python3 _build/mk_test.py && node _build/t_me.js`：見本データでマイページと振り返りを確認。
+- `python3 _build/mk_test.py && node _build/t_swipe.js`：スワイプ15通り（記録の日付移動、カードを下に引く、振り返りの月・週、グラフの指標、種目の部位、種目選択）の結果を期待値と比べる。「swipe OK」が出ればよい。動きを意図して変えたときだけ `--save` で期待値を作り直す。
 - `sample.json` は作り物のデータ。**利用者の実際の記録はリポジトリに入れない**（公開リポジトリ）。
 
 ## 確認用アーティファクト
@@ -98,6 +100,7 @@ Playwright（Chromium）で、スマホ幅・タッチ操作を合成して確�
 | v74 | https://claude.ai/artifact/E68uPeiXxnhf7Mure7HkJJ | 読み込みを新しい日付から20件ずつまとめて送る（途中で止まって直近が抜けるのを防ぐ）、進み具合を表示 |
 | v75 | https://claude.ai/artifact/6cPLoSy1mrwiJk2B9NPNvY | 推移カードの数字に小さい単位・下に値の名前、戻る操作でカードが下に閉じる |
 | v76 | https://claude.ai/artifact/V75BFPSJS7cuYKcHhCaiyp | 推移カードの「重さ×回数」の名前を「最大重量」に（配布中） |
+| v77 | https://claude.ai/artifact/8u1x8XfcQtq5sq27kSvmzr | 中身の整理のみ（スワイプ処理の一本化、使っていない処理・CSS の削除）。見た目と動作は v76 と同じ |
 
 ## 注意点
 - build.py は src.html 内の決まった文字列を目印に書き換える（`assert` で止まる）。特に、マイページ内の `data-act="bkimp">読み込む</button></div>';` と、起動部分の `const C = window.claude;` 〜 `.catch(() => { S.dbOk = false; …` は形を変えない。変えるなら build.py も直す。
