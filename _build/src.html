@@ -416,6 +416,7 @@ body.rt #app{padding-top:70px}
 .prow .bar i{display:block;height:100%;border-radius:5px}
 .prow .n{text-align:right;font-size:15px}
 .toast.gold{background:var(--gold)}
+.toast.err{background:var(--danger);white-space:normal;max-width:min(92vw,520px);line-height:1.5}
 .sugg{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--raised)}
 .sugg .v{font-size:18px;font-weight:600;margin-top:1px}
 .sugg .chip{white-space:nowrap;flex:none}.sugg>div{min-width:0}
@@ -786,12 +787,12 @@ function usage() {
 /* ---------- toast ---------- */
 let tt = null;
 let nextCls = '';
-function toast(msg, undo) {
+function toast(msg, undo, ms) {
   const t = $('#toast'); t.className = 'toast' + (nextCls ? ' ' + nextCls : ''); nextCls = '';
   t.innerHTML = '<span>' + esc(msg) + '</span>' + (undo ? '<button type="button" id="undo">元に戻す</button>' : '');
   t.hidden = false;
   if (undo) $('#undo').onclick = () => { undo(); t.hidden = true; };
-  clearTimeout(tt); tt = setTimeout(() => t.hidden = true, undo ? 5000 : 2600);
+  clearTimeout(tt); tt = setTimeout(() => t.hidden = true, ms || (undo ? 5000 : 2600));
 }
 
 /* ---------- render ---------- */
@@ -1460,32 +1461,61 @@ function cleanSession(d, v) {
   const o = { date: d, items }; if (v.rtn) o.rtn = String(v.rtn).slice(0, 60); return o;
 }
 async function importData(o) {
-  let ns = 0, nb = 0;
-  if (Array.isArray(o.exercises)) { const have = new Set(S.list.map(e => e.id)); o.exercises.forEach(e => { if (e && e.id && e.name && !have.has(e.id)) { S.list.push({ id: String(e.id).slice(0, 60), name: String(e.name).slice(0, 80), cat: CAT[e.cat] ? e.cat : 'free', step: +e.step || 2.5, parts: (Array.isArray(e.parts) ? e.parts : []).filter(p => PART[p]), ...(e.fav ? { fav: true } : {}), ...(e.db === true || e.db === false ? { db: e.db } : {}), ...(+e.rest > 0 ? { rest: +e.rest } : {}) }); } }); await store.saveList(); }
-  if (Array.isArray(o.routines)) { const have = new Set(S.routines.map(r => r.id)); o.routines.forEach(r => { if (r && r.id && r.name && Array.isArray(r.exs) && !have.has(r.id)) S.routines.push({ id: String(r.id).slice(0, 60), name: String(r.name).slice(0, 60), exs: r.exs.map(String) }); }); await store.saveRoutines(); }
-  // 書き込みは新しい日付から、20件ずつまとめて送る（1件ずつ待つと数分かかり、途中で閉じると古い日付までしか入らなかった）
-  const jobs = [], same = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+  // 画面側のデータ（S）は、保存が1件進むたびに届く最新状態で丸ごと入れ替わる。
+  // なので保存する中身は、書き始める前にここで決めておく（後から S を読むと、まだ書いていない分が消えている）
+  const clean = x => JSON.parse(JSON.stringify(x));
+  const canon = x => JSON.stringify(x, (k, v) => v && typeof v === 'object' && !Array.isArray(v) ? Object.keys(v).sort().reduce((r, q) => (r[q] = v[q], r), {}) : v);
+  const put = (path, obj) => db ? db.doc(path).set(clean(obj)) : Promise.reject({ code: 'nodb' });
+  let ns = 0, nb = 0, np = 0;
+  const pre = [], jobs = [];
+  if (Array.isArray(o.exercises)) { const have = new Set(S.list.map(e => e.id)); o.exercises.forEach(e => { if (e && e.id && e.name && !have.has(e.id)) { S.list.push({ id: String(e.id).slice(0, 60), name: String(e.name).slice(0, 80), cat: CAT[e.cat] ? e.cat : 'free', step: +e.step || 2.5, parts: (Array.isArray(e.parts) ? e.parts : []).filter(p => PART[p]), ...(e.fav ? { fav: true } : {}), ...(e.db === true || e.db === false ? { db: e.db } : {}), ...(+e.rest > 0 ? { rest: +e.rest } : {}) }); } }); const v = { list: clean(S.list) }; pre.push(() => put('meta/exercises', v)); }
+  if (Array.isArray(o.routines)) { const have = new Set(S.routines.map(r => r.id)); o.routines.forEach(r => { if (r && r.id && r.name && Array.isArray(r.exs) && !have.has(r.id)) S.routines.push({ id: String(r.id).slice(0, 60), name: String(r.name).slice(0, 60), exs: r.exs.map(String) }); }); const v = { list: clean(S.routines) }; pre.push(() => put('meta/routines', v)); }
+  // 書き込みは新しい日付から、20件ずつまとめて送る。1件ずつ結果を数え、失敗した分は最後に自動でやり直す
   if (o.sessions && typeof o.sessions === 'object') Object.keys(o.sessions).filter(d => okD(d) && o.sessions[d] && Array.isArray(o.sessions[d].items)).sort().reverse().forEach(d => {
-    const v = cleanSession(d, o.sessions[d]); ns++; if (S.sessions[d] && same(S.sessions[d], v)) return;
-    S.sessions[d] = v; jobs.push(() => store.saveSession(d));
+    const v = cleanSession(d, o.sessions[d]); ns++; if (S.sessions[d] && canon(S.sessions[d]) === canon(v)) return;
+    jobs.push(() => put('sessions/' + d, v));
   });
+  const phs = {};
+  if (o.photos && typeof o.photos === 'object') Object.keys(o.photos).forEach(d => {
+    const x = o.photos[d]; if (okD(d) && typeof x === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(x) && x.length < 260000) phs[d] = x;
+  });
+  const bodyDoc = (d, kg, fat, ph) => { const r = { date: d }; if (kg != null) r.kg = kg; if (fat != null) r.fat = fat; if (S.bsrc[d]) r.src = S.bsrc[d]; if (ph) r.ph = 1; return r; };
+  const bodyJobs = [], photoJobs = [], done = {};
   if (o.body && typeof o.body === 'object') Object.keys(o.body).sort().reverse().forEach(d => {
     const v = o.body[d]; if (!(okD(d) && v && +v.kg > 20 && +v.kg < 300)) return; nb++;
     const kg = +(+v.kg).toFixed(1), fat = v.fat != null && +v.fat > 2 && +v.fat < 60 ? +(+v.fat).toFixed(1) : null;
-    if (S.body[d] === kg && (fat == null || S.fat[d] === fat)) return;
-    S.body[d] = kg; if (fat != null) S.fat[d] = fat; jobs.push(() => store.saveBody(d));
+    const same = S.body[d] === kg && (fat == null || S.fat[d] === fat);
+    const doc = bodyDoc(d, kg, fat != null ? fat : S.fat[d], S.bph[d] || phs[d]);
+    if (phs[d]) { done[d] = true; photoJobs.push([d, doc]); return; } // 写真つきの日は、写真→体重の順に1件として書く
+    if (!same) bodyJobs.push(() => put('body/' + d, doc));
   });
-  let np = 0;
-  if (o.photos && typeof o.photos === 'object') Object.keys(o.photos).sort().reverse().forEach(d => {
-    const x = o.photos[d]; if (!(okD(d) && typeof x === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(x) && x.length < 260000)) return;
-    np++; jobs.push(() => store.savePhoto(d, x).then(() => { PH[d] = x; S.bph[d] = 1; return store.saveBody(d); }).catch(() => { np--; }));
+  Object.keys(phs).sort().reverse().forEach(d => { if (!done[d]) photoJobs.push([d, bodyDoc(d, S.body[d], S.fat[d], 1)]); });
+  bodyJobs.forEach(f => jobs.push(f));
+  photoJobs.forEach(([d, doc]) => { np++; jobs.push(() => put('photos/' + d, { date: d, img: phs[d] }).then(() => put('body/' + d, doc))); });
+  // 1件の結果を「成功／失敗」で数える。返事が30秒来ない書き込みも失敗として数える
+  let lastErr = null;
+  const run = f => new Promise(res => {
+    const tm = setTimeout(() => { lastErr = lastErr || { code: 'timeout' }; res(false); }, 30000);
+    let p; try { p = Promise.resolve(f()); } catch (e) { p = Promise.reject(e); }
+    p.then(() => { clearTimeout(tm); res(true); }, e => { clearTimeout(tm); lastErr = e || {}; res(false); });
   });
-  render();
-  for (let i = 0; i < jobs.length; i += 20) {
-    if (jobs.length > 20) toast('読み込んでいます ' + i + ' / ' + jobs.length + '件（画面を閉じないでください）');
-    await Promise.all(jobs.slice(i, i + 20).map(f => f()));
+  const all = pre.concat(jobs); let ok = 0, left = all, round = 0;
+  while (left.length && round < 3) {
+    if (round) { toast('保存できなかった ' + left.length + '件をやり直しています…', null, 60000); await new Promise(r => setTimeout(r, 1500)); }
+    const failed = [];
+    for (let i = 0; i < left.length; i += 20) {
+      if (all.length > 20) toast('読み込んでいます ' + (ok + i) + ' / ' + all.length + '件（画面を閉じないでください）', null, 60000);
+      const part = left.slice(i, i + 20), rs = await Promise.all(part.map(run));
+      rs.forEach((r, k) => { if (r) ok++; else failed.push(part[k]); });
+    }
+    left = failed; round++;
   }
-  render(); toast('読み込みました（記録' + ns + '日・体重' + nb + '日' + (np ? '・写真' + np + '枚' : '') + '）');
+  render();
+  if (left.length) {
+    const code = lastErr && lastErr.code ? lastErr.code : 'unknown';
+    nextCls = 'err';
+    toast('読み込みに失敗しました。保存できたのは ' + ok + ' / ' + all.length + '件で、' + left.length + '件が保存できていません（原因: ' + code + (code === 'resource-exhausted' ? '＝無料の保存量の上限' : code === 'permission-denied' ? '＝保存が許可されていません' : code === 'timeout' || code === 'unavailable' ? '＝通信が不安定' : '') + '）。通信を確認して、もう一度「読み込む」を押してください', null, 20000);
+  } else toast('読み込みました（記録' + ns + '日・体重' + nb + '日' + (np ? '・写真' + np + '枚' : '') + '／新しく保存 ' + jobs.length + '件' + (jobs.length ? '' : '、すべて保存済み') + '）', null, 6000);
 }
 const calWk = d => addDays(d, -((parseD(d).getDay() + 6) % 7));
 function calRange() {
@@ -2298,7 +2328,7 @@ document.addEventListener('click', ev => {
     try { o = JSON.parse(x.value); } catch (e) {}
     if (!o || o.app !== 'wk-log') { toast('読み込める形式ではありません'); return; }
     if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = 'もう一度押すと読み込みます'; return; }
-    closeSheet(); toast('読み込んでいます…'); importData(o);
+    closeSheet(); toast('読み込んでいます…', null, 60000); importData(o).catch(e => { nextCls = 'err'; toast('読み込みに失敗しました（' + ((e && (e.code || e.message)) || 'unknown') + '）。もう一度お試しください', null, 20000); });
   }
   else if (a === 'calm') { if (calMonth(+b.dataset.n)) render(); }
   else if (a === 'calu') { S.calU = b.dataset.v; render(); }
