@@ -100,10 +100,6 @@ body.rtm #app{padding-top:40px}
 .gcard .cst{position:absolute;left:0;right:0;top:0;height:4px}
 .gtop{display:flex;justify-content:space-between;align-items:center;min-height:44px;margin-top:4px}.gtt{font-size:13px;color:var(--ink3)}
 .ghd{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
-.gc4{grid-template-columns:44px minmax(0,1fr) auto auto}
-.gc4 .spk{color:var(--ink2);display:flex;align-items:center}
-.gc4 .vr b small{font-size:11px;font-weight:400;color:var(--ink3);margin-left:1px}.gc4 .vr .lb{display:block}
-.gc4 .vr .dl{display:block;font-size:11px;color:var(--ink3)}.gc4 .vr .dl.up{color:#7fd6a0}
 body.go{overflow:hidden}
 #tray [data-tm]{display:none!important}
 body.rtm .gcard{top:calc(env(safe-area-inset-top,0px) + 31px)}body.rt .gcard{top:calc(env(safe-area-inset-top,0px) + 52px)}
@@ -122,13 +118,6 @@ body.rtm .tray.full{top:calc(env(safe-area-inset-top,0px) + 31px)}
 .rtnow{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--rest) 14%,transparent);border:1px solid color-mix(in srgb,var(--rest) 45%,transparent)}
 .rtnow .v{font-family:var(--num);font-variant-numeric:tabular-nums;font-size:24px;font-weight:600;color:var(--rest);margin-right:auto}
 .rtnow button{min-height:36px;padding:0 10px;border-radius:6px;background:var(--well);font-size:13px}
-.tabw{position:relative;display:flex;margin-top:22px;border-bottom:1px solid var(--line2)}
-.tabw .tscw{flex:1;min-width:0;position:relative}
-.tabw .tabs{margin-top:0;border-bottom:0}
-.tabw .tfd{position:absolute;right:0;top:0;bottom:0;width:56px;pointer-events:none;opacity:0;transition:opacity .15s;background:linear-gradient(90deg,transparent,var(--bg) 75%)}
-.tabw.more .tfd{opacity:1}
-.tabw .tl{flex:none;display:flex;align-items:center;padding:0 2px 0 8px;min-height:40px;font-size:13px;font-weight:700;color:var(--ink);background:var(--bg);position:relative;z-index:1}
-.tabw .tp{flex:none;position:relative;z-index:1;align-self:center;width:34px;height:34px;margin:0 0 4px 6px;border-radius:50%;border:1px solid var(--line2);background:var(--bg);color:var(--ink);font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center}
 .tli{display:grid;grid-template-columns:1fr auto;gap:2px 10px;width:100%;text-align:left;padding:12px 4px;border-top:1px solid var(--line2)}
 .tli.on{background:var(--card2,rgba(127,127,127,.12))}
 .tli .nm{font-size:15px}.tli .sb{font-size:12px;color:var(--ink3)}.tli .vl{font-size:12px;color:var(--ink2);align-self:center;grid-row:1/3;grid-column:2}
@@ -151,29 +140,14 @@ body.rtm .tray.full{top:calc(env(safe-area-inset-top,0px) + 31px)}
 .bwline{margin-top:10px;font-size:14px;color:var(--ink2)}
 .bwline b{color:var(--ink);font-weight:500}
 /* compare table */
-.tbl{margin-top:14px}
-.trow{display:grid;grid-template-columns:24px minmax(0,1fr) minmax(0,1.3fr) 66px;gap:8px;align-items:baseline}
-.thead{padding-bottom:8px;border-bottom:1px solid var(--line2);font-size:12px;color:var(--ink3)}
-.thead span:last-child,.trow .rm{text-align:right}
 .swipe{position:relative;overflow:hidden;border-bottom:1px solid var(--line2)}
 .swipe .del{position:absolute;top:0;right:0;bottom:0;width:76px;background:var(--danger);color:var(--onlight);font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .swipe .fg{position:relative;background:var(--bg);width:100%;padding:15px 0;text-align:left;transition:transform .18s ease-out;touch-action:pan-y}
 .swipe.dragging .fg{transition:none}
 .swipe.open .fg{transform:translateX(-76px)}
-.trow .i{font-family:var(--num);font-size:13px;color:var(--ink3)}
-.trow .p{font-family:var(--num);font-variant-numeric:tabular-nums;font-size:15px;color:var(--ink3);min-width:0}
-.trow .c{font-family:var(--num);font-variant-numeric:tabular-nums;font-size:20px;font-weight:500;min-width:0}
-.trow .c small{font-size:13px;color:var(--ink2);font-weight:400}
-.trow .rm{font-family:var(--num);font-variant-numeric:tabular-nums;font-size:15px;color:var(--ink2)}
-.trow .rm.pr{color:var(--gold);font-weight:600}
-.trow .rm.pr::after{content:" PR";font-size:10px;letter-spacing:.08em}
-.trow .memo{grid-column:2/-1;font-family:var(--sans);font-size:11px;color:var(--ink3);margin-top:-2px}
-.addrow{display:flex;align-items:center;gap:12px;width:100%;min-height:48px;color:var(--ink3);font-size:14px;border-bottom:1px solid var(--line);text-align:left}
-.addrow .plus{width:24px;height:24px;flex:none;border-radius:12px;border:1px solid var(--edge);display:inline-flex;align-items:center;justify-content:center;color:var(--ink2);font-size:15px;line-height:1}
 .pmemo{margin-top:12px;font-size:14px;color:var(--ink2);display:flex;flex-direction:column;gap:2px}
 .daymemo{display:flex;flex-direction:column;gap:4px;margin-top:12px}
 .daymemo input{min-height:40px;font-size:15px}
-.trow .p small.pm{display:block;font-family:var(--sans);font-size:11px;color:var(--ink3);line-height:1.3;margin-top:2px;white-space:normal}
 .setmemo{min-height:44px;background:var(--well)!important}
 .hrow{display:flex;flex-direction:column;gap:4px;width:100%;padding:12px 0;border-top:1px solid var(--line2);text-align:left}
 .rows .hrow:last-child{border-bottom:1px solid var(--line2)}
@@ -181,14 +155,9 @@ body.rtm .tray.full{top:calc(env(safe-area-inset-top,0px) + 31px)}
 .hrow .hd1 .n:first-child{color:var(--ink2);flex:none}
 .hrow .hd1 .v{text-align:right;font-size:14px;min-width:0}
 .hrow .hm{font-size:12px;color:var(--ink3);line-height:1.5}
-.endprev{font-size:12px;color:var(--ink2);padding:8px 0 6px;border-bottom:1px dashed var(--dash);text-align:center}
-.thead b{font-weight:600;color:var(--ink2)}
-.addrow .v{font-family:var(--num);font-variant-numeric:tabular-nums;color:var(--ink2)}
 .swipe.cur .fg{background:#1c1c20;box-shadow:inset 0 0 0 1px var(--edge)}
 .swipe.cur .i{color:var(--ink);font-weight:600;padding-left:6px}
 .editbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--ink);font-weight:700;min-height:20px}
-.prevonly{padding:12px 0;border-bottom:1px solid var(--line)}
-.prevonly .c{color:var(--dim);font-size:15px}
 .empty{padding:12px 0;color:var(--ink3);font-size:14px;border-bottom:1px solid var(--line2)}
 /* tray */
 .tray{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom,0px));background:var(--raised);border-top:1px solid var(--line2);z-index:5}
@@ -221,7 +190,6 @@ nav.nav button.on{color:var(--ink);font-weight:700}
 .pb{text-align:right;font-size:13px;color:var(--ink2)}
 .pb .v{font-family:var(--num);font-size:17px;font-weight:600}
 .mxrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}.mxc span{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)}.mxc b{display:block;font-family:var(--num);font-size:34px;font-weight:500;line-height:1.1;letter-spacing:-.02em}.mxc b small{font-size:13px;font-weight:400;color:var(--ink2)}.mxc em{display:block;font-style:normal;font-size:11.5px;color:var(--ink3);margin-top:2px}.mxc em i{font-style:normal;color:var(--gold)}
-.lgd{display:flex;gap:16px;margin-top:4px;font-size:11.5px;color:var(--ink3)}.lgd span{display:flex;align-items:center;gap:6px}
 .lg1,.lg2{display:inline-block;width:14px;height:0;border-top:2px solid var(--ink)}.lg2{border-top:1.5px dashed var(--ink3)}.lg3{display:inline-block;width:8px;height:10px;border-radius:2px;background:var(--dim)}
 .mxrow.c3{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.mxrow.c3 .mxc{display:block;text-align:left;min-height:64px;min-width:0}.mxrow.c3 .mxc span{font-size:11.5px;white-space:nowrap}.mxrow.c3 .mxc b{font-size:27px;white-space:nowrap}.mxrow.c3 .mxc b span{display:inline;font-size:inherit;color:inherit}.mxrow.c3 .mxc.off{opacity:.35}
 .deltas{display:grid;grid-template-columns:auto auto;column-gap:14px;row-gap:2px;font-size:13px;text-align:right}
@@ -296,20 +264,18 @@ body.kbon nav.nav{visibility:hidden}
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:25}
 .bsheet{position:fixed;left:0;right:0;bottom:0;z-index:26;background:var(--raised);border-radius:14px 14px 0 0;max-height:88vh;overflow-y:auto;overscroll-behavior:contain}
 .bsheet .in{max-width:600px;margin:0 auto;padding:10px max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
-.grab{width:36px;height:4px;border-radius:2px;background:var(--dash);align-self:center}
 .trayh{height:28px;margin-bottom:-10px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:grab}
 .trayh i{width:40px;height:5px;border-radius:3px;background:var(--dash)}
 .gh{position:sticky;top:0;z-index:3;height:28px;flex:none;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:grab;background:inherit;border-radius:14px 14px 0 0}
 .gh i{width:40px;height:5px;border-radius:3px;background:var(--dash)}
 .sheet>.gh{position:relative;background:var(--bg);margin-top:0}
 .tray.full{top:env(safe-area-inset-top,0px);overflow-y:auto;display:flex;flex-direction:column;border-radius:0}
-.body-rt-fix{}body.rt .tray.full{top:calc(env(safe-area-inset-top,0px) + 52px)}
+body.rt .tray.full{top:calc(env(safe-area-inset-top,0px) + 52px)}
 .tray.full .in{flex:1;width:100%;min-height:0}
 .tray.full .focus{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:2px;overscroll-behavior:contain}
 .tray.full .step .row{gap:4px}
 .tray.full .step .row input{font-size:32px;min-height:64px;min-width:0;width:100%}
 .tray.full .step .row button{width:40px;height:64px;font-size:24px}
-.focus .fh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .focus .fr{display:grid;grid-template-columns:28px 1fr 1fr 52px;gap:6px;padding:9px 0;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}
 .focus .swipe .fg{background:#222226;padding:0;align-items:center;min-height:50px}
 .focus .swipe.cur .fg{background:#33333a;box-shadow:inset 0 0 0 1px var(--edge)}
@@ -356,7 +322,6 @@ body.kbon nav.nav{visibility:hidden}
 .icgrid button{aspect-ratio:1;padding:5px;border-radius:8px;background:var(--well);border:1.5px solid transparent;color:var(--ink2);font-size:12px}
 .icgrid button.on{border-color:var(--ink);color:var(--ink)}
 /* warmup / tray extras */
-.trow .i.w{color:var(--gold);font-weight:600}
 .trayx{display:flex;gap:8px;flex-wrap:wrap}
 .chip{min-height:36px;padding:0 14px;border-radius:18px;border:1px solid var(--edge);color:var(--ink2);font-size:13px}
 .chip.on{background:var(--ink);border-color:var(--ink);color:var(--onlight);font-weight:700}
@@ -417,13 +382,7 @@ body.rt #app{padding-top:70px}
 .prow .n{text-align:right;font-size:15px}
 .toast.gold{background:var(--gold)}
 .toast.err{background:var(--danger);white-space:normal;max-width:min(92vw,520px);line-height:1.5}
-.sugg{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--raised)}
-.sugg .v{font-size:18px;font-weight:600;margin-top:1px}
-.sugg .chip{white-space:nowrap;flex:none}.sugg>div{min-width:0}
-.mecv{margin-top:14px;padding:16px 16px 14px;border:1px solid var(--edge);border-top:4px solid var(--gold);border-radius:16px;background:var(--raised)}
 input[type=text].menm{font-size:24px;font-weight:700;background:none;padding:0;min-height:36px;border-radius:0;color:var(--ink)}
-.meg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line2)}
-.meg3 b{display:block;font-family:var(--num);font-size:22px;font-weight:600}.meg3 b small{font-size:12px;font-weight:400;color:var(--ink2)}.meg3 span{font-size:11px;color:var(--ink3)}
 .menote{display:flex;gap:12px;align-items:flex-start;margin-top:18px;font-size:14.5px;line-height:1.7;color:var(--ink)}.menote .av{flex:none;width:36px;height:36px;border-radius:50%;background:var(--well);display:flex;align-items:center;justify-content:center}.menote .av svg{width:18px;height:18px}.menote .lb{display:block;font-size:12px;color:var(--ink3);line-height:1.4}
 .mehd .dt{font-size:12px;color:var(--ink3)}
 .wkc{margin-top:14px;padding:16px 16px 14px;border:1px solid var(--edge);border-radius:18px;background:var(--raised)}
@@ -437,14 +396,7 @@ input[type=text].menm{font-size:24px;font-weight:700;background:none;padding:0;m
 .metot{margin-top:22px;text-align:center;font-size:12px;color:var(--ink3)}
 /* グラフタブ：種目の一覧は細線区切りの行 */
 .grow{display:grid;grid-template-columns:minmax(0,1fr) 56px auto;gap:12px;align-items:center;width:100%;min-height:64px;border-top:1px solid var(--line2);text-align:left}.grow:last-child{border-bottom:1px solid var(--line2)}.grow .nm{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.grow .sb{display:block;font-size:12px;color:var(--ink3)}.grow .spk{display:flex;color:var(--ink2)}.grow .vr{min-width:76px;text-align:right;font-size:11px;color:var(--ink3);white-space:nowrap}.grow .vr b{display:block;font-family:var(--num);font-size:18px;font-weight:500;color:var(--ink)}.grow .vr b small{font-size:11px;font-weight:400;color:var(--ink3);margin-left:1px}.grow .vr .dl{margin-left:6px}.grow .vr .dl.up{color:#7fd6a0}
-.meg2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.met{display:block;text-align:left;padding:12px 14px;border-radius:12px;background:var(--raised);min-width:0}
-.met>span{display:block;font-size:11.5px;color:var(--ink3)}.met b{display:block;font-family:var(--num);font-size:24px;font-weight:600;margin-top:2px}.met b small{font-size:12px;font-weight:400;color:var(--ink2)}.met em{display:block;font-style:normal;font-size:11px;color:var(--ink3)}
-button.mekv{width:100%;text-align:left}
-.pbl{margin-top:8px}.pbh{display:grid;grid-template-columns:minmax(0,1fr) 62px 62px;gap:8px;font-size:11px;color:var(--ink3);padding:0 0 4px;text-align:right}.pbr{display:grid;grid-template-columns:40px minmax(0,1fr) 62px 62px;gap:12px;align-items:center;width:100%;text-align:left;padding:9px 0;border-top:1px solid var(--line2)}
-.pbr .xic{width:40px;height:40px}.pbr .nm{min-width:0}.pbr .nm b{display:block;font-size:15.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pbr .nm span{font-size:12px;color:var(--ink3)}.pbr .nm i{font-style:normal;color:var(--gold);margin-left:4px}
-.pbr .v{font-family:var(--num);font-size:18px;font-weight:600;text-align:right}.pbr .v:last-child{color:var(--ink2);font-weight:500}.pbr .v.gold{color:var(--gold)}
-.mx2{display:flex;gap:14px;margin-top:2px}.mx2>span{font-family:var(--num);font-size:20px;font-weight:600;white-space:nowrap}.mx2 i{font-style:normal;font-family:var(--sans);font-size:10.5px;font-weight:400;color:var(--ink3);margin-right:4px}.met>.mx2{display:flex;flex-direction:column;gap:0;font-size:inherit;color:var(--ink)}.mekv .mx2>span{font-size:16px}.mekv .mx2>span:last-child,.met .mx2>span:last-child{color:var(--ink2)}.mekv{align-items:flex-start}.mekv .v{text-align:right}.mepb{display:block;margin-top:2px;font-size:11px;color:var(--ink3)}.mepb b{font-weight:500;color:var(--ink2);font-size:12px}.mepb b.gold{color:var(--gold)}.mekv>span:first-child .d{margin-left:8px;font-size:12px;color:var(--ink3)}.pbr .v small{font-size:11px;font-weight:400;color:var(--ink3)}
+.mepb{display:block;margin-top:2px;font-size:11px;color:var(--ink3)}.mepb b{font-weight:500;color:var(--ink2);font-size:12px}.mepb b.gold{color:var(--gold)}
 .merow{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:52px;border-top:1px solid var(--line2);font-size:15px;text-align:left}.merow .d{color:var(--ink3);font-size:13px}
 .ft{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;margin-top:12px}
 .ft button{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;height:104px;font-size:10.5px;color:var(--ink3)}
@@ -469,7 +421,6 @@ button.mekv{width:100%;text-align:left}
 .tray .bp{box-shadow:0 0 0 3px rgba(255,255,255,.16)}
 .tray .bo{border-color:#4a4a52}
 .aux{margin-left:8px;color:var(--ink3);font-size:11px;letter-spacing:0}
-.nowset{margin:-4px 0 -4px;font-size:12px;letter-spacing:.02em}
 .tray .chip{border-color:#4a4a52}
 .tray .wsw{flex:0 0 100%;display:flex;align-items:center;gap:10px;min-height:40px;padding:0 6px 0 4px;color:var(--ink);font-size:14px;font-weight:600}
 .tray .wsw .sw{background:#3a3a41;border-color:#6a6a72}
@@ -658,9 +609,9 @@ const LS = { get(k) { try { return localStorage.getItem(k); } catch (e) { return
 const S = {
   tab: 'log', date: today(), list: [], sessions: {}, body: {}, fat: {}, bsrc: {}, bph: {}, bM: 'kg', fatIn: null, bLim: 60, bOpen: null, trayOpen: false,
   sel: null, inW: 20, inR: 10, loaded: { ex: false, s: false, b: false },
-  editIdx: null, editOrig: null, gEx: null, gOpen: false, gAll: false, gPart: 'all', gM: 'e1rm', gR: 'all', ret: null, exQ: '', pickQ: '', picking: null, pickPart: 'all', exPart: 'all',
+  editIdx: null, editOrig: null, gEx: null, gOpen: false, gAll: false, gPart: 'all', gR: 'all', ret: null, exQ: '', pickQ: '', picking: null, pickPart: 'all', exPart: 'all',
   bodyDate: today(), bodyIn: null, bR: '1m', dbOk: null, sheet: null,
-  inWu: false, inN: '', memoOpen: false, trayFull: false, awake: true, goal: 3, restSec: 60, restAuto: true, timer: null, plBar: 20, routines: [], calM: today().slice(0, 7), calP: 'w0', calU: 'w', calA: null, calD: null
+  inWu: false, inN: '', memoOpen: false, trayFull: false, awake: true, goal: 3, restSec: 60, restAuto: true, timer: null, plBar: 20, routines: [], calM: today().slice(0, 7), calU: 'w', calA: null, calD: null
 };
 (function () { try { const o = JSON.parse(LS.get('wk_pref') || '{}'); if (o.rs >= 15 && o.rs <= 600) S.restSec = o.rs; if (o.ra === false) S.restAuto = false; if (o.bar > 0) S.plBar = o.bar; if (o.aw === false) S.awake = false; if (o.gl >= 1 && o.gl <= 7) S.goal = o.gl; if (typeof o.nm === 'string') S.meNm = o.nm.slice(0, 20); } catch (e) {} })();
 const savePrefs = () => LS.set('wk_pref', JSON.stringify({ rs: S.restSec, ra: S.restAuto, bar: S.plBar, aw: S.awake, gl: S.goal, nm: S.meNm || '' }));
@@ -808,7 +759,6 @@ function render() {
   else { if (S.ret && S.tab !== S.ret.tab) html += '<button type="button" class="retb" data-act="goret">‹ マイページ</button>';
   html += ({ log: vLog, ex: vEx, body: vBody, cal: vCal, me: vMe, graph: vGraph })[S.tab](); }
   app.innerHTML = html;
-  updTabFade(); { const on = document.querySelector('#extabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'nearest' }); updTabFade(); }
   const gcEl = $('#gcard'), showG = (S.tab === 'me' || S.tab === 'graph') && S.gOpen && !!S.gEx && ready;
   if (S.tab !== 'me' && S.tab !== 'graph') S.gOpen = false;
   if (!showG && gCW) { const w = gCW; gCW = null; try { w.destroy(); } catch (e) {} }
@@ -842,7 +792,6 @@ function prevFor(exId, beforeDate) {
 }
 const setTxt = (ex, s) => (ex && ex.cat === 'body' ? signed(+s.w || 0) : num(s.w)) + ' × ' + num(s.r);
 const setKg = (ex, s) => (ex && ex.cat === 'body' ? '荷重' + signed(+s.w || 0) : num(s.w)) + ' kg × ' + num(s.r) + '回';
-const setRich = (ex, s) => (ex && ex.cat === 'body' ? signed(+s.w || 0) : num(s.w)) + ' <small>kg</small> × ' + num(s.r);
 
 function rtnLine(sess) {
   const r = sess.rtn && S.routines.find(x => x.id === sess.rtn); if (!r) return '';
@@ -1027,7 +976,6 @@ function showTip(id, clientX) {
 }
 
 /* ---------- graph ---------- */
-const METRICS = [['e1rm', 'MAX', 'kg'], ['vol', 'ボリューム', 'kg'], ['freq', '頻度', '回/月']];
 const RANGES = [['3m', '3か月'], ['1y', '1年'], ['all', '全期間']];
 // 直近のトレーニングで行ったBIG3のうち先に行った種目。その日になければさかのぼる。BIG3の記録が無ければ直近の種目
 function defaultGraphEx(opts, u, m) {
@@ -1286,9 +1234,8 @@ function pickBody(part) {
   const u = usage(), q = S.pickQ.trim();
   if (S.picking === 'add') return '<button type="button" class="bp" style="width:100%;margin-top:12px;min-height:48px" data-act="addcreate">＋ ' + (q ? '「' + esc(q) + '」を新しく作成' : '新しく作成') + '</button>' + catHTML(q, part, true);
   let rows = S.list.filter(e => hit(e.name, q) && (part === 'all' || partsOf(e).includes(part)));
-  if (S.picking === 'graph') rows = rows.filter(e => u[e.id]);
   rows.sort(byFreq(u));
-  const exact = S.list.some(e => norm(e.name) === norm(q)), ch = S.picking === 'graph' ? '' : catHTML(q, part);
+  const exact = S.list.some(e => norm(e.name) === norm(q)), ch = catHTML(q, part);
   const nb = S.picking === 'log' && q && !exact ? '<button type="button" class="bo" style="width:100%;margin-top:12px" data-act="picknew">「' + esc(q) + '」を新しい種目として追加' + (part !== 'all' && part !== 'other' ? '（' + PART[part] + '）' : '') + '</button>' : '';
   if (!rows.length && ch) return ch.replace('margin-top:22px', 'margin-top:12px') + nb;
   return nb + sectioned(rows, u, 'pickone') + ch;
@@ -1412,9 +1359,6 @@ function restSheet() {
     swRow('rauto', S.restAuto, '記録したら自動でスタート', '「記録する」を押すとタイマーが始まります') + '</div>' +
     '<div class="acts" style="grid-template-columns:' + (S.timer && !S.timer.done ? '1fr' : '1fr 2fr') + '">' + (S.timer && !S.timer.done ? '' : '<button type="button" class="bo" data-act="rstart">今すぐ開始</button>') + '<button type="button" class="bp" data-act="bsclose">設定完了</button></div></div>';
 }
-function updTabFade() { const t = document.getElementById('extabs'); if (!t || !t.parentNode) return; t.closest('.tabw').classList.toggle('more', t.scrollWidth - t.scrollLeft - t.clientWidth > 4); }
-document.addEventListener('scroll', ev => { if (ev.target && ev.target.id === 'extabs') updTabFade(); }, true);
-window.addEventListener('resize', () => updTabFade());
 function exlistSheet() {
   const m = exMap(), sess = curSession(); let ts = 0, tv = 0;
   const rows = sess.items.map(it => {
@@ -1750,35 +1694,214 @@ function recordSet(s) {
   });
 }
 
-/* 開いたカード：一番上までスクロールした状態から下に引くと、指に追従して閉じる */
-(function () {
+/* ---------- スワイプ（指でなぞる操作）はすべてここで受ける ----------
+   document に付ける touch の受け口は1組だけ。触れるたびに下の SWIPES を上から順に呼び、
+   それぞれが自分の条件に合うときだけ動く（同じ指の動きに2つが反応することもある。例：開いたカードの種目名を横に払うと日付が動く）。
+   行の左スライド（×）・長押し・つまみ（トレイやシートの上端）を引く操作は、マウスでも動くよう pointer で別に受けている。 */
+const SWIPES = [];
+['start', 'move', 'end', 'cancel'].forEach(k => document.addEventListener('touch' + k, ev => {
+  if (k === 'move' && !ev.touches.length) return;
+  for (const g of SWIPES) if (g[k]) { try { g[k](ev); } catch (e) { setTimeout(() => { throw e; }); } }
+}, { passive: k !== 'move' }));
+const touchAt = ev => ({ x: ev.touches[0].clientX, y: ev.touches[0].clientY });
+const partKeys = () => ['all'].concat(PARTS.map(p => p[0]));
+const reduceMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+// 部品1 下に引いて閉じる：一番上までスクロールした状態から下に引くと指に追従し、一定以上引いたら閉じる
+function pullDown(box, ok, close, tray) {
   let st = null;
-  const tray = () => $('#tray');
-  document.addEventListener('touchstart', ev => {
-    st = null; if (ev.touches.length !== 1 || S.sheet || S.picking) return;
-    const oc = ev.target.closest('#ocard'); if (!oc || ev.target.closest('[data-trayh], input')) return;
-    const f = oc.querySelector('.focus'); if (f && f.scrollTop > 0) return;
-    st = { x: ev.touches[0].clientX, y: ev.touches[0].clientY, on: false, dy: 0 };
-  }, { passive: true });
-  document.addEventListener('touchmove', ev => {
-    if (!st || !ev.touches.length) return;
-    const dx = ev.touches[0].clientX - st.x, dy = ev.touches[0].clientY - st.y;
-    if (!st.on) {
-      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
-      if (dy <= 0 || Math.abs(dx) > Math.abs(dy) * 0.8 || sw) { st = null; return; }
-      st.on = true; tray().classList.add('drag'); tray().classList.remove('snap'); lpCancel();
-    }
-    st.dy = Math.max(0, dy); tray().style.transform = 'translateY(' + st.dy + 'px)';
-    if (ev.cancelable) ev.preventDefault();
-  }, { passive: false });
   const end = () => {
     const s0 = st; st = null; if (!s0 || !s0.on) return;
-    const t = tray(); t.classList.remove('drag'); t.classList.add('snap'); window.__swAt = Date.now();
-    if (s0.dy > Math.min(140, innerHeight * 0.18)) { t.style.transform = 'translateY(100%)'; setTimeout(() => { t.style.transform = ''; t.classList.remove('snap'); closeTray(); }, 170); }
-    else { t.style.transform = ''; setTimeout(() => t.classList.remove('snap'), 220); }
+    const el = box(); el.classList.remove('drag'); el.classList.add('snap'); if (tray) window.__swAt = Date.now();
+    if (s0.dy > Math.min(140, innerHeight * 0.18)) { el.style.transform = 'translateY(100%)'; setTimeout(() => { el.style.transform = ''; el.classList.remove('snap'); close(); }, 170); }
+    else { el.style.transform = ''; setTimeout(() => el.classList.remove('snap'), 220); }
   };
-  document.addEventListener('touchend', end); document.addEventListener('touchcancel', end);
-})();
+  return {
+    start(ev) { st = null; if (ev.touches.length === 1 && ok(ev)) st = Object.assign(touchAt(ev), { on: false, dy: 0 }); },
+    move(ev) {
+      if (!st) return; const el = box(), dx = ev.touches[0].clientX - st.x, dy = ev.touches[0].clientY - st.y;
+      if (!st.on) {
+        if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+        if (dy <= 0 || Math.abs(dx) > Math.abs(dy) * 0.8 || (tray && sw)) { st = null; return; }
+        st.on = true; el.classList.add('drag'); el.classList.remove('snap'); if (tray) lpCancel();
+      }
+      st.dy = Math.max(0, dy); el.style.transform = 'translateY(' + st.dy + 'px)';
+      if (ev.cancelable) ev.preventDefault();
+    },
+    end, cancel: end
+  };
+}
+// 部品2 払う：指を離した時点で横に60px以上、かつ縦の ratio 倍以上動いていれば go(dx) を呼ぶ
+function flick(ok, ratio, go) {
+  let st = null;
+  return {
+    start(ev) { st = null; if (ok(ev)) st = touchAt(ev); },
+    end(ev) {
+      const s0 = st; st = null; if (!s0 || !ev.changedTouches.length) return;
+      const dx = ev.changedTouches[0].clientX - s0.x, dy = ev.changedTouches[0].clientY - s0.y;
+      if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * ratio) return;
+      go(dx);
+    },
+    cancel() { st = null; }
+  };
+}
+// 部品3 部位の切替：一覧が指に少しついてきて、一定以上（または速く）払うと隣の部位へ。端では動かない
+// o = { ok(ev), wrap(), get(), set(v), tabs（選んだ部位タブのセレクタ）, mark（払ったら __swAt を付ける） }
+function partSwipe(o) {
+  let st = null;
+  return {
+    start(ev) { st = null; if (ev.touches.length === 1 && o.ok(ev)) st = Object.assign(touchAt(ev), { mode: 'pending', dx: 0, t: Date.now() }); },
+    move(ev) {
+      if (!st || st.mode === 'ignore') return;
+      const dx = ev.touches[0].clientX - st.x, dy = ev.touches[0].clientY - st.y;
+      if (st.mode === 'pending') {
+        if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
+        st.mode = Math.abs(dx) > Math.abs(dy) * 1.4 ? 'h' : 'ignore';
+        if (st.mode === 'ignore') return;
+      }
+      st.dx = dx;
+      const w = o.wrap(); if (w) { w.style.transition = ''; w.style.transform = 'translateX(' + dx * 0.6 + 'px)'; w.style.opacity = String(Math.max(0.5, 1 - Math.abs(dx) / 500)); }
+    },
+    end() {
+      const s0 = st; st = null; if (!s0 || s0.mode !== 'h') return;
+      const w = o.wrap(); if (!w) return;
+      if (o.mark) window.__swAt = Date.now();
+      const dx = s0.dx, fast = Math.abs(dx) > 40 && Date.now() - s0.t < 250;
+      const ks = partKeys(), i = ks.indexOf(o.get()), n = i + (dx < 0 ? 1 : -1);
+      const reset = () => { w.style.transition = reduceMotion ? '' : 'transform .18s ease-out, opacity .18s'; w.style.transform = ''; w.style.opacity = ''; };
+      if ((Math.abs(dx) < 70 && !fast) || n < 0 || n >= ks.length) { reset(); return; }
+      const sign = dx < 0 ? -1 : 1, dur = reduceMotion ? 0 : 140;
+      w.style.transition = 'transform ' + dur + 'ms ease-in, opacity ' + dur + 'ms'; w.style.transform = 'translateX(' + sign * 90 + 'px)'; w.style.opacity = '0';
+      setTimeout(() => {
+        o.set(ks[n]); render();
+        const w2 = o.wrap();
+        if (w2 && !reduceMotion) { w2.style.transition = 'none'; w2.style.transform = 'translateX(' + (-sign * 60) + 'px)'; w2.style.opacity = '0'; void w2.offsetWidth; w2.style.transition = 'transform .18s ease-out, opacity .18s'; w2.style.transform = ''; w2.style.opacity = ''; }
+        const on = document.querySelector(o.tabs); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' });
+      }, dur + 10);
+    },
+    cancel() { const w = o.wrap(); st = null; if (w) { w.style.transform = ''; w.style.opacity = ''; } }
+  };
+}
+
+// 1. 開いた種目カード（トレイ）：下に引いて閉じる
+SWIPES.push(pullDown(() => $('#tray'), ev => {
+  if (S.sheet || S.picking) return false;
+  const oc = ev.target.closest('#ocard'); if (!oc || ev.target.closest('[data-trayh], input')) return false;
+  const f = oc.querySelector('.focus'); return !(f && f.scrollTop > 0);
+}, () => closeTray(), true));
+
+// 2. グラフの詳細カード：下に引いて閉じる
+SWIPES.push(pullDown(() => $('#gcard'), ev => {
+  const el = $('#gcard'); return !!el && !el.hidden && !!ev.target.closest('#gcard') && !ev.target.closest('[data-chart], input') && el.scrollTop <= 0;
+}, () => closeG(), false));
+
+// 3. 記録タブ（カード一覧）：横に払って日付を移動
+SWIPES.push(flick(ev => {
+  if (S.tab !== 'log' || S.picking || S.sheet || !$('#tray').hidden || ev.touches.length !== 1) return false;
+  return !ev.target.closest('nav, #tray, #bsheet, #sheet, #rtbar, #toast, input, label.date');
+}, 1.5, dx => {
+  window.__swAt = Date.now();
+  const d = addDays(S.date, dx < 0 ? 1 : -1); if (d > today()) return;
+  endEdit(); S.date = d; S.sel = null; S.trayOpen = false; render(); window.scrollTo(0, 0);
+  const app = $('#app'), c = dx < 0 ? 'sl-l' : 'sl-r'; app.classList.remove('sl-l', 'sl-r'); void app.offsetWidth; app.classList.add(c); setTimeout(() => app.classList.remove(c), 260);
+}));
+
+// 4. 振り返り：カレンダーは横スワイプで月、部位別カードは横スワイプで週・月を移動（見出しだけが指に追従する）
+SWIPES.push((function () {
+  let x0 = null, y0 = null, el = null, lock = null, kind = null;
+  const end = ev => {
+    if (x0 == null) return; const dx = (ev.changedTouches && ev.changedTouches.length ? ev.changedTouches[0].clientX : x0) - x0, e0 = el, was = lock, k = kind; x0 = null; lock = null;
+    if (!e0) return; const n = dx < 0 ? 1 : -1;
+    if (was === 'x') window.__swAt = Date.now();
+    if (was === 'x' && Math.abs(dx) > 60 && (k === 'p' ? calStep(n) : calMonth(n))) {
+      render();
+      const c = $(k === 'p' ? '#plab' : '#mlab'); if (c && c.animate) c.animate([{ transform: 'translateX(' + (n * 40) + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 200, easing: 'ease-out' });
+    } else { e0.style.transition = 'transform .18s,opacity .18s'; e0.style.transform = ''; e0.style.opacity = ''; }
+  };
+  return {
+    start(ev) {
+      x0 = null; if (S.tab !== 'cal' || !ev.target.closest || ev.touches.length !== 1 || !ev.target.closest('.cal,.calnav,.pcard')) return;
+      const pc = ev.target.closest('.pcard'); kind = pc ? 'p' : 'm'; el = pc ? $('#plab') : $('#mlab'); x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY; lock = null;
+    },
+    move(ev) {
+      if (x0 == null || !el) return; const dx = ev.touches[0].clientX - x0, dy = ev.touches[0].clientY - y0;
+      if (lock == null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) lock = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      if (lock === 'x') { const atEnd = dx < 0 && (kind === 'p' ? calRange().cur : S.calM >= today().slice(0, 7)); el.style.transition = 'none'; el.style.transform = 'translateX(' + (atEnd ? dx / 4 : dx) + 'px)'; el.style.opacity = String(1 - Math.min(.7, Math.abs(dx) / 200)); }
+    },
+    end, cancel: end
+  };
+})());
+
+// 5. 種目の管理：一覧を左右にスワイプして部位を切り替え
+SWIPES.push(partSwipe({
+  ok: ev => S.tab === 'ex' && !S.picking && !!ev.target.closest('#exListWrap'),
+  wrap: () => $('#exListWrap'), get: () => S.exPart, set: v => { S.exPart = v; }, tabs: '.sticky .tabs button.on'
+}));
+
+// 6. グラフタブ：一覧を左右にスワイプして部位を切り替え（見出しからナビの上まで、画面全体が対象）
+SWIPES.push(partSwipe({
+  ok: ev => S.tab === 'graph' && !S.gOpen && !S.picking && !S.sheet && !!ev.target.closest('#app') && !ev.target.closest('.tabs, input'),
+  wrap: () => $('#gListWrap'), get: () => S.gPart, set: v => { S.gPart = v; }, tabs: '#gTabs .tabs button.on', mark: true
+}));
+
+// 7. 種目選択：左右スワイプで部位を切り替え（指に追従し、隣の部位が横から入ってくる）
+SWIPES.push((function () {
+  const GAP = 36; let mode = 'idle', sx = 0, sy = 0, lx = 0, lt = 0, vx = 0, W = 360, nbPart = null;
+  const cur = () => $('#pickBd'), nb = () => $('#pickNb');
+  const clear = el => { if (el) { el.style.transform = ''; el.style.transition = ''; } };
+  function begin(dx) {
+    const ks = partKeys(), i = ks.indexOf(S.pickPart), n = i + (dx < 0 ? 1 : -1);
+    W = (cur() && cur().clientWidth) || innerWidth || 360;
+    if (n < 0 || n >= ks.length) { nbPart = null; return; }
+    nbPart = ks[n]; const el = nb(); el.innerHTML = pickBody(nbPart); el.scrollTop = 0; el.hidden = false;
+  }
+  function drag(dx) {
+    const c = cur(), n = nb();
+    if (!nbPart) { c.style.transform = 'translateX(' + dx * 0.25 + 'px)'; return; }
+    const sign = dx < 0 ? -1 : 1;
+    c.style.transform = 'translateX(' + dx + 'px)';
+    n.style.transform = 'translateX(' + (dx - sign * (W + GAP)) + 'px)';
+  }
+  function finish(dx) {
+    const c = cur(), n = nb(), tg = nbPart, sign = dx < 0 ? -1 : 1;
+    const commit = tg && (Math.abs(dx) / W > 0.25 || (Math.abs(vx) > 0.5 && Math.abs(dx) > 30));
+    const dur = reduceMotion ? 0 : 200, tr = 'transform ' + dur + 'ms ease-out';
+    c.style.transition = tr; n.style.transition = tr;
+    if (commit) { c.style.transform = 'translateX(' + sign * (W + GAP) + 'px)'; n.style.transform = 'translateX(0)'; }
+    else { c.style.transform = 'translateX(0)'; n.style.transform = 'translateX(' + (-sign * (W + GAP)) + 'px)'; }
+    nbPart = null;
+    setTimeout(() => {
+      clear(c); clear(n); n.hidden = true; n.innerHTML = '';
+      if (commit) { S.pickPart = tg; renderSheet(); const b = $('#pickBd'); if (b) b.scrollTop = 0; const on = $('#pickParts .tabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' }); }
+    }, dur + 20);
+  }
+  const end = ev => { if (mode !== 'drag') { mode = 'idle'; return; } mode = 'idle'; const x = ev.changedTouches && ev.changedTouches.length ? ev.changedTouches[0].clientX : lx; finish(x - sx); };
+  return {
+    start(ev) {
+      mode = 'idle'; if (!S.picking || ev.touches.length !== 1 || !ev.target.closest('#pickBd')) return;
+      mode = 'pending'; sx = lx = ev.touches[0].clientX; sy = ev.touches[0].clientY; lt = Date.now(); vx = 0;
+    },
+    move(ev) {
+      if (mode === 'idle' || mode === 'ignore') return;
+      const x = ev.touches[0].clientX, y = ev.touches[0].clientY, dx = x - sx, dy = y - sy, now = Date.now();
+      if (mode === 'pending') {
+        if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
+        if (Math.abs(dx) < Math.abs(dy) * 1.5) { mode = 'ignore'; return; }
+        mode = 'drag'; begin(dx);
+      }
+      if (now > lt) vx = (x - lx) / (now - lt); lx = x; lt = now;
+      if (ev.cancelable) ev.preventDefault();
+      drag(dx);
+    },
+    end, cancel: end
+  };
+})());
+
+// 8. 記録画面：日付の見出し・開いたカードの種目名を横に払って前日・翌日へ
+SWIPES.push(flick(ev => S.tab === 'log' && !S.picking && !S.sheet && ev.touches.length === 1 && !!ev.target.closest('.dayhead,.exhead'), 1.6, dx => {
+  const d = addDays(S.date, dx < 0 ? 1 : -1); if (d > today()) return;
+  endEdit(); S.date = d; S.sel = null; const s = curSession(); if (s.items.length) selectEx(s.items[0].ex); render();
+}));
 
 /* キーボード表示中：その高さぶん下に余白を足してキーボードの上までスクロールできるようにする。
    claude.ai の中（iframe）ではキーボードの高さが取れないので、文字入力欄にフォーカスがある間は画面の半分を目安にする。
@@ -1796,74 +1919,6 @@ function recordSet(s) {
   if (vv) vv.addEventListener('resize', upd);
   document.addEventListener('focusin', upd); document.addEventListener('focusout', () => setTimeout(upd, 0));
 })();
-
-/* グラフのカード：一番上から下に引くと閉じる */
-(function () {
-  let st = null; const g = () => $('#gcard');
-  document.addEventListener('touchstart', ev => {
-    st = null; const el = g(); if (!el || el.hidden || ev.touches.length !== 1 || !ev.target.closest('#gcard') || ev.target.closest('[data-chart], input')) return;
-    if (el.scrollTop > 0) return; st = { x: ev.touches[0].clientX, y: ev.touches[0].clientY, on: false, dy: 0 };
-  }, { passive: true });
-  document.addEventListener('touchmove', ev => {
-    if (!st || !ev.touches.length) return; const el = g();
-    const dx = ev.touches[0].clientX - st.x, dy = ev.touches[0].clientY - st.y;
-    if (!st.on) { if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return; if (dy <= 0 || Math.abs(dx) > Math.abs(dy) * 0.8) { st = null; return; } st.on = true; el.classList.add('drag'); el.classList.remove('snap'); }
-    st.dy = Math.max(0, dy); el.style.transform = 'translateY(' + st.dy + 'px)'; if (ev.cancelable) ev.preventDefault();
-  }, { passive: false });
-  const end = () => {
-    const s0 = st; st = null; if (!s0 || !s0.on) return; const el = g(); el.classList.remove('drag'); el.classList.add('snap');
-    if (s0.dy > Math.min(140, innerHeight * 0.18)) { el.style.transform = 'translateY(100%)'; setTimeout(() => { el.style.transform = ''; el.classList.remove('snap'); closeG(); }, 170); }
-    else { el.style.transform = ''; setTimeout(() => el.classList.remove('snap'), 220); }
-  };
-  document.addEventListener('touchend', end); document.addEventListener('touchcancel', end);
-})();
-
-/* 記録タブ（カード一覧）：横スワイプで日付を移動 */
-(function () {
-  let st = null;
-  document.addEventListener('touchstart', ev => {
-    st = null;
-    if (S.tab !== 'log' || S.picking || S.sheet || !$('#tray').hidden || ev.touches.length !== 1) return;
-    if (ev.target.closest('nav, #tray, #bsheet, #sheet, #rtbar, #toast, input, label.date')) return;
-    st = { x: ev.touches[0].clientX, y: ev.touches[0].clientY };
-  }, { passive: true });
-  document.addEventListener('touchend', ev => {
-    const s0 = st; st = null; if (!s0 || !ev.changedTouches.length) return;
-    const dx = ev.changedTouches[0].clientX - s0.x, dy = ev.changedTouches[0].clientY - s0.y;
-    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    window.__swAt = Date.now();
-    const d = addDays(S.date, dx < 0 ? 1 : -1); if (d > today()) return;
-    endEdit(); S.date = d; S.sel = null; S.trayOpen = false; render(); window.scrollTo(0, 0);
-    const app = $('#app'), c = dx < 0 ? 'sl-l' : 'sl-r'; app.classList.remove('sl-l', 'sl-r'); void app.offsetWidth; app.classList.add(c); setTimeout(() => app.classList.remove(c), 260);
-  }, { passive: true });
-  document.addEventListener('touchcancel', () => { st = null; });
-})();
-
-/* 振り返り：カレンダーは横スワイプで月、部位別カードは横スワイプで週・月を移動 */
-(function () {
-  let x0 = null, y0 = null, el = null, lock = null, kind = null;
-  document.addEventListener('touchstart', ev => {
-    x0 = null; if (S.tab !== 'cal' || !ev.target.closest || ev.touches.length !== 1) return;
-    const c = ev.target.closest('.cal,.calnav,.pcard'); if (!c) return;
-    const pc = ev.target.closest('.pcard'); kind = pc ? 'p' : 'm'; el = pc ? $('#plab') : $('#mlab'); x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY; lock = null;
-  }, { passive: true });
-  document.addEventListener('touchmove', ev => {
-    if (x0 == null || !el) return; const dx = ev.touches[0].clientX - x0, dy = ev.touches[0].clientY - y0;
-    if (lock == null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) lock = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-    if (lock === 'x') { const atEnd = dx < 0 && (kind === 'p' ? calRange().cur : S.calM >= today().slice(0, 7)); el.style.transition = 'none'; el.style.transform = 'translateX(' + (atEnd ? dx / 4 : dx) + 'px)'; el.style.opacity = String(1 - Math.min(.7, Math.abs(dx) / 200)); }
-  }, { passive: true });
-  const end = ev => {
-    if (x0 == null) return; const dx = (ev.changedTouches && ev.changedTouches.length ? ev.changedTouches[0].clientX : x0) - x0, e0 = el, was = lock, k = kind; x0 = null; lock = null;
-    if (!e0) return; const n = dx < 0 ? 1 : -1;
-    if (was === 'x') window.__swAt = Date.now();
-    if (was === 'x' && Math.abs(dx) > 60 && (k === 'p' ? calStep(n) : calMonth(n))) {
-      render();
-      [k === 'p' ? '#plab' : '#mlab'].forEach(q => { const c = $(q); if (c && c.animate) c.animate([{ transform: 'translateX(' + (n * 40) + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 200, easing: 'ease-out' }); });
-    } else { e0.style.transition = 'transform .18s,opacity .18s'; e0.style.transform = ''; e0.style.opacity = ''; }
-  };
-  document.addEventListener('touchend', end, { passive: true }); document.addEventListener('touchcancel', end, { passive: true });
-})();
-
 
 document.addEventListener('change', ev => { if (ev.target && ev.target.id === 'meNm') { S.meNm = ev.target.value.trim().slice(0, 20); savePrefs(); } });
 document.addEventListener('keydown', ev => { if (ev.key === 'Enter' && ev.target && ev.target.id === 'meNm') ev.target.blur(); });
@@ -1986,163 +2041,6 @@ document.addEventListener('pointerup', () => {
 });
 document.addEventListener('pointercancel', () => { if (sw) { sw.row.classList.remove('dragging'); sw.fg.style.transform = ''; sw = null; } });
 
-/* 種目タブ：一覧を左右にスワイプして部位を切り替え */
-(function () {
-  let st = null;
-  const keys = () => ['all'].concat(PARTS.map(p => p[0]));
-  const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const wrap = () => $('#exListWrap');
-  document.addEventListener('touchstart', ev => {
-    st = null;
-    if (S.tab !== 'ex' || S.picking || ev.touches.length !== 1) return;
-    if (!ev.target.closest('#exListWrap')) return;
-    st = { x: ev.touches[0].clientX, y: ev.touches[0].clientY, mode: 'pending', dx: 0, t: Date.now() };
-  }, { passive: true });
-  document.addEventListener('touchmove', ev => {
-    if (!st || st.mode === 'ignore' || !ev.touches.length) return;
-    const dx = ev.touches[0].clientX - st.x, dy = ev.touches[0].clientY - st.y;
-    if (st.mode === 'pending') {
-      if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
-      st.mode = Math.abs(dx) > Math.abs(dy) * 1.4 ? 'h' : 'ignore';
-      if (st.mode === 'ignore') return;
-    }
-    st.dx = dx;
-    const w = wrap(); if (w) { w.style.transition = ''; w.style.transform = 'translateX(' + dx * 0.6 + 'px)'; w.style.opacity = String(Math.max(0.5, 1 - Math.abs(dx) / 500)); }
-  }, { passive: true });
-  function end() {
-    const s0 = st; st = null; if (!s0 || s0.mode !== 'h') return;
-    const w = wrap(); if (!w) return;
-    const dx = s0.dx, fast = Math.abs(dx) > 40 && Date.now() - s0.t < 250;
-    const ks = keys(), i = ks.indexOf(S.exPart), n = i + (dx < 0 ? 1 : -1);
-    const reset = () => { w.style.transition = reduce ? '' : 'transform .18s ease-out, opacity .18s'; w.style.transform = ''; w.style.opacity = ''; };
-    if ((Math.abs(dx) < 70 && !fast) || n < 0 || n >= ks.length) { reset(); return; }
-    const sign = dx < 0 ? -1 : 1, dur = reduce ? 0 : 140;
-    w.style.transition = 'transform ' + dur + 'ms ease-in, opacity ' + dur + 'ms'; w.style.transform = 'translateX(' + sign * 90 + 'px)'; w.style.opacity = '0';
-    setTimeout(() => {
-      S.exPart = ks[n]; render();
-      const w2 = wrap();
-      if (w2 && !reduce) { w2.style.transition = 'none'; w2.style.transform = 'translateX(' + (-sign * 60) + 'px)'; w2.style.opacity = '0'; void w2.offsetWidth; w2.style.transition = 'transform .18s ease-out, opacity .18s'; w2.style.transform = ''; w2.style.opacity = ''; }
-      const on = document.querySelector('.sticky .tabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' });
-    }, dur + 10);
-  }
-  document.addEventListener('touchend', end);
-  document.addEventListener('touchcancel', () => { const w = wrap(); st = null; if (w) { w.style.transform = ''; w.style.opacity = ''; } });
-})();
-
-/* グラフタブ：一覧を左右にスワイプして部位を切り替え（タブの並び順どおり。端では動かない） */
-(function () {
-  let st = null;
-  const keys = () => ['all'].concat(PARTS.map(p => p[0]));
-  const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const wrap = () => $('#gListWrap');
-  document.addEventListener('touchstart', ev => {
-    st = null;
-    if (S.tab !== 'graph' || S.gOpen || S.picking || S.sheet || ev.touches.length !== 1) return;
-    if (!ev.target.closest('#app') || ev.target.closest('.tabs, input')) return;
-    st = { x: ev.touches[0].clientX, y: ev.touches[0].clientY, mode: 'pending', dx: 0, t: Date.now() };
-  }, { passive: true });
-  document.addEventListener('touchmove', ev => {
-    if (!st || st.mode === 'ignore' || !ev.touches.length) return;
-    const dx = ev.touches[0].clientX - st.x, dy = ev.touches[0].clientY - st.y;
-    if (st.mode === 'pending') {
-      if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
-      st.mode = Math.abs(dx) > Math.abs(dy) * 1.4 ? 'h' : 'ignore';
-      if (st.mode === 'ignore') return;
-    }
-    st.dx = dx;
-    const w = wrap(); if (w) { w.style.transition = ''; w.style.transform = 'translateX(' + dx * 0.6 + 'px)'; w.style.opacity = String(Math.max(0.5, 1 - Math.abs(dx) / 500)); }
-  }, { passive: true });
-  function end() {
-    const s0 = st; st = null; if (!s0 || s0.mode !== 'h') return;
-    const w = wrap(); if (!w) return;
-    window.__swAt = Date.now();
-    const dx = s0.dx, fast = Math.abs(dx) > 40 && Date.now() - s0.t < 250;
-    const ks = keys(), i = ks.indexOf(S.gPart), n = i + (dx < 0 ? 1 : -1);
-    const reset = () => { w.style.transition = reduce ? '' : 'transform .18s ease-out, opacity .18s'; w.style.transform = ''; w.style.opacity = ''; };
-    if ((Math.abs(dx) < 70 && !fast) || n < 0 || n >= ks.length) { reset(); return; }
-    const sign = dx < 0 ? -1 : 1, dur = reduce ? 0 : 140;
-    w.style.transition = 'transform ' + dur + 'ms ease-in, opacity ' + dur + 'ms'; w.style.transform = 'translateX(' + sign * 90 + 'px)'; w.style.opacity = '0';
-    setTimeout(() => {
-      S.gPart = ks[n]; render();
-      const w2 = wrap();
-      if (w2 && !reduce) { w2.style.transition = 'none'; w2.style.transform = 'translateX(' + (-sign * 60) + 'px)'; w2.style.opacity = '0'; void w2.offsetWidth; w2.style.transition = 'transform .18s ease-out, opacity .18s'; w2.style.transform = ''; w2.style.opacity = ''; }
-      const on = document.querySelector('#gTabs .tabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' });
-    }, dur + 10);
-  }
-  document.addEventListener('touchend', end);
-  document.addEventListener('touchcancel', () => { const w = wrap(); st = null; if (w) { w.style.transform = ''; w.style.opacity = ''; } });
-})();
-
-/* 種目選択：左右スワイプで部位を切り替え（指に追従し、隣の部位が横から入ってくる。食事管理と同じ動き） */
-(function () {
-  const GAP = 36; let mode = 'idle', sx = 0, sy = 0, lx = 0, lt = 0, vx = 0, W = 360, nbPart = null;
-  const keys = () => ['all'].concat(PARTS.map(p => p[0]));
-  const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const cur = () => $('#pickBd'), nb = () => $('#pickNb');
-  const clear = el => { if (el) { el.style.transform = ''; el.style.transition = ''; } };
-  function start(dx) {
-    const ks = keys(), i = ks.indexOf(S.pickPart), n = i + (dx < 0 ? 1 : -1);
-    W = (cur() && cur().clientWidth) || innerWidth || 360;
-    if (n < 0 || n >= ks.length) { nbPart = null; return; }
-    nbPart = ks[n]; const el = nb(); el.innerHTML = pickBody(nbPart); el.scrollTop = 0; el.hidden = false;
-  }
-  function drag(dx) {
-    const c = cur(), n = nb();
-    if (!nbPart) { c.style.transform = 'translateX(' + dx * 0.25 + 'px)'; return; }
-    const sign = dx < 0 ? -1 : 1;
-    c.style.transform = 'translateX(' + dx + 'px)';
-    n.style.transform = 'translateX(' + (dx - sign * (W + GAP)) + 'px)';
-  }
-  function finish(dx) {
-    const c = cur(), n = nb(), tg = nbPart, sign = dx < 0 ? -1 : 1;
-    const commit = tg && (Math.abs(dx) / W > 0.25 || (Math.abs(vx) > 0.5 && Math.abs(dx) > 30));
-    const dur = reduce ? 0 : 200, tr = 'transform ' + dur + 'ms ease-out';
-    c.style.transition = tr; n.style.transition = tr;
-    if (commit) { c.style.transform = 'translateX(' + sign * (W + GAP) + 'px)'; n.style.transform = 'translateX(0)'; }
-    else { c.style.transform = 'translateX(0)'; n.style.transform = 'translateX(' + (-sign * (W + GAP)) + 'px)'; }
-    nbPart = null;
-    setTimeout(() => {
-      clear(c); clear(n); n.hidden = true; n.innerHTML = '';
-      if (commit) { S.pickPart = tg; renderSheet(); const b = $('#pickBd'); if (b) b.scrollTop = 0; const on = $('#pickParts .tabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' }); }
-    }, dur + 20);
-  }
-  document.addEventListener('touchstart', ev => {
-    mode = 'idle'; if (!S.picking || ev.touches.length !== 1 || !ev.target.closest('#pickBd')) return;
-    mode = 'pending'; sx = lx = ev.touches[0].clientX; sy = ev.touches[0].clientY; lt = Date.now(); vx = 0;
-  }, { passive: true });
-  document.addEventListener('touchmove', ev => {
-    if (mode === 'idle' || mode === 'ignore' || !ev.touches.length) return;
-    const x = ev.touches[0].clientX, y = ev.touches[0].clientY, dx = x - sx, dy = y - sy, now = Date.now();
-    if (mode === 'pending') {
-      if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
-      if (Math.abs(dx) < Math.abs(dy) * 1.5) { mode = 'ignore'; return; }
-      mode = 'drag'; start(dx);
-    }
-    if (now > lt) vx = (x - lx) / (now - lt); lx = x; lt = now;
-    if (ev.cancelable) ev.preventDefault();
-    drag(dx);
-  }, { passive: false });
-  const end = ev => { if (mode !== 'drag') { mode = 'idle'; return; } mode = 'idle'; const x = ev.changedTouches && ev.changedTouches.length ? ev.changedTouches[0].clientX : lx; finish(x - sx); };
-  document.addEventListener('touchend', end, { passive: true });
-  document.addEventListener('touchcancel', end, { passive: true });
-})();
-
-/* 記録画面：日付エリアを左右にスワイプして前日・翌日へ */
-(function () {
-  let st = null;
-  document.addEventListener('touchstart', ev => {
-    st = null; if (S.tab !== 'log' || S.picking || S.sheet || ev.touches.length !== 1 || !ev.target.closest('.dayhead,.exhead')) return;
-    st = { x: ev.touches[0].clientX, y: ev.touches[0].clientY };
-  }, { passive: true });
-  document.addEventListener('touchend', ev => {
-    const s0 = st; st = null; if (!s0 || !ev.changedTouches.length) return;
-    const dx = ev.changedTouches[0].clientX - s0.x, dy = ev.changedTouches[0].clientY - s0.y;
-    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
-    const d = addDays(S.date, dx < 0 ? 1 : -1); if (d > today()) return;
-    endEdit(); S.date = d; S.sel = null; const s = curSession(); if (s.items.length) selectEx(s.items[0].ex); render();
-  }, { passive: true });
-})();
-
 /* chart scrub */
 document.addEventListener('pointermove', ev => { const w = ev.target.closest('[data-chart]'); if (w && (ev.pointerType === 'mouse' || ev.buttons || ev.pressure > 0)) showTip(w.dataset.chart, ev.clientX); });
 document.addEventListener('pointerdown', ev => { const w = ev.target.closest('[data-chart]'); if (w) showTip(w.dataset.chart, ev.clientX); });
@@ -2162,7 +2060,6 @@ window.__backClose = function () {
   if (S.gOpen) { closeGAnim(); return true; }
   if (S.sheet) { closeSheet(); return true; }
   if (S.picking) { S.picking = null; renderSheet(); return true; }
-  if (S.trayOpen && S.trayFull) { closeTray(); return true; }
   if (S.trayOpen) { closeTray(); return true; }
   if (S.ret) return goRet();
   return false;
@@ -2217,7 +2114,6 @@ document.addEventListener('click', ev => {
   else if (a === 'goret') goRet();
   else if (a === 'gall') { S.gAll = !S.gAll; render(); }
   else if (a === 'gpart') { S.gPart = b.dataset.v; render(); }
-  else if (a === 'gpick') { S.picking = 'graph'; S.pickQ = ''; renderSheet(); }
   else if (a === 'pickclose') { S.picking = null; renderSheet(); }
   else if (a === 'catadd') {
     const c = CATALOG[+b.dataset.ci]; if (!c) return;
@@ -2226,7 +2122,7 @@ document.addEventListener('click', ev => {
     else if (S.picking) { S.picking = null; selectEx(id); S.trayOpen = true; render(); toast('「' + c.name + '」を追加しました'); }
     else { const w = $('#exListWrap'); if (w) w.innerHTML = exListHTML(); toast('「' + c.name + '」を追加しました'); }
   }
-  else if (a === 'pickone') { if (S.picking === 'graph') { S.gEx = b.dataset.id; } else { selectEx(b.dataset.id); S.trayOpen = true; } S.picking = null; render(); }
+  else if (a === 'pickone') { selectEx(b.dataset.id); S.trayOpen = true; S.picking = null; render(); }
   else if (a === 'picknew') { const id = addExercise(S.pickQ, 'free', S.pickPart !== 'all' && S.pickPart !== 'other' ? [S.pickPart] : []); if (id) { S.picking = null; selectEx(id); S.trayOpen = true; render(); toast('部位と分類は種目タブで変更できます'); } }
   else if (a === 'pickpart') { S.pickPart = b.dataset.v; renderSheet(); $('#pickBd').scrollTop = 0; const on = $('#pickParts .tabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' }); }
   else if (a === 'expart') { S.exPart = b.dataset.v; render(); }
@@ -2236,14 +2132,6 @@ document.addEventListener('click', ev => {
     const it = curSession().items.find(i => i.ex === S.sel), p = prevFor(S.sel, S.date);
     const cws = it ? work(it.sets) : [], n = (p && work(p.sets)[cws.length]) || (cws.length ? cws[cws.length - 1] : null);
     if (n) { endEdit(); S.inW = +n.w || 0; S.inR = +n.r || 0; S.inWu = false; S.trayOpen = true; render(); }
-  }
-  else if (a === 'dup') {
-    readInputs();
-    const it = curSession().items.find(i => i.ex === S.sel);
-    const last = it && it.sets.length ? it.sets[it.sets.length - 1] : null;
-    if (!last && !(S.inR > 0)) { toast('回数を1回以上にしてください'); return; }
-    const s = last ? newSet(last.w, last.r) : newSet(S.inW, S.inR);
-    S.inW = s.w; S.inR = s.r; recordSet(s); S.inW = s.w; S.inR = s.r; renderTray();
   }
   else if (a === 'copyprev') {
     const p = prevFor(S.sel, S.date); if (!p) return;
@@ -2263,7 +2151,6 @@ document.addEventListener('click', ev => {
     if (base) { S.inW = +base.w || 0; S.inR = +base.r || 0; } S.inWu = false; S.inN = ''; render();
   }
   else if (a === 'doneedit') { endEdit(); S.trayOpen = !!S.trayFull; syncNextInput(); render(); }
-  else if (a === 'trayopen') { readInputs(); S.trayOpen = true; render(); }
   else if (a === 'trayclose') { readInputs(); S.trayOpen = false; render(); }
   else if (a === 'delset') {
     const date = S.date, it = curSession().items.find(i => i.ex === S.sel); if (!it) return;
@@ -2312,9 +2199,8 @@ document.addEventListener('click', ev => {
   else if (a === 'goaladj') { S.goal = Math.max(1, Math.min(7, S.goal + +b.dataset.n)); savePrefs(); render(); }
   else if (a === 'goex') { S.tab = 'ex'; render(); window.scrollTo(0, 0); }
   else if (a === 'gome') { S.tab = 'me'; render(); window.scrollTo(0, 0); }
-  else if (a === 'tabgo') { markRet(); S.tab = b.dataset.v; render(); window.scrollTo(0, 0); }
   else if (a === 'mepb') { S.mePb = !S.mePb; render(); }
-  else if (a === 'pbopen') { S.gEx = b.dataset.id; S.gM = 'e1rm'; openG(); }
+  else if (a === 'pbopen') { S.gEx = b.dataset.id; openG(); }
   else if (a === 'calmj') { const k = b.dataset.m; calSet(k === today().slice(0, 7) ? today() : k + '-01'); S.calU = 'm'; S.calD = null; render(); window.scrollTo(0, 0); }
   else if (a === 'bkcopy') {
     const t = backupJSON(); let ok = false;
@@ -2338,7 +2224,6 @@ document.addEventListener('click', ev => {
   else if (a === 'calgo') { endEdit(); S.tab = 'log'; S.date = b.dataset.d; S.sel = null; const s0 = curSession(); const f = s0.items.find(i => work(i.sets).length) || s0.items[0]; if (f) selectEx(f.ex); render(); window.scrollTo(0, 0); }
   else if (a === 'histall') { S.histAll = S.histAll === S.gEx ? null : S.gEx; render(); }
   else if (a === 'gohist') { S.ret = null; S.gOpen = false; endEdit(); S.tab = 'log'; S.date = b.dataset.d; selectEx(S.gEx); S.trayOpen = true; render(); window.scrollTo(0, 0); }
-  else if (a === 'gm') { S.gM = b.dataset.v; render(); }
   else if (a === 'gr') { S.gR = b.dataset.v; render(); }
   else if (a === 'gtog') { const k = b.dataset.v, g0 = $('#gcard'), top = g0 ? g0.scrollTop : 0; S.gHide = S.gHide || {}; S.gHide[k] = !S.gHide[k]; render(); const g1 = $('#gcard'); if (g1) g1.scrollTop = top; }
   else if (a === 'br') { S.bR = b.dataset.v; render(); }
