@@ -109,8 +109,8 @@ Playwright（Chromium）で、スマホ幅・タッチ操作を合成して確�
 | v79 | https://claude.ai/artifact/QyLA63726ZBL6JyYL9iAYC | 記録タブの選択表示（選択中だけ丸を白く） |
 | v80 | https://claude.ai/artifact/ADe6vV7HERgZPqrsz5YvFh | カードの長押しで種目を外す |
 | v81 | https://claude.ai/artifact/7kXkU4URE6fTgLFQma5rJs | 体重の写真を約50KBに縮めて保存 |
-| v84 | https://claude.ai/artifact/TnjeVMgrKtyHzFvy5gUZc8 | 中身の整理のみ（スワイプ処理の一本化、使っていない処理・CSS の削除）。見た目と動作は v83 と同じ |
 | v82 | （確認版なし。利用者の指示で省略） | グラフタブの部位を左右スワイプで切り替え（配布中） |
+| v84 | https://claude.ai/artifact/TnjeVMgrKtyHzFvy5gUZc8 | 中身の整理のみ（スワイプ処理の一本化、使っていない処理・CSS の削除）。見た目と動作は v83 と同じ |
 
 ## 注意点
 - build.py は src.html 内の決まった文字列を目印に書き換える（`assert` で止まる）。特に、マイページ内の `data-act="bkimp">読み込む</button></div>';` と、起動部分の `const C = window.claude;` 〜 `.catch(() => { S.dbOk = false; …` は形を変えない。変えるなら build.py も直す。
