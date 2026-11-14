@@ -77,8 +77,8 @@ input::placeholder{color:var(--ink3)}
 /* 記録の一覧：カードの長押しで種目を外す。記録のある種目は、カードの位置で確認してから外す */
 .cdc[data-cdlp]{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .cdc.lpon{transform:scale(.985);transition:transform .2s}
-.cdx{position:relative;margin-top:-14px;padding:14px 14px 26px;border-radius:16px 16px 0 0;background:var(--raised);border:1px solid var(--danger);border-bottom:0;box-shadow:0 -6px 16px rgba(0,0,0,.55)}.cdx:first-child{margin-top:0}
-.cdx p{margin:0 0 12px;font-size:14px;line-height:1.6}.cdx p b{font-weight:700}.cdx .r{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.cdx .r button{min-height:44px;border-radius:8px;font-size:14px;font-weight:700}.cdx .r .no{border:1px solid var(--edge)}.cdx .r .yes{background:var(--danger);color:#1a0604}
+.cdx{position:relative;margin-top:-14px;padding:14px 14px 26px;border-radius:16px 16px 0 0;background:var(--raised);border:1px solid var(--edge);border-bottom:0;box-shadow:0 -6px 16px rgba(0,0,0,.55)}.cdx:first-child{margin-top:0}
+.cdx p{margin:0 0 12px;font-size:14px;line-height:1.6}.cdx p b{font-weight:700}.cdx .r{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.cdx .r button{min-height:44px;border-radius:8px;font-size:14px;font-weight:700}.cdx .r .no{border:1px solid var(--edge)}.cdx .r.r3{grid-template-columns:1fr 1.3fr 1fr}.cdx .r .chg{color:var(--ink)}.cdx .r .yes.mg{background:var(--ink);color:var(--bg)}.cdx p.sm{margin:10px 0 0;font-size:12px;color:var(--ink2)}.cdx .r .yes{background:var(--danger);color:#1a0604}
 .tpill{display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:15px;background:var(--rest);color:#04130d;font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:700;font-size:13px;white-space:nowrap}
 .tray .cst{position:absolute;left:0;right:0;top:0;height:4px}
 .tray.full{background:var(--bg);border-top:0;box-shadow:none}
@@ -629,7 +629,7 @@ const LS = { get(k) { try { return localStorage.getItem(k); } catch (e) { return
 const S = {
   tab: 'log', date: today(), list: [], sessions: {}, body: {}, fat: {}, bsrc: {}, bph: {}, bM: 'kg', fatIn: null, bLim: 60, bOpen: null, trayOpen: false,
   sel: null, inW: 20, inR: 10, loaded: { ex: false, s: false, b: false },
-  editIdx: null, editOrig: null, gEx: null, gOpen: false, gAll: false, gPart: 'all', gR: 'all', ret: null, exQ: '', pickQ: '', picking: null, pickPart: 'all', exPart: 'all',
+  editIdx: null, editOrig: null, gEx: null, gOpen: false, gAll: false, gPart: 'all', gR: 'all', ret: null, exQ: '', pickQ: '', picking: null, chgFrom: null, cdMg: null, pickPart: 'all', exPart: 'all',
   bodyDate: today(), bodyIn: null, bR: '1m', dbOk: null, sheet: null,
   inWu: false, inN: '', memoOpen: false, trayFull: false, awake: true, goal: 3, restSec: 60, restAuto: true, timer: null, plBar: 20, routines: [], calM: today().slice(0, 7), calU: 'w', calA: null, calD: null
 };
@@ -840,7 +840,8 @@ function vLog() {
     const ex = m[id], it = sess.items.find(i => i.ex === id), all = it ? it.sets : [], ws = work(all), wn = all.length - ws.length;
     let v = 0, b = null; ws.forEach(x => { const w = effW(ex, x, S.date); if (w != null) v += w * (+x.r || 0); if (!b || +x.w > +b.w || (+x.w === +b.w && +x.r > +b.r)) b = x; });
     const sub = ws.length ? ws.length + 'セット' + (wn ? ' ＋ W' + wn : '') + (b ? ' · 最高 ' + esc(setTxt(ex, b)) : '') : wn ? 'ウォームアップ ' + wn + 'セット' : 'まだ記録なし';
-    if (S.cdDel === id && !isRO()) return '<div class="cdx" role="group" aria-label="種目を外す"><p><b>' + esc(ex ? ex.name : '不明な種目') + '</b>を外しますか。' + (all.length ? 'この日の ' + all.length + 'セットの記録も消えます。' : '') + '</p><div class="r"><button type="button" class="no" data-act="cdno">やめる</button><button type="button" class="yes" data-act="cdyes" data-id="' + id + '">外す</button></div></div>';
+    if (S.cdMg && S.cdMg.from === id && !isRO()) { const to = m[S.cdMg.to], ti = sess.items.find(i => i.ex === S.cdMg.to); return '<div class="cdx" role="group" aria-label="種目をまとめる"><p><b>' + esc(to ? to.name : '種目') + '</b>はこの日すでに' + (ti ? ' ' + ti.sets.length + 'セット' : '') + '記録があります。<b>' + esc(ex ? ex.name : '不明な種目') + '</b>の ' + all.length + 'セットを後ろに加えて、1つにまとめますか。</p><div class="r"><button type="button" class="no" data-act="cdno">やめる</button><button type="button" class="yes mg" data-act="mgyes">まとめる</button></div></div>'; }
+    if (S.cdDel === id && !isRO()) return '<div class="cdx" role="group" aria-label="種目の操作"><p><b>' + esc(ex ? ex.name : '不明な種目') + '</b>' + (all.length ? '（' + all.length + 'セット）' : '') + '</p><div class="r r3"><button type="button" class="no" data-act="cdno">やめる</button><button type="button" class="no chg" data-act="chgex" data-id="' + id + '">種目を変更</button><button type="button" class="yes" data-act="cdyes" data-id="' + id + '">外す</button></div>' + (all.length ? '<p class="sm">外すと、この日の ' + all.length + 'セットの記録も消えます。変更なら記録はそのまま移ります。</p>' : '') + '</div>';
     return '<button type="button" class="cdc" data-act="card" data-id="' + id + '"' + (isRO() || !it ? '' : ' data-cdlp="' + id + '"') + ' style="--pc:' + (ex ? PCOL[partsOf(ex)[0]] : 'var(--ink3)') + '"><i class="cg" data-tg="' + id + '"></i>' + (ex ? xic(ex) : '<span class="xic"></span>') +
       '<span style="min-width:0"><span class="nm">' + esc(ex ? ex.name : '不明な種目') + '</span><span class="sb n">' + sub + '</span></span>' +
       '<span class="vr"><span class="tpill" data-tm="' + id + '" hidden></span><span class="vv n">' + (v ? '<b>' + grp(v) + '</b>kg' : '') + '</span></span></button>';
@@ -873,7 +874,8 @@ function focusHTML(ex) {
   }
   if (prev && prev.memo) h += '<div class="pmemo"><span class="lab">前回のメモ</span>' + esc(prev.memo) + '</div>';
   if ((it && it.memo) || S.memoOpen) h += '<label class="daymemo"><span class="lab">今日のメモ（この種目）</span><input type="text" id="exMemo" value="' + esc(it && it.memo ? it.memo : '') + '" placeholder="例：肩甲骨を寄せる意識" autocomplete="off"></label>';
-  else if (!ro) h += '<div><button type="button" class="bt" data-act="memoopen" style="min-height:36px">＋ この種目のメモ</button></div>';
+  if (!ro && !((it && it.memo) || S.memoOpen)) h += '<div style="display:flex;justify-content:space-between;gap:8px"><button type="button" class="bt" data-act="memoopen" style="min-height:36px">＋ この種目のメモ</button>' + (it ? '<button type="button" class="bt" data-act="chgex" data-id="' + S.sel + '" style="min-height:36px">種目を変更</button>' : '') + '</div>';
+  else if (!ro && it) h += '<div style="display:flex;justify-content:flex-end"><button type="button" class="bt" data-act="chgex" data-id="' + S.sel + '" style="min-height:36px">種目を変更</button></div>';
   h += '<div class="focus-t"><div class="fr sub"><span></span><span>前回' + (pv ? ' <b class="n">' + pv + '</b>' : '') + '</span><span>今回' + (cv ? ' <b class="n">' + cv + '</b>' : '') + '</span><span>1RM</span></div>';
   sets.forEach((s, i) => {
     const k = s.wu ? -1 : wi++, p = s.wu ? null : ps[k], v = s.wu ? null : e1(effW(ex, s, S.date), +s.r);
@@ -1256,9 +1258,10 @@ function pickBody(part) {
   let rows = S.list.filter(e => hit(e.name, q) && (part === 'all' || partsOf(e).includes(part)));
   rows.sort(byFreq(u));
   const exact = S.list.some(e => norm(e.name) === norm(q)), ch = catHTML(q, part);
-  const nb = S.picking === 'log' && q && !exact ? '<button type="button" class="bo" style="width:100%;margin-top:12px" data-act="picknew">「' + esc(q) + '」を新しい種目として追加' + (part !== 'all' && part !== 'other' ? '（' + PART[part] + '）' : '') + '</button>' : '';
+  const nb = (S.picking === 'log' || S.picking === 'chg') && q && !exact ? '<button type="button" class="bo" style="width:100%;margin-top:12px" data-act="picknew">「' + esc(q) + '」を新しい種目として追加' + (part !== 'all' && part !== 'other' ? '（' + PART[part] + '）' : '') + '</button>' : '';
   if (!rows.length && ch) return ch.replace('margin-top:22px', 'margin-top:12px') + nb;
-  return nb + sectioned(rows, u, 'pickone') + ch;
+  const hd = S.picking === 'chg' ? '<div class="note" style="margin-top:10px">「' + esc((exMap()[S.chgFrom] || {}).name || '') + '」の記録を、選んだ種目へ移します</div>' : '';
+  return hd + nb + sectioned(rows, u, 'pickone') + ch;
 }
 function renderSheet() { renderSheet0(); ensureGh($('#sheet')); }
 function renderSheet0() {
@@ -1266,7 +1269,7 @@ function renderSheet0() {
   sh.hidden = !S.picking;
   if (!S.picking) { sh.innerHTML = ''; return; }
   if (!$('#pickQ', sh)) {
-    sh.innerHTML = '<div class="hd"><input type="search" id="pickQ" placeholder="' + (S.picking === 'add' ? 'カタログを検索' : '種目を検索' + (S.picking === 'log' ? '・追加' : '')) + '" aria-label="種目を検索"><button type="button" class="bt strong" data-act="pickclose">閉じる</button></div><div class="pt" id="pickParts"></div>' +
+    sh.innerHTML = '<div class="hd"><input type="search" id="pickQ" placeholder="' + (S.picking === 'add' ? 'カタログを検索' : S.picking === 'chg' ? '変更先の種目を検索' : '種目を検索' + (S.picking === 'log' ? '・追加' : '')) + '" aria-label="種目を検索"><button type="button" class="bt strong" data-act="pickclose">閉じる</button></div><div class="pt" id="pickParts"></div>' +
       '<div class="bdwrap"><div class="bd" id="pickBd"></div><div class="bd" id="pickNb" hidden aria-hidden="true"></div></div>';
     $('#pickQ', sh).value = S.pickQ;
   }
@@ -2006,6 +2009,30 @@ document.addEventListener('pointermove', ev => { if (lpT && Math.hypot(ev.client
 /* 記録の一覧：カードを長押しで種目を外す。記録なしの種目はすぐ外して「元に戻す」を出す。記録のある種目は確認を出す */
 let cdT = null, cdX = 0, cdY = 0, cdFired = false, cdEl = null;
 const cdCancel = () => { clearTimeout(cdT); cdT = null; if (cdEl) cdEl.classList.remove('lpon'); cdEl = null; };
+/* 記録済みの種目を別の種目に差し替える。変更先がすでにこの日にあれば、セットをその後ろへまとめる */
+function pickDone(id, msg) {
+  if (S.picking === 'chg') { const from = S.chgFrom; S.picking = null; S.chgFrom = null; renderSheet(); changeEx(from, id); return; }
+  S.picking = null; selectEx(id); S.trayOpen = true; render(); if (msg) toast(msg);
+}
+function changeEx(from, to, ok) {
+  const date = S.date, sess = S.sessions[date], m = exMap(); if (!sess || !from || !to) return;
+  if (from === to) { render(); return; }
+  const k = sess.items.findIndex(i => i.ex === from); if (k < 0) { render(); return; }
+  const it = sess.items[k], j = sess.items.findIndex(i => i.ex === to);
+  if (j >= 0 && !ok) { S.cdDel = null; S.cdMg = { from, to }; S.trayOpen = false; render(); return; }
+  const before = JSON.parse(JSON.stringify(sess.items));
+  if (j < 0) it.ex = to;
+  else {
+    const t = sess.items[j]; t.sets = t.sets.concat(it.sets);
+    if (it.memo) t.memo = t.memo ? t.memo + ' / ' + it.memo : it.memo;
+    if (it.rest && !t.rest) t.rest = it.rest;
+    sess.items.splice(k, 1);
+  }
+  S.cdDel = null; selectEx(to); store.saveSession(date); render();
+  toast('「' + (m[from] ? m[from].name : '種目') + '」→「' + (m[to] ? m[to].name : '種目') + '」に変更' + (j < 0 ? '' : '（まとめました）'), () => {
+    const s2 = S.sessions[date]; if (!s2) return; s2.items = before; if (S.date === date) selectEx(from); store.saveSession(date); render();
+  });
+}
 function dropItem(id) {
   const date = S.date, sess = S.sessions[date]; if (!sess) return;
   const k = sess.items.findIndex(i => i.ex === id); if (k < 0) return;
@@ -2121,12 +2148,13 @@ document.addEventListener('click', ev => {
   const a = b.dataset.act;
   if (open && a !== 'delset' && a !== 'bdel') { open.classList.remove('open'); return; }
   document.querySelectorAll('.swipe.open').forEach(r => r.classList.remove('open'));
-  if (a === 'day') { const d = addDays(S.date, +b.dataset.n); if (d <= today()) { endEdit(); S.cdDel = null; S.date = d; S.sel = null; const s = curSession(); if (s.items.length) selectEx(s.items[0].ex); render(); } }
+  if (a === 'day') { const d = addDays(S.date, +b.dataset.n); if (d <= today()) { endEdit(); S.cdDel = null; S.cdMg = null; S.date = d; S.sel = null; const s = curSession(); if (s.items.length) selectEx(s.items[0].ex); render(); } }
   else if (a === 'exlist') { readInputs(); openSheetKind('exlist'); }
   else if (a === 'pastedit') { readInputs(); S.pastEdit = S.date; if (S.sel && (S.trayOpen)) selectEx(S.sel); render(); }
   else if (a === 'pastdone') { endEdit(); S.pastEdit = null; render(); }
-  else if (a === 'card') { if (Date.now() - (window.__swAt || 0) < 350) return; S.cdDel = null; readInputs(); selectEx(b.dataset.id); S.trayOpen = true; render(); }
-  else if (a === 'cdno') { S.cdDel = null; render(); }
+  else if (a === 'card') { if (Date.now() - (window.__swAt || 0) < 350) return; S.cdDel = null; S.cdMg = null; readInputs(); selectEx(b.dataset.id); S.trayOpen = true; render(); }
+  else if (a === 'cdno') { S.cdDel = null; S.cdMg = null; render(); }
+  else if (a === 'mgyes') { const g = S.cdMg; S.cdMg = null; if (g) changeEx(g.from, g.to, true); }
   else if (a === 'cdyes') dropItem(b.dataset.id);
   else if (a === 'sel') { readInputs(); selectEx(b.dataset.id); render(); if (S.sheet && S.sheet.kind === 'exlist') closeSheet(); }
   else if (a === 'pick') { S.picking = 'log'; S.pickQ = ''; renderSheet(); }
@@ -2140,11 +2168,12 @@ document.addEventListener('click', ev => {
     const c = CATALOG[+b.dataset.ci]; if (!c) return;
     const id = addExercise(c.name, c.cat, c.parts.slice()); if (!id) return;
     if (S.picking === 'add') { renderSheet(); render(); toast('「' + c.name + '」を追加しました'); }
-    else if (S.picking) { S.picking = null; selectEx(id); S.trayOpen = true; render(); toast('「' + c.name + '」を追加しました'); }
+    else if (S.picking) pickDone(id, '「' + c.name + '」を追加しました');
     else { const w = $('#exListWrap'); if (w) w.innerHTML = exListHTML(); toast('「' + c.name + '」を追加しました'); }
   }
-  else if (a === 'pickone') { selectEx(b.dataset.id); S.trayOpen = true; S.picking = null; render(); }
-  else if (a === 'picknew') { const id = addExercise(S.pickQ, 'free', S.pickPart !== 'all' && S.pickPart !== 'other' ? [S.pickPart] : []); if (id) { S.picking = null; selectEx(id); S.trayOpen = true; render(); toast('部位と分類は種目タブで変更できます'); } }
+  else if (a === 'pickone') pickDone(b.dataset.id);
+  else if (a === 'picknew') { const id = addExercise(S.pickQ, 'free', S.pickPart !== 'all' && S.pickPart !== 'other' ? [S.pickPart] : []); if (id) pickDone(id, '部位と分類は種目タブで変更できます'); }
+  else if (a === 'chgex') { readInputs(); endEdit(); S.cdDel = null; S.chgFrom = b.dataset.id; S.picking = 'chg'; S.pickQ = ''; const e0 = exMap()[S.chgFrom]; S.pickPart = e0 && partsOf(e0)[0] || 'all'; renderSheet(); }
   else if (a === 'pickpart') { S.pickPart = b.dataset.v; renderSheet(); $('#pickBd').scrollTop = 0; const on = $('#pickParts .tabs button.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' }); }
   else if (a === 'expart') { S.exPart = b.dataset.v; render(); }
   else if (a === 'gobody') { markRet(); S.tab = 'body'; render(); window.scrollTo(0, 0); }
