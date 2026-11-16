@@ -1,0 +1,13 @@
+const {chromium}=require('playwright');const D=require('./sample.json');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:360,height:780},hasTouch:true,isMobile:true,deviceScaleFactor:2});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('file://'+__dirname+'/test.html');
+await p.evaluate(D=>{const S=__t.S;S.list=D.list;S.sessions=D.sessions;S.body=Object.assign({},D.body);S.dbOk=true;S.loaded={ex:true,s:true,b:true};S.tab='body';__t.render()},D);
+await p.touchscreen.tap(180,8);await p.waitForTimeout(100);
+await p.fill('#bIn','54.35');await p.evaluate(()=>document.querySelector('[data-act=bsave]').click());await p.waitForTimeout(200);
+console.log(await p.evaluate(()=>{const S=__t.S;return [S.body[S.bodyDate],document.querySelector('.hero').innerText,document.querySelector('#bIn').value,document.querySelector('.brow').innerText.replace(/\n/g,' ')]}));
+await p.evaluate(()=>document.querySelector('[data-hold=bw][data-d="1"]').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true})));await p.waitForTimeout(80);await p.evaluate(()=>document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true})));
+console.log('step',await p.evaluate(()=>document.querySelector('#bIn').value));
+await p.fill('#bIn','54.3');await p.evaluate(()=>document.querySelector('[data-act=bsave]').click());await p.waitForTimeout(200);
+console.log(await p.evaluate(()=>document.querySelector('.hero').innerText));
+await p.screenshot({path:__dirname+'/out/kg.png'});
+console.log(errs);await b.close()})();

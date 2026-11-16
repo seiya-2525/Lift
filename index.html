@@ -484,6 +484,9 @@ const num = n => (n == null || isNaN(n)) ? '—' : String(+(+n).toFixed(2));
 const n1 = n => (n == null || isNaN(n)) ? '—' : (+n).toFixed(1);
 const signed = n => n > 0 ? '+' + num(n) : n < 0 ? '−' + num(-n) : '±0';
 const sgn1 = n => (n > 0 ? '+' : n < 0 ? '−' : '±') + Math.abs(n).toFixed(1);
+// 体重は小数第2位まで（第2位が0なら第1位まで）
+const nK = n => (n == null || isNaN(n)) ? '—' : (Math.round(Math.abs(+n) * 100) % 10 ? (+n).toFixed(2) : (+n).toFixed(1));
+const sgnK = n => (n > 0 ? '+' : n < 0 ? '−' : '±') + nK(Math.abs(n));
 const grp = n => (n == null || isNaN(n)) ? '—' : Math.round(n).toLocaleString('ja-JP');
 const CAT = { free: 'フリーウェイト', machine: 'マシン', body: '自重' };
 // 検索用：全角/半角・大文字/小文字・カタカナ/ひらがなの違いを無視
@@ -698,7 +701,7 @@ function openPhoto(d) {
   const first = ds[ds.length - 1];
   w.innerHTML = '<div class="phh"><span class="sub">写真 ' + ds.length + '枚</span><button type="button" data-act="phclose">閉じる</button></div><div class="phs">' + ds.map((x, i) => {
     const kg = S.body[x], gap = first && x !== first ? dayGap(first, x) : 0;
-    return '<section class="php" data-d="' + x + '"><div class="phm"><b class="n">' + jpFull(x) + '</b><span class="n">' + (kg != null ? n1(kg) + ' kg' : '体重なし') + (i < ds.length - 1 && kg != null && S.body[ds[i + 1]] != null ? '<small>' + sgn1(kg - S.body[ds[i + 1]]) + '（前の写真から）</small>' : '') + '</span></div><div class="phi"><span class="sub">読み込んでいます…</span></div></section>';
+    return '<section class="php" data-d="' + x + '"><div class="phm"><b class="n">' + jpFull(x) + '</b><span class="n">' + (kg != null ? nK(kg) + ' kg' : '体重なし') + (i < ds.length - 1 && kg != null && S.body[ds[i + 1]] != null ? '<small>' + sgnK(kg - S.body[ds[i + 1]]) + '（前の写真から）</small>' : '') + '</span></div><div class="phi"><span class="sub">読み込んでいます…</span></div></section>';
   }).join('') + '</div>';
   document.body.appendChild(w); document.body.classList.add('phon');
   const sc = w.querySelector('.phs'), load = sec => { if (sec.dataset.ok) return; sec.dataset.ok = '1'; const x = sec.dataset.d; getPh(x).then(img => { const b = sec.querySelector('.phi'); b.innerHTML = img ? '<img alt="' + shortD(x) + 'の写真" src="' + img + '">' : '<span class="sub">写真を読み込めませんでした</span>'; }); };
@@ -870,7 +873,7 @@ function focusHTML(ex) {
     const bw = bodyAt(S.date);
     h += bw == null
       ? '<div class="bwline">体重が未記録のため、実重量は計算できません。<button type="button" class="bt" data-act="gobody" style="min-height:32px">体重を記録</button></div>'
-      : '<div class="bwline n">体重 <b>' + n1(bw) + '</b> ' + (S.inW < 0 ? '− 補助 <b>' + num(-S.inW) + '</b>' : '＋ 荷重 <b>' + num(S.inW) + '</b>') + ' ＝ 実重量 <b>' + num(bw + S.inW) + '</b> kg</div>';
+      : '<div class="bwline n">体重 <b>' + nK(bw) + '</b> ' + (S.inW < 0 ? '− 補助 <b>' + num(-S.inW) + '</b>' : '＋ 荷重 <b>' + num(S.inW) + '</b>') + ' ＝ 実重量 <b>' + num(bw + S.inW) + '</b> kg</div>';
   }
   if (prev && prev.memo) h += '<div class="pmemo"><span class="lab">前回のメモ</span>' + esc(prev.memo) + '</div>';
   if ((it && it.memo) || S.memoOpen) h += '<label class="daymemo"><span class="lab">今日のメモ（この種目）</span><input type="text" id="exMemo" value="' + esc(it && it.memo ? it.memo : '') + '" placeholder="例：肩甲骨を寄せる意識" autocomplete="off"></label>';
@@ -1207,18 +1210,18 @@ function vBody() {
       const ld = sd[sd.length - 1], lv = val(ld);
       const ago = n => { const t = addDays(ld, -n); let b = null; sd.forEach(d => { if (d <= t) b = d; }); return b == null ? null : lv - val(b); };
       const d7 = ago(7), d30 = ago(30);
-      h += '<div class="herorow" style="margin-top:14px"><div><div class="sub">最新 ' + jpDay(ld).replace(/ .$/, '') + '</div><div class="hero">' + n1(lv) + '<small> ' + U + '</small></div></div>' +
-        '<div class="deltas"><span class="muted">7日前から</span><span class="n">' + (d7 == null ? '—' : sgn1(d7)) + '</span><span class="muted">30日前から</span><span class="n">' + (d30 == null ? '—' : sgn1(d30)) + '</span></div></div>';
+      h += '<div class="herorow" style="margin-top:14px"><div><div class="sub">最新 ' + jpDay(ld).replace(/ .$/, '') + '</div><div class="hero">' + (isF ? n1 : nK)(lv) + '<small> ' + U + '</small></div></div>' +
+        '<div class="deltas"><span class="muted">7日前から</span><span class="n">' + (d7 == null ? '—' : (isF ? sgn1 : sgnK)(d7)) + '</span><span class="muted">30日前から</span><span class="n">' + (d30 == null ? '—' : (isF ? sgn1 : sgnK)(d30)) + '</span></div></div>';
       const from = S.bR === '1m' ? addDays(today(), -31) : S.bR === '3m' ? addDays(today(), -92) : S.bR === '1y' ? addDays(today(), -366) : '0000';
-      const pts = sd.filter(d => d >= from).map(d => ({ d, y: val(d), tip1: shortD(d), tip2: n1(val(d)) + ' ' + U }));
+      const pts = sd.filter(d => d >= from).map(d => ({ d, y: val(d), tip1: shortD(d), tip2: (isF ? n1 : nK)(val(d)) + ' ' + U }));
       h += '<div class="toggle" style="margin-top:16px">' + [['1m', '1か月'], ['3m', '3か月'], ['1y', '1年'], ['all', '全期間']].map(x => '<button type="button" data-act="br" data-v="' + x[0] + '" class="' + (S.bR === x[0] ? 'on' : '') + '">' + x[1] + '</button>').join('') + '</div>';
-      h += pts.length > 1 ? chart('b' + S.bM, pts, { h: 170, fmt: n1, label: isF ? '体脂肪率の推移' : '体重の推移' }) : '<p class="sub" style="margin:8px 0 0">' + (pts.length ? '' : 'この期間の記録はありません。') + '</p>';
+      h += pts.length > 1 ? chart('b' + S.bM, pts, { h: 170, fmt: isF ? n1 : nK, label: isF ? '体脂肪率の推移' : '体重の推移' }) : '<p class="sub" style="margin:8px 0 0">' + (pts.length ? '' : 'この期間の記録はありません。') + '</p>';
     } else h += '<p class="sub" style="margin:14px 0 0">体脂肪率の記録がまだありません。</p>';
   } else {
     h += '<p class="sub" style="margin:8px 0 0">まだ体重の記録がありません。</p>';
   }
   h += '<div class="binput"><label class="datebtn n">' + shortD(S.bodyDate) + (S.bodyDate === today() ? ' 今日' : '') + '<input type="date" id="bDate" value="' + S.bodyDate + '" max="' + today() + '" aria-label="日付"></label>' +
-    '<div class="row"><button type="button" data-hold="bw" data-d="-1" aria-label="0.1kg減らす">−</button><input id="bIn" type="number" inputmode="decimal" step="0.1" value="' + n1(S.bodyIn) + '" aria-label="体重 kg"><button type="button" data-hold="bw" data-d="1" aria-label="0.1kg増やす">＋</button></div>' +
+    '<div class="row"><button type="button" data-hold="bw" data-d="-1" aria-label="0.1kg減らす">−</button><input id="bIn" type="number" inputmode="decimal" step="0.01" value="' + nK(S.bodyIn) + '" aria-label="体重 kg"><button type="button" data-hold="bw" data-d="1" aria-label="0.1kg増やす">＋</button></div>' +
     '<button type="button" class="bp" data-act="bsave">' + (S.body[S.bodyDate] != null ? '上書き' : '記録') + '</button>' +
     '<div class="frow"><span class="lab">体脂肪率 %（任意）</span><div class="row"><button type="button" data-hold="bf" data-d="-1" aria-label="0.1%減らす">−</button><input id="bFat" type="number" inputmode="decimal" step="0.1" placeholder="—" value="' + S.fatIn + '" aria-label="体脂肪率 %"><button type="button" data-hold="bf" data-d="1" aria-label="0.1%増やす">＋</button></div></div>' + photoRow() + '</div>' +
     '';
@@ -1233,7 +1236,7 @@ function vBody() {
       const prevD = rev[i + 1] != null ? rev[i + 1] : ds[ds.length - 1 - S.bLim];
       const diff = prevD != null ? S.body[d] - S.body[prevD] : null;
       const dt = parseD(d);
-      h += '<div class="brow" data-d="' + d + '" style="border-bottom:1px solid var(--line)"><div class="bline"><button type="button" class="fg" data-lp="' + d + '" aria-expanded="' + (S.bOpen === d) + '"><span>' + (dt.getMonth() + 1) + '/' + dt.getDate() + '<small>' + WD[dt.getDay()] + '</small></span><span class="fatc">' + (S.fat[d] != null ? n1(S.fat[d]) + '<small>%</small>' : '<small>—</small>') + '</span><span>' + n1(S.body[d]) + (diff != null ? '<small>' + sgn1(diff) + '</small>' : '') + '</span></button>' + (anyPh ? (S.bph[d] ? '<button type="button" class="phb" data-act="phopen" data-d="' + d + '" aria-label="' + shortD(d) + 'の写真を見る">' + CAM + '</button>' : '<span class="phb"></span>') : '') + '</div>' +
+      h += '<div class="brow" data-d="' + d + '" style="border-bottom:1px solid var(--line)"><div class="bline"><button type="button" class="fg" data-lp="' + d + '" aria-expanded="' + (S.bOpen === d) + '"><span>' + (dt.getMonth() + 1) + '/' + dt.getDate() + '<small>' + WD[dt.getDay()] + '</small></span><span class="fatc">' + (S.fat[d] != null ? n1(S.fat[d]) + '<small>%</small>' : '<small>—</small>') + '</span><span>' + nK(S.body[d]) + (diff != null ? '<small>' + sgnK(diff) + '</small>' : '') + '</span></button>' + (anyPh ? (S.bph[d] ? '<button type="button" class="phb" data-act="phopen" data-d="' + d + '" aria-label="' + shortD(d) + 'の写真を見る">' + CAM + '</button>' : '<span class="phb"></span>') : '') + '</div>' +
         (S.bOpen === d ? '<div class="bdelp"><span class="sub">' + shortD(d) + 'の記録を削除します</span><div><button type="button" class="bt" data-act="bopen" data-d="' + d + '">閉じる</button><button type="button" class="bdelb" data-act="bdel" data-d="' + d + '">削除…</button></div></div>' : '') + '</div>';
     });
     h += '</div>';
@@ -1450,7 +1453,7 @@ async function importData(o) {
   const bodyJobs = [], photoJobs = [], done = {};
   if (o.body && typeof o.body === 'object') Object.keys(o.body).sort().reverse().forEach(d => {
     const v = o.body[d]; if (!(okD(d) && v && +v.kg > 20 && +v.kg < 300)) return; nb++;
-    const kg = +(+v.kg).toFixed(1), fat = v.fat != null && +v.fat > 2 && +v.fat < 60 ? +(+v.fat).toFixed(1) : null;
+    const kg = +(+v.kg).toFixed(2), fat = v.fat != null && +v.fat > 2 && +v.fat < 60 ? +(+v.fat).toFixed(1) : null;
     const same = S.body[d] === kg && (fat == null || S.fat[d] === fat);
     const doc = bodyDoc(d, kg, fat != null ? fat : S.fat[d], S.bph[d] || phs[d]);
     if (phs[d]) { done[d] = true; photoJobs.push([d, doc]); return; } // 写真つきの日は、写真→体重の順に1件として書く
@@ -1607,7 +1610,7 @@ function vMe() {
       return '<' + (ok ? 'button type="button" data-act="pbopen" data-id="' + x.e.id + '"' : 'div') + ' class="b3t"><span class="k">' + x.n + '</span><b>' + (x.x ? n1(x.x.v) + '<small>kg</small>' : '—') + '</b><span class="spk">' + (ok ? sparkSVG((K.ser[x.e.id] || []).slice(-12).map(y => y.v), 90, 24) : '') + '</span>' +
         '<span class="s n">' + (ok ? '実測 ' + (x.w ? n1(x.w.v) : '—') : '記録なし') + '</span><span class="s n">' + (pb ? '自己ベスト <span' + gd(pb) + '>' + n1(pb.v) + '</span>' : '&nbsp;') + '</span></' + (ok ? 'button' : 'div') + '>'; }).join('') + '</div>';
   const bds = Object.keys(S.body).sort(), bd = bds[bds.length - 1];
-  h += '<button type="button" class="bwt" data-act="gobody"><span><span class="k">体重</span><b class="n">' + (bd ? n1(S.body[bd]) : '—') + '<small> kg</small></b></span><span class="spk">' + sparkSVG(bds.slice(-30).map(d => S.body[d]), 180, 28) + '</span><span class="d n">' + (bd ? shortD(bd) : '') + '</span></button>';
+  h += '<button type="button" class="bwt" data-act="gobody"><span><span class="k">体重</span><b class="n">' + (bd ? nK(S.body[bd]) : '—') + '<small> kg</small></b></span><span class="spk">' + sparkSVG(bds.slice(-30).map(d => S.body[d]), 180, 28) + '</span><span class="d n">' + (bd ? shortD(bd) : '') + '</span></button>';
   // 最近の自己ベスト：更新日の新しい順（同じ日は値の大きい順）。30日以内は金色
   const pbs = Object.keys(K.pb).filter(id => K.m[id]).sort((a, b) => K.pb[b].d.localeCompare(K.pb[a].d) || K.pb[b].v - K.pb[a].v), show = S.mePb ? pbs : pbs.slice(0, 3);
   if (pbs.length) h += '<div class="sech"><div class="sect">最近の自己ベスト</div>' + (pbs.length > 3 ? '<button type="button" class="bt" data-act="mepb">' + (S.mePb ? '閉じる' : 'すべて見る（' + pbs.length + '）') + '</button>' : '') + '</div><div style="margin-top:8px">' +
@@ -1972,11 +1975,11 @@ function stepOnce(kind, d) {
   }
   if (kind === 'bw') {
     const i = $('#bIn'); if (i && i.value !== '' && !isNaN(+i.value)) S.bodyIn = +i.value;
-    S.bodyIn = Math.max(0, +(S.bodyIn + 0.1 * d).toFixed(1)); if (i) i.value = n1(S.bodyIn); return;
+    S.bodyIn = Math.max(0, +(S.bodyIn + 0.1 * d).toFixed(2)); if (i) i.value = nK(S.bodyIn); return;
   }
   readInputs();
   const ex = exMap()[S.sel], st = ex ? (+ex.step || 2.5) : 2.5;
-  if (kind === 'w') { S.inW = +(S.inW + d * st).toFixed(2); if (!(ex && ex.cat === 'body') && S.inW < 0) S.inW = 0; const i = $('#inW'); if (i) i.value = num(S.inW); if (ex && ex.cat === 'body') { const b = $('.bwline'); if (b) { const bw = bodyAt(S.date); if (bw != null) b.innerHTML = '体重 <b>' + n1(bw) + '</b> ' + (S.inW < 0 ? '− 補助 <b>' + num(-S.inW) + '</b>' : '＋ 荷重 <b>' + num(S.inW) + '</b>') + ' ＝ 実重量 <b>' + num(bw + S.inW) + '</b> kg'; } } }
+  if (kind === 'w') { S.inW = +(S.inW + d * st).toFixed(2); if (!(ex && ex.cat === 'body') && S.inW < 0) S.inW = 0; const i = $('#inW'); if (i) i.value = num(S.inW); if (ex && ex.cat === 'body') { const b = $('.bwline'); if (b) { const bw = bodyAt(S.date); if (bw != null) b.innerHTML = '体重 <b>' + nK(bw) + '</b> ' + (S.inW < 0 ? '− 補助 <b>' + num(-S.inW) + '</b>' : '＋ 荷重 <b>' + num(S.inW) + '</b>') + ' ＝ 実重量 <b>' + num(bw + S.inW) + '</b> kg'; } } }
   else { S.inR = Math.max(0, S.inR + d); const i = $('#inR'); if (i) i.value = num(S.inR); }
   applyEdit();
 }
@@ -2328,7 +2331,7 @@ document.addEventListener('click', ev => {
     const i = $('#bIn'); const v = +i.value; if (!(v > 20 && v < 300)) { toast('体重を正しく入力してください'); return; }
     const fi = $('#bFat'), fv = fi ? fi.value.trim() : '';
     if (fv !== '' && !(+fv > 2 && +fv < 60)) { toast('体脂肪率を正しく入力してください'); return; }
-    S.body[S.bodyDate] = +v.toFixed(1); S.bodyIn = S.body[S.bodyDate];
+    S.body[S.bodyDate] = +v.toFixed(2); S.bodyIn = S.body[S.bodyDate];
     if (fv === '') delete S.fat[S.bodyDate]; else S.fat[S.bodyDate] = +(+fv).toFixed(1);
     S.fatIn = null; store.saveBody(S.bodyDate); render(); toast('記録しました');
   }
