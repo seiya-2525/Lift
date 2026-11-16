@@ -481,12 +481,13 @@ const CATALOG = [['デクラインベンチプレス','free','chest'],['イン�
 ['ケーブルクランチ','machine','abs'],['アブコースター','machine','abs'],['バイシクルクランチ','body','abs'],['ロシアンツイスト','body','abs'],['マウンテンクライマー','body','abs'],['ニーレイズ','body','abs']].map(c => ({ name: c[0], cat: c[1], parts: [c[2]] }));
 function catHits(q, part, all) {
   if (!q && !all) return [];
-  const have = new Set(S.list.map(e => norm(e.name)));
-  return CATALOG.map((c, i) => Object.assign({ ci: i }, c)).filter(c => !have.has(norm(c.name)) && hit(c.name, q) && (part === 'all' || c.parts.includes(part)));
+  const have = new Set(S.list.filter(vis).map(e => norm(e.name))), hidN = new Set(S.list.filter(e => e.hid).map(e => norm(e.name)));
+  const hidden = S.list.filter(e => e.hid).map(e => ({ ci: 'h' + e.id, name: e.name, cat: e.cat, parts: partsOf(e), ic: e.ic, hid: true }));
+  return hidden.concat(CATALOG.map((c, i) => Object.assign({ ci: i }, c)).filter(c => !hidN.has(norm(c.name)))).filter(c => !have.has(norm(c.name)) && hit(c.name, q) && (part === 'all' || c.parts.includes(part)));
 }
 function catHTML(q, part, all) {
   const cs = catHits(q, part, all); if (!cs.length) return all ? '<div class="empty">該当する種目がありません</div>' : '';
-  return '<div class="sh" style="margin-top:' + (all ? 16 : 22) + 'px">' + (all ? '追加できる種目' : '未登録の種目') + '<span class="n">' + (all ? cs.length + '種目' : '追加すると一覧に入ります') + '</span></div>' + cs.map(c => '<div class="exrow catrow" style="--pc:' + PCOL[c.parts[0]] + '">' + xic(c) + '<span class="nm"><b>' + esc(c.name) + '</b><span>' + partsHTML(c) + '<span class="muted"> · ' + CAT[c.cat] + '</span></span></span><button type="button" class="chip" data-act="catadd" data-ci="' + c.ci + '">＋ 追加</button></div>').join('');
+  return '<div class="sh" style="margin-top:' + (all ? 16 : 22) + 'px">' + (all ? '追加できる種目' : '未登録の種目') + '<span class="n">' + (all ? cs.length + '種目' : '追加すると一覧に入ります') + '</span></div>' + cs.map(c => '<div class="exrow catrow" style="--pc:' + PCOL[c.parts[0]] + '">' + xic(c) + '<span class="nm"><b>' + esc(c.name) + '</b><span>' + partsHTML(c) + '<span class="muted"> · ' + CAT[c.cat] + (c.hid ? ' · 非表示中' : '') + '</span></span></span><button type="button" class="chip" data-act="catadd" data-ci="' + c.ci + '">' + (c.hid ? '戻す' : '＋ 追加') + '</button></div>').join('');
 }
 const hit = (name, q) => !q || norm(name).includes(norm(q));
 const PARTS = [['chest', '胸'], ['back', '背中'], ['shoulder', '肩'], ['bi', '二頭'], ['tri', '三頭'], ['leg', '脚'], ['abs', '腹'], ['other', 'その他']];
@@ -1109,38 +1110,41 @@ function monthsBetween(a, b) {
 /* ---------- exercises tab ---------- */
 function vEx() {
   const u = usage(), q = S.exQ.trim();
-  const rows = S.list.filter(e => hit(e.name, q) && (S.exPart === 'all' || partsOf(e).includes(S.exPart))).sort(byFreq(u));
-  let h = '<button type="button" class="bt" data-act="gome" style="margin:0 0 6px -2px">‹ マイページ</button><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="title">種目 <span class="n" style="font-size:15px;color:var(--ink3);font-weight:400">' + S.list.length + '</span></div>' +
-    '<button type="button" class="bt strong" data-act="newex">＋ 追加</button></div>';
+  const rows = S.list.filter(e => vis(e) && hit(e.name, q) && (S.exPart === 'all' || partsOf(e).includes(S.exPart))).sort(byFreq(u));
+  let h = '<button type="button" class="bt" data-act="gome" style="margin:0 0 6px -2px">‹ マイページ</button><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="title">種目 <span class="n" style="font-size:15px;color:var(--ink3);font-weight:400">' + S.list.filter(vis).length + '</span></div>' +
+    '<div style="display:flex;gap:18px"><button type="button" class="bt" data-act="unopen">整理</button><button type="button" class="bt strong" data-act="newex">＋ 追加</button></div></div>';
   h += '<div class="sticky"><input type="search" id="exQ" style="margin-top:12px" placeholder="種目を検索" aria-label="種目を検索" value="' + esc(S.exQ) + '">' +
     '<div style="margin-top:14px">' + partTabs(S.exPart, 'expart') + '</div></div>';
-  const un = unusedEx().length;
-  return h + '<div id="exListWrap">' + exListHTML() + '</div>' + (un ? '<button type="button" class="bo" data-act="unopen" style="margin-top:22px">記録のない種目を整理（' + un + '）</button>' : '');
+  return h + '<div id="exListWrap">' + exListHTML() + '</div>';
 }
-/* ---------- 記録のない種目の整理：どの日の記録にも出てこない種目を選んで消す（BIG3 は対象外） ---------- */
-function unusedEx() { const ref = {}; Object.keys(S.sessions).forEach(d => S.sessions[d].items.forEach(i => { ref[i.ex] = 1; })); return S.list.filter(e => !ref[e.id] && !BIG3.includes(e.name)); }
+/* ---------- 使っていない種目の整理（v92）：記録がない、または最後の記録から1年以上の種目を非表示にする。BIG3 は対象外。
+   非表示（e.hid）の種目は、種目の管理と種目選択の一覧に出ない。記録・グラフはそのまま。「＋ 追加」のカタログに戻り、そこから一覧に戻せる ---------- */
+const vis = e => !e.hid;
+function idleEx() {
+  const last = {}; Object.keys(S.sessions).forEach(d => S.sessions[d].items.forEach(i => { if (!last[i.ex] || d > last[i.ex]) last[i.ex] = d; }));
+  const t0 = today();
+  return S.list.filter(e => vis(e) && !BIG3.includes(e.name) && (!last[e.id] || dayGap(last[e.id], t0) >= 365)).map(e => ({ e, last: last[e.id] || null }));
+}
 function unSheet() {
-  const st = S.sheet, list = unusedEx().sort((a, b) => a.name.localeCompare(b.name, 'ja')), inR = id => S.routines.filter(r => r.exs.includes(id)).map(r => r.name);
-  if (!list.length) return '<div class="in"><div class="h2">記録のない種目を整理</div><p class="sub">記録のない種目はありません。</p><button type="button" class="bo" data-act="bsclose">閉じる</button></div>';
-  const n = list.filter(e => st.sel[e.id]).length;
-  return '<div class="in"><div class="h2">記録のない種目を整理</div><p class="sub" style="margin:0">一度も記録していない種目です。消した標準の種目は「＋ 追加」から戻せます。</p>' +
+  const st = S.sheet, list = idleEx().sort((a, b) => (a.last || '').localeCompare(b.last || '') || a.e.name.localeCompare(b.e.name, 'ja'));
+  if (!list.length) return '<div class="in"><div class="h2">使っていない種目を整理</div><p class="sub">対象の種目はありません。</p><button type="button" class="bo" data-act="bsclose">閉じる</button></div>';
+  const n = list.filter(x => st.sel[x.e.id]).length;
+  return '<div class="in"><div class="h2">使っていない種目を整理</div><p class="sub" style="margin:0">記録がない種目と、最後の記録から1年以上たった種目です。非表示にすると一覧から消えますが、記録とグラフは残ります。「＋ 追加」から一覧に戻せます。</p>' +
     '<div style="display:flex;gap:10px"><button type="button" class="bt" data-act="unall">すべて選ぶ</button><button type="button" class="bt" data-act="unnone">選択をはずす</button></div>' +
-    '<div>' + list.map(e => { const r = inR(e.id); return '<button type="button" class="tli fxr' + (st.sel[e.id] ? ' on' : '') + '" data-act="untog" data-id="' + e.id + '"><span class="nm">' + esc(e.name) + '</span><span class="sb">' + partsHTML(e) + (r.length ? '<span class="muted"> · ルーティン「' + esc(r.join('」「')) + '」から外れます</span>' : '') + '</span><span class="vl n">' + (st.sel[e.id] ? '✓' : '') + '</span></button>'; }).join('') + '</div>' +
-    '<button type="button" class="bp" data-act="ungo"' + (n ? '' : ' disabled') + '>' + (n ? (st.arm ? 'もう一度押すと' + n + '種目を削除します' : '選んだ' + n + '種目を削除') : '削除する種目を選んでください') + '</button>' +
+    '<div>' + list.map(x => '<button type="button" class="tli fxr' + (st.sel[x.e.id] ? ' on' : '') + '" data-act="untog" data-id="' + x.e.id + '"><span class="nm">' + esc(x.e.name) + '</span><span class="sb">' + partsHTML(x.e) + '<span class="muted"> · ' + (x.last ? '最後の記録 ' + x.last.replace(/-/g, '/') : '記録なし') + '</span></span><span class="vl n">' + (st.sel[x.e.id] ? '✓' : '') + '</span></button>').join('') + '</div>' +
+    '<button type="button" class="bp" data-act="ungo"' + (n ? '' : ' disabled') + '>' + (n ? '選んだ' + n + '種目を非表示にする' : '非表示にする種目を選んでください') + '</button>' +
     '<button type="button" class="bo" data-act="bsclose">閉じる</button></div>';
 }
 function unRe() { S.sheet.key = 'unused:' + Date.now(); $('#bsheet').dataset.key = ''; renderBSheet(); }
-function delExs(ids) {
-  const set = {}; ids.forEach(id => { set[id] = 1; });
-  const oldL = S.list.slice(), oldR = JSON.parse(JSON.stringify(S.routines));
-  S.list = S.list.filter(e => !set[e.id]);
-  S.routines = S.routines.map(r => Object.assign({}, r, { exs: r.exs.filter(id => !set[id]) })).filter(r => r.exs.length);
-  store.saveList(); store.saveRoutines(); render();
-  toast(ids.length + '種目を削除しました', () => { S.list = oldL; S.routines = oldR; store.saveList(); store.saveRoutines(); render(); }, 8000);
+function hideExs(ids, on) {
+  const m = exMap(), old = ids.map(id => [id, !!(m[id] && m[id].hid)]);
+  ids.forEach(id => { const e = m[id]; if (!e) return; if (on) e.hid = true; else delete e.hid; });
+  store.saveList(); render();
+  if (on) toast(ids.length === 1 ? '「' + m[ids[0]].name + '」を非表示にしました' : ids.length + '種目を非表示にしました', () => { old.forEach(([id, h]) => { const e = m[id]; if (e) { if (h) e.hid = true; else delete e.hid; } }); store.saveList(); render(); }, 8000);
 }
 function exListHTML() {
   const u = usage(), q = S.exQ.trim();
-  const rows = S.list.filter(e => hit(e.name, q) && (S.exPart === 'all' || partsOf(e).includes(S.exPart))).sort(byFreq(u));
+  const rows = S.list.filter(e => vis(e) && hit(e.name, q) && (S.exPart === 'all' || partsOf(e).includes(S.exPart))).sort(byFreq(u));
   const ch = catHTML(q, S.exPart);
   return (rows.length || !ch ? sectioned(rows, u, 'exedit') : '') + ch;
 }
@@ -1193,7 +1197,7 @@ function renderBSheet0() {
     const others = S.list.filter(o => o.id !== e.id).sort((a, b) => a.name.localeCompare(b.name, 'ja'));
     h += '<div class="danger-zone"><label>別の種目に統合（記録を移して、この種目を消します）<select id="bsMerge"><option value="">統合先を選ぶ</option>' + others.map(o => '<option value="' + o.id + '">' + esc(o.name) + '</option>').join('') + '</select></label>' +
       '<div><button type="button" class="bt danger" data-act="exmerge">統合する</button></div>' +
-      (unusedEx().some(x => x.id === e.id) ? '<div style="margin-top:14px"><button type="button" class="bt danger" data-act="exdel1">この種目を削除（記録なし）</button></div>' : '') + '</div>';
+      (BIG3.includes(e.name) ? '' : '<div style="margin-top:14px"><button type="button" class="bt" data-act="exhide1">この種目を非表示にする</button><div class="sub">記録とグラフは残ります。「＋ 追加」から戻せます。</div></div>') + '</div>';
   }
   bs.innerHTML = h + '</div>';
 }
@@ -1267,9 +1271,9 @@ const CAM = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke=
 function pickBody(part) {
   const u = usage(), q = S.pickQ.trim();
   if (S.picking === 'add') return '<button type="button" class="bp" style="width:100%;margin-top:12px;min-height:48px" data-act="addcreate">＋ ' + (q ? '「' + esc(q) + '」を新しく作成' : '新しく作成') + '</button>' + catHTML(q, part, true);
-  let rows = S.list.filter(e => hit(e.name, q) && (part === 'all' || partsOf(e).includes(part)));
+  let rows = S.list.filter(e => vis(e) && hit(e.name, q) && (part === 'all' || partsOf(e).includes(part)));
   rows.sort(byFreq(u));
-  const exact = S.list.some(e => norm(e.name) === norm(q)), ch = catHTML(q, part);
+  const exact = S.list.some(e => vis(e) && norm(e.name) === norm(q)), ch = catHTML(q, part);
   const nb = (S.picking === 'log' || S.picking === 'chg') && q && !exact ? '<button type="button" class="bo" style="width:100%;margin-top:12px" data-act="picknew">「' + esc(q) + '」を新しい種目として追加' + (part !== 'all' && part !== 'other' ? '（' + PART[part] + '）' : '') + '</button>' : '';
   if (!rows.length && ch) return ch.replace('margin-top:22px', 'margin-top:12px') + nb;
   const hd = S.picking === 'chg' ? '<div class="note" style="margin-top:10px">「' + esc((exMap()[S.chgFrom] || {}).name || '') + '」の記録を、選んだ種目へ移します</div>' : '';
@@ -1699,7 +1703,7 @@ function vMe() {
     show.map(id => { const x = K.pb[id], nw = dayGap(x.d, t0) <= 30; return '<button type="button" class="pbr2" data-act="pbopen" data-id="' + id + '"><span><span class="nm">' + esc(K.m[id].name) + '</span><span class="dd n">' + shortD(x.d) + (nw ? ' 更新' : '') + '</span></span><span class="v' + (nw ? ' gold' : '') + '">' + n1(x.v) + '<small> kg</small></span></button>'; }).join('') + '</div>';
   h += '<div class="metot n">通算 ' + grp(K.days) + '日 · ' + grp(K.sets) + 'セット · ' + (K.vol >= 100000 ? grp(K.vol / 1000) : n1(K.vol / 1000)) + ' t</div>';
   // 管理
-  h += '<div class="sect" style="margin-top:28px">管理</div><div class="rows" style="margin-top:6px"><button type="button" class="merow" data-act="goex"><span>種目の管理</span><span class="d n">' + S.list.length + '種目 ›</span></button><button type="button" class="merow" data-act="fixopen"><span>片手・片側の記録を整理</span><span class="d">›</span></button></div>';
+  h += '<div class="sect" style="margin-top:28px">管理</div><div class="rows" style="margin-top:6px"><button type="button" class="merow" data-act="goex"><span>種目の管理</span><span class="d n">' + S.list.filter(vis).length + '種目 ›</span></button><button type="button" class="merow" data-act="unopen"><span>使っていない種目を整理</span><span class="d n">' + (idleEx().length ? idleEx().length + '種目 ' : '') + '›</span></button><button type="button" class="merow" data-act="fixopen"><span>片手・片側の記録を整理</span><span class="d">›</span></button></div>';
   h += '<div class="sect" style="margin-top:24px">バックアップ</div><div class="bkrow"><button type="button" class="bo" style="min-height:44px" data-act="bkcopy">書き出す（コピー）</button><button type="button" class="bo" style="min-height:44px" data-act="bkimp">読み込む</button></div>';
   return h;
 }
@@ -1775,6 +1779,7 @@ function addExercise(name, cat, parts, group) {
   name = name.trim();
   if (!name) { toast('種目名を入力してください'); return null; }
   const dup = S.list.find(e => norm(e.name) === norm(name));
+  if (dup && dup.hid) { delete dup.hid; store.saveList(); return dup.id; }
   if (dup) { toast('「' + dup.name + '」はすでにあります'); return dup.id; }
   const e = { id: uid(), name, cat, step: cat === 'body' ? 1 : 2.5, parts: parts || [] };
   S.list.push(e); store.saveList();
@@ -2249,11 +2254,12 @@ document.addEventListener('click', ev => {
   else if (a === 'gpart') { S.gPart = b.dataset.v; render(); }
   else if (a === 'pickclose') { S.picking = null; renderSheet(); }
   else if (a === 'catadd') {
-    const c = CATALOG[+b.dataset.ci]; if (!c) return;
-    const id = addExercise(c.name, c.cat, c.parts.slice()); if (!id) return;
-    if (S.picking === 'add') { renderSheet(); render(); toast('「' + c.name + '」を追加しました'); }
-    else if (S.picking) pickDone(id, '「' + c.name + '」を追加しました');
-    else { const w = $('#exListWrap'); if (w) w.innerHTML = exListHTML(); toast('「' + c.name + '」を追加しました'); }
+    const ci = b.dataset.ci, h = ci[0] === 'h' && exMap()[ci.slice(1)], c = h || CATALOG[+ci]; if (!c) return;
+    const hd = S.list.some(e => e.hid && norm(e.name) === norm(c.name)), msg = '「' + c.name + '」を' + (hd ? '一覧に戻しました' : '追加しました');
+    const id = addExercise(c.name, c.cat, (c.parts || []).slice()); if (!id) return;
+    if (S.picking === 'add') { renderSheet(); render(); toast(msg); }
+    else if (S.picking) pickDone(id, msg);
+    else { render(); toast(msg); }
   }
   else if (a === 'pickone') pickDone(b.dataset.id);
   else if (a === 'picknew') { const id = addExercise(S.pickQ, 'free', S.pickPart !== 'all' && S.pickPart !== 'other' ? [S.pickPart] : []); if (id) pickDone(id, '部位と分類は種目タブで変更できます'); }
@@ -2343,12 +2349,12 @@ document.addEventListener('click', ev => {
   }
   else if (a === 'expsel') { const x = $('#expTx'); if (x) { x.focus(); x.select(); } }
   else if (a === 'bkimp') openSheetKind('import');
-  else if (a === 'unopen') { const sel = {}; unusedEx().forEach(e => { sel[e.id] = true; }); S.sheet = { kind: 'unused', key: 'unused:' + Date.now(), sel, arm: false }; renderBSheet(); }
-  else if (a === 'untog') { const st = S.sheet; st.sel[b.dataset.id] = !st.sel[b.dataset.id]; st.arm = false; unRe(); }
-  else if (a === 'unall') { const st = S.sheet; unusedEx().forEach(e => { st.sel[e.id] = true; }); st.arm = false; unRe(); }
-  else if (a === 'unnone') { S.sheet.sel = {}; S.sheet.arm = false; unRe(); }
-  else if (a === 'ungo') { const st = S.sheet, ids = unusedEx().map(e => e.id).filter(id => st.sel[id]); if (!ids.length) return; if (!st.arm) { st.arm = true; unRe(); return; } closeSheet(); delExs(ids); }
-  else if (a === 'exdel1') { if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = 'もう一度押すと削除します'; return; } const id = S.sheet.id; closeSheet(); delExs([id]); }
+  else if (a === 'unopen') { const sel = {}; idleEx().forEach(x => { sel[x.e.id] = true; }); S.sheet = { kind: 'unused', key: 'unused:' + Date.now(), sel }; renderBSheet(); }
+  else if (a === 'untog') { const st = S.sheet; st.sel[b.dataset.id] = !st.sel[b.dataset.id]; unRe(); }
+  else if (a === 'unall') { const st = S.sheet; idleEx().forEach(x => { st.sel[x.e.id] = true; }); unRe(); }
+  else if (a === 'unnone') { S.sheet.sel = {}; unRe(); }
+  else if (a === 'ungo') { const st = S.sheet, ids = idleEx().map(x => x.e.id).filter(id => st.sel[id]); if (!ids.length) return; closeSheet(); hideExs(ids, true); }
+  else if (a === 'exhide1') { const id = S.sheet.id; closeSheet(); hideExs([id], true); }
   else if (a === 'fixopen') { S.sheet = { kind: 'fix', key: 'fix:' + Date.now(), ex: null, sel: {}, arm: false }; renderBSheet(); }
   else if (a === 'fixex') { S.sheet.ex = b.dataset.id; S.sheet.sel = {}; S.sheet.arm = false; fixRe(); }
   else if (a === 'fixback') { S.sheet.ex = null; S.sheet.sel = {}; fixRe(); }
