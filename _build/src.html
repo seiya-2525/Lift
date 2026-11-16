@@ -1114,7 +1114,29 @@ function vEx() {
     '<button type="button" class="bt strong" data-act="newex">＋ 追加</button></div>';
   h += '<div class="sticky"><input type="search" id="exQ" style="margin-top:12px" placeholder="種目を検索" aria-label="種目を検索" value="' + esc(S.exQ) + '">' +
     '<div style="margin-top:14px">' + partTabs(S.exPart, 'expart') + '</div></div>';
-  return h + '<div id="exListWrap">' + exListHTML() + '</div>';
+  const un = unusedEx().length;
+  return h + '<div id="exListWrap">' + exListHTML() + '</div>' + (un ? '<button type="button" class="bo" data-act="unopen" style="margin-top:22px">記録のない種目を整理（' + un + '）</button>' : '');
+}
+/* ---------- 記録のない種目の整理：どの日の記録にも出てこない種目を選んで消す（BIG3 は対象外） ---------- */
+function unusedEx() { const ref = {}; Object.keys(S.sessions).forEach(d => S.sessions[d].items.forEach(i => { ref[i.ex] = 1; })); return S.list.filter(e => !ref[e.id] && !BIG3.includes(e.name)); }
+function unSheet() {
+  const st = S.sheet, list = unusedEx().sort((a, b) => a.name.localeCompare(b.name, 'ja')), inR = id => S.routines.filter(r => r.exs.includes(id)).map(r => r.name);
+  if (!list.length) return '<div class="in"><div class="h2">記録のない種目を整理</div><p class="sub">記録のない種目はありません。</p><button type="button" class="bo" data-act="bsclose">閉じる</button></div>';
+  const n = list.filter(e => st.sel[e.id]).length;
+  return '<div class="in"><div class="h2">記録のない種目を整理</div><p class="sub" style="margin:0">一度も記録していない種目です。消した標準の種目は「＋ 追加」から戻せます。</p>' +
+    '<div style="display:flex;gap:10px"><button type="button" class="bt" data-act="unall">すべて選ぶ</button><button type="button" class="bt" data-act="unnone">選択をはずす</button></div>' +
+    '<div>' + list.map(e => { const r = inR(e.id); return '<button type="button" class="tli fxr' + (st.sel[e.id] ? ' on' : '') + '" data-act="untog" data-id="' + e.id + '"><span class="nm">' + esc(e.name) + '</span><span class="sb">' + partsHTML(e) + (r.length ? '<span class="muted"> · ルーティン「' + esc(r.join('」「')) + '」から外れます</span>' : '') + '</span><span class="vl n">' + (st.sel[e.id] ? '✓' : '') + '</span></button>'; }).join('') + '</div>' +
+    '<button type="button" class="bp" data-act="ungo"' + (n ? '' : ' disabled') + '>' + (n ? (st.arm ? 'もう一度押すと' + n + '種目を削除します' : '選んだ' + n + '種目を削除') : '削除する種目を選んでください') + '</button>' +
+    '<button type="button" class="bo" data-act="bsclose">閉じる</button></div>';
+}
+function unRe() { S.sheet.key = 'unused:' + Date.now(); $('#bsheet').dataset.key = ''; renderBSheet(); }
+function delExs(ids) {
+  const set = {}; ids.forEach(id => { set[id] = 1; });
+  const oldL = S.list.slice(), oldR = JSON.parse(JSON.stringify(S.routines));
+  S.list = S.list.filter(e => !set[e.id]);
+  S.routines = S.routines.map(r => Object.assign({}, r, { exs: r.exs.filter(id => !set[id]) })).filter(r => r.exs.length);
+  store.saveList(); store.saveRoutines(); render();
+  toast(ids.length + '種目を削除しました', () => { S.list = oldL; S.routines = oldR; store.saveList(); store.saveRoutines(); render(); }, 8000);
 }
 function exListHTML() {
   const u = usage(), q = S.exQ.trim();
@@ -1154,6 +1176,7 @@ function renderBSheet0() {
   if (st.kind === 'export') { bs.innerHTML = exportSheet(); return; }
   if (st.kind === 'import') { bs.innerHTML = importSheet(); return; }
   if (st.kind === 'fix') { bs.innerHTML = fixSheet(); fixUpd(); return; }
+  if (st.kind === 'unused') { bs.innerHTML = unSheet(); return; }
   const e = st.id ? exMap()[st.id] : null;
   const steps = [0.5, 1, 1.25, 2, 2.5, 5];
   let h = '<div class="in"><div class="h2">' + (e ? '種目を編集' : '種目を追加') + '</div>' +
@@ -1169,7 +1192,8 @@ function renderBSheet0() {
   if (e) {
     const others = S.list.filter(o => o.id !== e.id).sort((a, b) => a.name.localeCompare(b.name, 'ja'));
     h += '<div class="danger-zone"><label>別の種目に統合（記録を移して、この種目を消します）<select id="bsMerge"><option value="">統合先を選ぶ</option>' + others.map(o => '<option value="' + o.id + '">' + esc(o.name) + '</option>').join('') + '</select></label>' +
-      '<div><button type="button" class="bt danger" data-act="exmerge">統合する</button></div></div>';
+      '<div><button type="button" class="bt danger" data-act="exmerge">統合する</button></div>' +
+      (unusedEx().some(x => x.id === e.id) ? '<div style="margin-top:14px"><button type="button" class="bt danger" data-act="exdel1">この種目を削除（記録なし）</button></div>' : '') + '</div>';
   }
   bs.innerHTML = h + '</div>';
 }
@@ -2319,6 +2343,12 @@ document.addEventListener('click', ev => {
   }
   else if (a === 'expsel') { const x = $('#expTx'); if (x) { x.focus(); x.select(); } }
   else if (a === 'bkimp') openSheetKind('import');
+  else if (a === 'unopen') { const sel = {}; unusedEx().forEach(e => { sel[e.id] = true; }); S.sheet = { kind: 'unused', key: 'unused:' + Date.now(), sel, arm: false }; renderBSheet(); }
+  else if (a === 'untog') { const st = S.sheet; st.sel[b.dataset.id] = !st.sel[b.dataset.id]; st.arm = false; unRe(); }
+  else if (a === 'unall') { const st = S.sheet; unusedEx().forEach(e => { st.sel[e.id] = true; }); st.arm = false; unRe(); }
+  else if (a === 'unnone') { S.sheet.sel = {}; S.sheet.arm = false; unRe(); }
+  else if (a === 'ungo') { const st = S.sheet, ids = unusedEx().map(e => e.id).filter(id => st.sel[id]); if (!ids.length) return; if (!st.arm) { st.arm = true; unRe(); return; } closeSheet(); delExs(ids); }
+  else if (a === 'exdel1') { if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = 'もう一度押すと削除します'; return; } const id = S.sheet.id; closeSheet(); delExs([id]); }
   else if (a === 'fixopen') { S.sheet = { kind: 'fix', key: 'fix:' + Date.now(), ex: null, sel: {}, arm: false }; renderBSheet(); }
   else if (a === 'fixex') { S.sheet.ex = b.dataset.id; S.sheet.sel = {}; S.sheet.arm = false; fixRe(); }
   else if (a === 'fixback') { S.sheet.ex = null; S.sheet.sel = {}; fixRe(); }
