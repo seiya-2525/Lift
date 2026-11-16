@@ -725,7 +725,7 @@ function sessionStats(ex, h) {
     if (w == null) { volOk = false; return; }
     const v = e1(w, +s.r); if (v != null && (best == null || v > best)) best = v;
     if (+s.r > 0 && (max == null || w > max)) max = w;
-    vol += w * (+s.r || 0);
+    vol += w * (+s.r || 0) * volMul(ex);
   });
   return { date: h.date, e1rm: best, max, vol: volOk ? vol : null, reps, sets: ws };
 }
@@ -807,7 +807,7 @@ function vLog() {
   const chipIds = sess.items.map(i => i.ex);
   if (S.sel && !chipIds.includes(S.sel)) chipIds.push(S.sel);
   let tot = 0, vol = 0;
-  sess.items.forEach(i => { const ex = m[i.ex]; tot += work(i.sets).length; work(i.sets).forEach(s => { const w = effW(ex, s, S.date); if (w != null) vol += w * (+s.r || 0); }); });
+  sess.items.forEach(i => { const ex = m[i.ex]; tot += work(i.sets).length; work(i.sets).forEach(s => { const w = effW(ex, s, S.date); if (w != null) vol += w * (+s.r || 0) * volMul(ex); }); });
   let h = '<div class="dayhead"><div><div class="sub" style="color:var(--ink2)">' + (isToday ? '今日' : S.date.slice(0, 4) + '年') + '</div>' +
     '<label class="date"><span class="title">' + jpDay(S.date) + '</span><input type="date" id="pickdate" aria-label="日付を選ぶ" value="' + S.date + '" max="' + today() + '"></label>' +
     '<div class="sub n" style="color:var(--ink2);margin-top:4px">' + sess.items.length + '種目 · ' + tot + 'セット · ' + grp(vol) + ' kg</div>' + rtnLine(sess) + '</div>' +
@@ -821,7 +821,7 @@ function vLog() {
   }
   h += '<div class="cards" id="cards">' + ids.map(id => {
     const ex = m[id], it = sess.items.find(i => i.ex === id), all = it ? it.sets : [], ws = work(all), wn = all.length - ws.length;
-    let v = 0, b = null; ws.forEach(x => { const w = effW(ex, x, S.date); if (w != null) v += w * (+x.r || 0); if (!b || +x.w > +b.w || (+x.w === +b.w && +x.r > +b.r)) b = x; });
+    let v = 0, b = null; ws.forEach(x => { const w = effW(ex, x, S.date); if (w != null) v += w * (+x.r || 0) * volMul(ex); if (!b || +x.w > +b.w || (+x.w === +b.w && +x.r > +b.r)) b = x; });
     const sub = ws.length ? ws.length + 'セット' + (wn ? ' ＋ W' + wn : '') + (b ? ' · 最高 ' + esc(setTxt(ex, b)) : '') : wn ? 'ウォームアップ ' + wn + 'セット' : 'まだ記録なし';
     if (S.cdMg && S.cdMg.from === id && !isRO()) { const to = m[S.cdMg.to], ti = sess.items.find(i => i.ex === S.cdMg.to); return '<div class="cdx" role="group" aria-label="種目をまとめる"><p><b>' + esc(to ? to.name : '種目') + '</b>はこの日すでに' + (ti ? ' ' + ti.sets.length + 'セット' : '') + '記録があります。<b>' + esc(ex ? ex.name : '不明な種目') + '</b>の ' + all.length + 'セットを後ろに加えて、1つにまとめますか。</p><div class="r"><button type="button" class="no" data-act="cdno">やめる</button><button type="button" class="yes mg" data-act="mgyes">まとめる</button></div></div>'; }
     if (S.cdDel === id && !isRO()) return '<div class="cdx" role="group" aria-label="種目の操作"><p><b>' + esc(ex ? ex.name : '不明な種目') + '</b>' + (all.length ? '（' + all.length + 'セット）' : '') + '</p><div class="r r3"><button type="button" class="no" data-act="cdno">やめる</button><button type="button" class="no chg" data-act="chgex" data-id="' + id + '">種目を変更</button><button type="button" class="yes" data-act="cdyes" data-id="' + id + '">外す</button></div>' + (all.length ? '<p class="sm">外すと、この日の ' + all.length + 'セットの記録も消えます。変更なら記録はそのまま移ります。</p>' : '') + '</div>';
@@ -841,7 +841,7 @@ function focusHTML(ex) {
   let todayBest = null;
   work(sets).forEach(s => { const v = e1(effW(ex, s, S.date), +s.r); if (v != null && (todayBest == null || v > todayBest)) todayBest = v; });
   const isPR = todayBest != null && prevBest != null && todayBest > prevBest + 1e-9;
-  const volOf = (arr0, date) => { const arr = work(arr0); let v = 0, ok = arr.length > 0; arr.forEach(x => { const w = effW(ex, x, date); if (w == null) ok = false; else v += w * (+x.r || 0); }); return ok ? grp(v) + ' kg' : ''; };
+  const volOf = (arr0, date) => { const arr = work(arr0); let v = 0, ok = arr.length > 0; arr.forEach(x => { const w = effW(ex, x, date); if (w == null) ok = false; else v += w * (+x.r || 0) * volMul(ex); }); return ok ? grp(v) + ' kg' : ''; };
   const pv = prev ? volOf(ps, prev.date) : '', cv = volOf(sets, S.date);
   const ro = isRO();
   let wi = 0, h = '<div class="focus' + (ro ? ' ro' : '') + '"><div class="ctop"><span class="sub">' + (S.date === today() ? '今日 · ' : '') + jpDay(S.date) + '</span><span style="display:flex;align-items:center;gap:6px">' + (S.date !== today() ? '<button type="button" class="epill' + (ro ? '' : ' on') + '" data-act="' + (ro ? 'pastedit' : 'pastdone') + '">' + (ro ? '編集' : '編集中 · 完了') + '</button>' : '') + '<button type="button" class="tpill" data-tm="' + ex.id + '" data-act="restopen" aria-label="休憩タイマー" hidden></button>' +
@@ -877,7 +877,7 @@ function renderTray() {
   const edN = S.editIdx != null ? (((editItem() || { sets: [] }).sets[S.editIdx] || {}).n || '') : S.inN, showN = S.nOpen || !!edN;
   $('#tray').innerHTML = '<div class="in"><div class="ocard" id="ocard"><i class="cst" style="background:' + (ex ? PCOL[partsOf(ex)[0]] : 'var(--ink3)') + '"></i><i class="cg" data-tg="' + (ex ? ex.id : '') + '"></i><div class="trayh" data-trayh aria-hidden="true"><i></i></div>' + focusHTML(ex) + '</div>' +
     (isRO() ? '' : '<div class="ipanel">' + (S.editIdx != null ? '<div class="editbar"><span>' + (S.editIdx + 1) + 'セット目を修正中</span><span class="lab" style="font-weight:400">変更はすぐ保存されます</span></div>' : '') + '<div class="steps">' +
-    '<div class="step"><span class="lab">' + (body ? '荷重 kg（補助はマイナス）' : isDB(ex) ? '重量 kg（片手）<span class="aux" id="dbAux"></span>' : '重量 kg') + '</span><div class="row">' +
+    '<div class="step"><span class="lab">' + (body ? '荷重 kg（補助はマイナス）' : isDB(ex) ? '重量 kg（' + (ex.cat === 'free' ? '片手' : '片側') + '）<span class="aux" id="dbAux"></span>' : '重量 kg') + '</span><div class="row">' +
     '<button type="button" data-hold="w" data-d="-1" aria-label="' + step + 'kg減らす">−</button>' +
     '<input id="inW" type="number" inputmode="decimal" step="any" value="' + num(S.inW) + '" aria-label="重量">' +
     '<button type="button" data-hold="w" data-d="1" aria-label="' + step + 'kg増やす">＋</button></div></div>' +
@@ -1136,7 +1136,11 @@ const catSeg = cur => '<div class="seg" role="group" aria-label="分類">' + Obj
 function ensureGh(el) { if (!el.hidden && !el.firstElementChild?.classList.contains('gh')) el.insertAdjacentHTML('afterbegin', '<div class="gh" aria-hidden="true"><i></i></div>'); }
 function renderBSheet() { renderBSheet0(); ensureGh($('#bsheet')); }
 const DB_RE = /ダンベル|ダンプレ|サイドレイズ|リアレイズ|フロントレイズ|ハンマーカール|コンセントレーション|インクラインカール|スパイダー|バイセップスカール|キックバック|アーノルド|ゴブレット/, DB_NO = /ケーブル|マシン|バーベル|EZ|ペック|スミス/;
-function isDB(e) { if (!e) return false; if (e.db === true || e.db === false) return e.db; return e.cat === 'free' && DB_RE.test(e.name) && !DB_NO.test(e.name); }
+const DB_CABLE = /ケーブル(フライ|クロス)/; // 左右に重りがあり、片側ずつ重さを決めるケーブル種目
+// 片手・片側ずつ重さを記録する種目か。印（e.db）があればそれを優先し、なければ名前から推測する
+function isDB(e) { if (!e) return false; if (e.db === true || e.db === false) return e.db; if (e.cat === 'body') return false; if (DB_CABLE.test(e.name)) return true; return e.cat === 'free' && DB_RE.test(e.name) && !DB_NO.test(e.name); }
+// ボリュームは実際に動かした重さにそろえる。片側で記録する種目は2倍（推定MAX値・最大重量は記録のまま）
+const volMul = e => isDB(e) ? 2 : 1;
 function renderBSheet0() {
   const bs = $('#bsheet'), sc = $('#scrim'), st = S.sheet;
   bs.hidden = sc.hidden = !st;
@@ -1149,6 +1153,7 @@ function renderBSheet0() {
   if (st.kind === 'exlist') { bs.innerHTML = exlistSheet(); return; }
   if (st.kind === 'export') { bs.innerHTML = exportSheet(); return; }
   if (st.kind === 'import') { bs.innerHTML = importSheet(); return; }
+  if (st.kind === 'fix') { bs.innerHTML = fixSheet(); fixUpd(); return; }
   const e = st.id ? exMap()[st.id] : null;
   const steps = [0.5, 1, 1.25, 2, 2.5, 5];
   let h = '<div class="in"><div class="h2">' + (e ? '種目を編集' : '種目を追加') + '</div>' +
@@ -1157,7 +1162,7 @@ function renderBSheet0() {
     '<div><div class="lab" style="margin-bottom:6px">部位（複数選べます）</div>' + partChecks('bp', st.parts) + '</div>';
   h += '<div><div class="icrow"><span class="lab">アイコン</span><span class="xic" id="icCur">' + XI.svg(st.ic || XI.key({ name: e ? e.name : '', cat: st.cat })) + '</span><span class="sub" id="icLab">' + (st.ic ? '' : '自動') + '</span><button type="button" class="chip" data-act="icopen" style="margin-left:auto">変更</button></div>' +
     '<div class="icgrid" id="icGrid" hidden><button type="button" data-act="icpick" data-v="" class="au' + (st.ic ? '' : ' on') + '">自動</button>' + Object.keys(XI.I).map(k => '<button type="button" data-act="icpick" data-v="' + k + '" class="' + (st.ic === k ? 'on' : '') + '" aria-label="' + k + '">' + XI.svg(k) + '</button>').join('') + '</div></div>';
-  h += '<div class="checks"><label class="ck" style="flex-direction:row"><input type="checkbox" id="bsDb"' + (isDB(e) ? ' checked' : '') + '><span>ダンベル種目（重量は片手の重さで記録）</span></label></div>';
+  h += '<div class="checks"><label class="ck" style="flex-direction:row"><input type="checkbox" id="bsDb"' + (isDB(e) ? ' checked' : '') + '><span>片手・片側ずつ重さを設定する種目（ダンベル・ケーブルなど）</span></label></div><div class="sub" style="margin-top:-6px">重量は片方の重さで記録し、ボリュームと合計は2倍で数えます。</div>';
   if (e) h += '<div class="checks"><label class="ck" style="flex-direction:row"><input type="checkbox" id="bsFav"' + (e.fav ? ' checked' : '') + '><span>お気に入り（一覧の上に固定）</span></label></div>';
   if (e) h += '<label>±ボタンの刻み<select id="bsStep">' + steps.map(v => '<option value="' + v + '"' + (+e.step === v ? ' selected' : '') + '>' + v + ' kg</option>').join('') + '</select></label>';
   h += '<div class="acts" style="grid-template-columns:1fr 2fr"><button type="button" class="bo" data-act="bsclose">キャンセル</button><button type="button" class="bp" data-act="' + (e ? 'exsave' : 'addex') + '">' + (e ? '保存' : '追加') + '</button></div>';
@@ -1377,6 +1382,54 @@ function exlistSheet() {
 function refreshRest() { if (S.sheet && S.sheet.kind === 'rest') { S.sheet.key = 'rest:' + Date.now(); $('#bsheet').dataset.key = ''; renderBSheet(); } }
 function openSheetKind(kind) { S.sheet = { kind, key: kind + ':' + Date.now() }; renderBSheet(); }
 
+/* ---------- 片手・片側の記録の整理：両手（両側）の合計で入れていた日の重さを半分にして、片方の重さにそろえる ---------- */
+const FIXKEY = 'wk_fixundo'; // 直前の整理だけ、元の重さを端末に残す（元に戻す用）
+function fixUndoInfo() { try { const o = JSON.parse(LS.get(FIXKEY) || 'null'); return o && o.ex && o.items ? o : null; } catch (e) { return null; } }
+const fixRows = id => history(id).filter(h => work(h.sets).length).reverse(); // 新しい日付から
+function fixRe() { S.sheet.key = 'fix:' + Date.now(); $('#bsheet').dataset.key = ''; renderBSheet(); }
+function fixSheet() {
+  const st = S.sheet, m = exMap(), e = st.ex ? m[st.ex] : null;
+  if (!e) {
+    const u = usage(), list = S.list.filter(x => isDB(x) && u[x.id]).sort((a, b) => u[b.id].last.localeCompare(u[a.id].last)), un = fixUndoInfo();
+    let h = '<div class="in"><div class="h2">片手・片側の記録を整理</div><p class="sub" style="margin:0">両手（両側）の合計で入れていた日を選ぶと、重さを半分にして片方の重さにそろえます。作業の前に、マイページの「書き出す」でバックアップを取っておくと安心です。</p>';
+    h += list.length ? '<div>' + list.map(x => '<button type="button" class="tli" data-act="fixex" data-id="' + x.id + '"><span class="nm">' + esc(x.name) + '</span><span class="sb n">' + u[x.id].days + '日 · ' + u[x.id].n + 'セット</span><span class="vl n">›</span></button>').join('') + '</div>'
+      : '<p class="sub">対象の種目がありません。種目の管理で、片手・片側ずつ重さを設定する種目に印を付けてください。</p>';
+    if (un) h += '<button type="button" class="bo" data-act="fixundo">直前の整理を元に戻す（' + esc(un.name) + ' · ' + Object.keys(un.items).length + '日分）</button>';
+    return h + '<button type="button" class="bo" data-act="bsclose">閉じる</button></div>';
+  }
+  const rows = fixRows(e.id), side = e.cat === 'free' ? '片手' : '片側';
+  return '<div class="in"><div><button type="button" class="bt" data-act="fixback">‹ 種目の一覧</button></div><div class="h2">' + esc(e.name) + '</div>' +
+    '<p class="sub" style="margin:0">' + side + 'の重さで入れていた日はそのまま。合計で入れていた日だけ選んでください（記録 ' + rows.length + '日）。</p>' +
+    '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><input type="date" id="fixTo" aria-label="この日以前を選ぶ" max="' + today() + '"><button type="button" class="bt" data-act="fixto">この日以前を選ぶ</button><button type="button" class="bt" data-act="fixnone">選択をはずす</button></div>' +
+    '<button type="button" class="bp" id="fixGo" data-act="fixgo" disabled>半分にする日を選んでください</button>' +
+    '<div>' + rows.map(r => '<button type="button" class="tli fxr' + (st.sel[r.date] ? ' on' : '') + '" data-act="fixtog" data-d="' + r.date + '"><span class="nm n">' + jpFull(r.date) + '</span><span class="sb n">' + work(r.sets).map(x => num(x.w) + '×' + num(x.r)).join('　') + '</span><span class="vl n">' + (st.sel[r.date] ? '✓' : '') + '</span></button>').join('') + '</div>' +
+    '<button type="button" class="bo" data-act="bsclose">閉じる</button></div>';
+}
+function fixSel() { const st = S.sheet; return Object.keys(st.sel).filter(d => st.sel[d]); }
+function fixMark() { const st = S.sheet; document.querySelectorAll('#bsheet .fxr').forEach(x => { const on = !!st.sel[x.dataset.d]; x.classList.toggle('on', on); x.querySelector('.vl').textContent = on ? '✓' : ''; }); st.arm = false; fixUpd(); }
+function fixUpd() {
+  const st = S.sheet, b = $('#fixGo'); if (!b || !st) return;
+  const ds = fixSel(); let n = 0;
+  ds.forEach(d => { const it = S.sessions[d] && S.sessions[d].items.find(i => i.ex === st.ex); if (it) n += it.sets.filter(x => +x.w > 0).length; });
+  b.disabled = !ds.length; b.textContent = !ds.length ? '半分にする日を選んでください' : st.arm ? 'もう一度押すと実行（' + ds.length + '日・' + n + 'セット）' : '選んだ' + ds.length + '日の重さを半分にする';
+}
+async function fixApply() {
+  const st = S.sheet, e = st && exMap()[st.ex]; if (!e || st.busy) return;
+  const orig = {}; let ns = 0;
+  fixSel().forEach(d => { const it = S.sessions[d] && S.sessions[d].items.find(i => i.ex === e.id); if (!it) return; orig[d] = JSON.parse(JSON.stringify(it.sets)); it.sets.forEach(x => { if (+x.w > 0) { x.w = +(x.w / 2).toFixed(2); ns++; } }); });
+  const keys = Object.keys(orig).sort().reverse(); if (!keys.length) return;
+  st.busy = true; LS.set(FIXKEY, JSON.stringify({ at: new Date().toISOString(), ex: e.id, name: e.name, items: orig }));
+  for (let i = 0; i < keys.length; i += 20) await Promise.all(keys.slice(i, i + 20).map(d => store.saveSession(d)));
+  st.busy = false; st.sel = {}; st.arm = false; if (S.sheet === st) fixRe(); render(); toast(e.name + '：' + keys.length + '日・' + ns + 'セットを半分にしました');
+}
+async function fixUndo() {
+  const un = fixUndoInfo(); if (!un) return; const keys = Object.keys(un.items).filter(d => S.sessions[d] && S.sessions[d].items.some(i => i.ex === un.ex)).sort().reverse();
+  keys.forEach(d => { S.sessions[d].items.find(i => i.ex === un.ex).sets = un.items[d]; });
+  for (let i = 0; i < keys.length; i += 20) await Promise.all(keys.slice(i, i + 20).map(d => store.saveSession(d)));
+  LS.set(FIXKEY, ''); if (S.sheet && S.sheet.kind === 'fix') fixRe(); render(); toast('元に戻しました（' + keys.length + '日分）');
+}
+
+
 /* ---------- calendar / part sets ---------- */
 const weekKey = d => addDays(d, -((parseD(d).getDay() + 6) % 7));
 function goalHTML() {
@@ -1488,7 +1541,7 @@ function calMonth(n) {
 }
 function dayCard(ds, m) {
   const d = parseD(ds), se = S.sessions[ds], its = se ? se.items.filter(i => work(i.sets).length) : [];
-  let n = 0, vol = 0; its.forEach(i => work(i.sets).forEach(x => { n++; vol += (+x.w || 0) * (+x.r || 0); }));
+  let n = 0, vol = 0; its.forEach(i => { const mu = volMul(m[i.ex]); work(i.sets).forEach(x => { n++; vol += (+x.w || 0) * (+x.r || 0) * mu; }); });
   let h = '<div class="dcard" id="dcard"><div class="dch"><div><div class="h2">' + (d.getMonth() + 1) + '月' + d.getDate() + '日（' + WD[d.getDay()] + '）</div><div class="sub n">' + (its.length ? its.length + '種目 · ' + n + 'セット' + (vol ? ' · ' + Math.round(vol).toLocaleString() + ' kg' : '') : '記録なし') + '</div></div><button type="button" class="ccl" data-act="caldx" aria-label="閉じる">×</button></div>';
   its.forEach(i => { const e = m[i.ex]; if (!e) return; h += '<div class="dci" style="--pc:' + PCOL[partsOf(e)[0]] + '">' + xic(e) + '<div style="min-width:0"><b>' + esc(e.name) + '</b><span class="n">' + work(i.sets).map(x => (+x.w ? n1(x.w).replace(/\.0$/, '') + '×' : '') + x.r + (+x.w ? '' : '回')).join('　') + '</span></div></div>'; });
   if (its.length) h += '<button type="button" class="bo" data-act="calgo" data-d="' + ds + '" style="width:100%;min-height:44px;margin-top:12px">記録タブで開く</button>';
@@ -1597,7 +1650,7 @@ function vMe() {
     show.map(id => { const x = K.pb[id], nw = dayGap(x.d, t0) <= 30; return '<button type="button" class="pbr2" data-act="pbopen" data-id="' + id + '"><span><span class="nm">' + esc(K.m[id].name) + '</span><span class="dd n">' + shortD(x.d) + (nw ? ' 更新' : '') + '</span></span><span class="v' + (nw ? ' gold' : '') + '">' + n1(x.v) + '<small> kg</small></span></button>'; }).join('') + '</div>';
   h += '<div class="metot n">通算 ' + grp(K.days) + '日 · ' + grp(K.sets) + 'セット · ' + (K.vol >= 100000 ? grp(K.vol / 1000) : n1(K.vol / 1000)) + ' t</div>';
   // 管理
-  h += '<div class="sect" style="margin-top:28px">管理</div><div class="rows" style="margin-top:6px"><button type="button" class="merow" data-act="goex"><span>種目の管理</span><span class="d n">' + S.list.length + '種目 ›</span></button></div>';
+  h += '<div class="sect" style="margin-top:28px">管理</div><div class="rows" style="margin-top:6px"><button type="button" class="merow" data-act="goex"><span>種目の管理</span><span class="d n">' + S.list.length + '種目 ›</span></button><button type="button" class="merow" data-act="fixopen"><span>片手・片側の記録を整理</span><span class="d">›</span></button></div>';
   h += '<div class="sect" style="margin-top:24px">バックアップ</div><div class="bkrow"><button type="button" class="bo" style="min-height:44px" data-act="bkcopy">書き出す（コピー）</button><button type="button" class="bo" style="min-height:44px" data-act="bkimp">読み込む</button></div>';
   return h;
 }
@@ -1930,7 +1983,7 @@ document.addEventListener('change', ev => { if (ev.target && ev.target.id === 'm
 document.addEventListener('keydown', ev => { if (ev.key === 'Enter' && ev.target && ev.target.id === 'meNm') ev.target.blur(); });
 
 /* 重量・回数の数字が欄からはみ出すときは文字を縮める */
-function updAux() { const a = $('#dbAux'); if (a) { const w = +S.inW || 0; a.textContent = '両手 ' + n1(w * 2).replace(/\.0$/, '') + ' kg'; } }
+function updAux() { const a = $('#dbAux'); if (a) { const w = +S.inW || 0, ex = exMap()[S.sel]; a.textContent = (ex && ex.cat !== 'free' ? '両側 ' : '両手 ') + n1(w * 2).replace(/\.0$/, '') + ' kg'; } }
 function fitNums() {
   updAux();
   ['#inW', '#inR'].forEach(q => {
@@ -2241,6 +2294,14 @@ document.addEventListener('click', ev => {
   }
   else if (a === 'expsel') { const x = $('#expTx'); if (x) { x.focus(); x.select(); } }
   else if (a === 'bkimp') openSheetKind('import');
+  else if (a === 'fixopen') { S.sheet = { kind: 'fix', key: 'fix:' + Date.now(), ex: null, sel: {}, arm: false }; renderBSheet(); }
+  else if (a === 'fixex') { S.sheet.ex = b.dataset.id; S.sheet.sel = {}; S.sheet.arm = false; fixRe(); }
+  else if (a === 'fixback') { S.sheet.ex = null; S.sheet.sel = {}; fixRe(); }
+  else if (a === 'fixtog') { const st = S.sheet, d = b.dataset.d; st.sel[d] = !st.sel[d]; fixMark(); }
+  else if (a === 'fixto') { const v = $('#fixTo').value; if (!v) { toast('日付を選んでください'); return; } const st = S.sheet; fixRows(st.ex).forEach(r => { st.sel[r.date] = r.date <= v; }); fixMark(); }
+  else if (a === 'fixnone') { S.sheet.sel = {}; fixMark(); }
+  else if (a === 'fixgo') { const st = S.sheet; if (!fixSel().length) return; if (!st.arm) { st.arm = true; fixUpd(); } else fixApply(); }
+  else if (a === 'fixundo') fixUndo();
   else if (a === 'impgo') {
     const x = $('#impTx'); let o = null;
     try { o = JSON.parse(x.value); } catch (e) {}

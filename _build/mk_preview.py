@@ -7,7 +7,9 @@ ver, out = sys.argv[1], os.path.abspath(sys.argv[2])
 os.makedirs(out + '/seed', exist_ok=True)
 s = open(H + '/src.html', encoding='utf-8').read()
 assert '<title>筋トレログ</title>' in s
-open(out + '/lift_' + ver + '.html', 'w', encoding='utf-8').write(s.replace('<title>筋トレログ</title>', '<title>筋トレログ ' + ver + '</title>', 1))
+# publish_files で公開しても真っ黒にならないよう、build.py と同じ基本の CSS と viewport を先頭に付ける
+HEAD = '<!DOCTYPE html>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<style>:root{color-scheme:dark}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>\n'
+open(out + '/lift_' + ver + '.html', 'w', encoding='utf-8').write(HEAD + s.replace('<title>筋トレログ</title>', '<title>筋トレログ ' + ver + '</title>', 1))
 d = json.load(open(H + '/sample.json', encoding='utf-8'))
 def put(name, obj, col, doc):
     p = out + '/seed/' + name + '.json'; json.dump(obj, open(p, 'w', encoding='utf-8'), ensure_ascii=False)
