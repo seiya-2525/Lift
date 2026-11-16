@@ -1627,18 +1627,43 @@ function meStats() {
   return { m, days, sets, vol, first, last, pb, pbW, ser, serW, partLast, mon, c, streak };
 }
 function meNotes(K) {
-  const t0 = today(), out = [], nm = id => K.m[id] ? K.m[id].name : '';
+  // 相棒のひとこと。上から順に当てはまったものを最大2行（利用者が決めた優先順、2026-11-16）
+  const t0 = today(), out = [], used = {}, nm = id => K.m[id] ? K.m[id].name : '';
   if (!K.days) return ['最初の記録をつけると、ここに気づきが出ます。'];
-  const idle = dayGap(K.last, t0);
-  if (idle >= 7) out.push('前回のトレーニングから' + idle + '日空いています。');
+  const idle = dayGap(K.last, t0), lastOf = id => { const a = K.ser[id]; return a && a.length ? a[a.length - 1] : null; };
+  const recent = id => { const x = lastOf(id); return K.m[id] && x && dayGap(x.d, t0) <= 21; };
+  const byNew = (a, b) => lastOf(b).d.localeCompare(lastOf(a).d), add = (t, id) => { out.push(t); if (id) used[id] = 1; };
+  const big = BIG3.map(n => (S.list.find(e => e.name === n) || {}).id).filter(Boolean), rot = arr => arr[dayGap('2000-01-03', t0) % arr.length];
+  // 1. 自己ベスト更新（直近7日）
   const rp = Object.keys(K.pb).filter(id => K.m[id] && K.pb[id].prev != null && dayGap(K.pb[id].d, t0) <= 7).sort((a, b) => K.pb[b].d.localeCompare(K.pb[a].d))[0];
-  if (rp) out.push(nm(rp) + 'で自己ベストを更新。推定MAX値 ' + n1(K.pb[rp].v) + ' kg（+' + n1(K.pb[rp].v - K.pb[rp].prev) + '）');
-  const up = Object.keys(K.ser).filter(id => { const a = K.ser[id], n = a.length; return K.m[id] && id !== rp && n >= 3 && a[n - 1].v > a[n - 2].v && a[n - 2].v > a[n - 3].v && dayGap(a[n - 1].d, t0) <= 21; }).sort((a, b) => K.ser[b][K.ser[b].length - 1].d.localeCompare(K.ser[a][K.ser[a].length - 1].d))[0];
-  if (up) out.push(nm(up) + 'が3回連続で伸びています。');
+  if (rp) add(nm(rp) + 'で自己ベストを更新。推定MAX値 ' + n1(K.pb[rp].v) + ' kg（+' + n1(K.pb[rp].v - K.pb[rp].prev) + '）', rp);
+  // 2. 3回連続の伸び（直近3週以内）
+  const up = Object.keys(K.ser).filter(id => { const a = K.ser[id], n = a.length; return !used[id] && recent(id) && n >= 3 && a[n - 1].v > a[n - 2].v && a[n - 2].v > a[n - 3].v; }).sort(byNew)[0];
+  if (up) add(nm(up) + 'が3回連続で伸びています。', up);
+  // 3. 前回から7日以上
+  if (idle >= 7) add('前回のトレーニングから' + idle + '日空いています。');
+  // 4. キリのいい数字（10kgごと）まで、直近90日の最高値からあと5%以内（古い自己ベストは使わない）
+  const kr = Object.keys(K.ser).filter(id => !used[id] && recent(id)).map(id => { const v = Math.max(...K.ser[id].filter(x => dayGap(x.d, t0) <= 90).map(x => x.v)), nx = Math.floor(v / 10 + 1e-9) * 10 + 10; return { id, nx, r: nx - v }; }).filter(x => x.r > 0 && x.r <= x.nx * 0.05).sort((a, b) => a.r / a.nx - b.r / b.nx)[0];
+  if (kr) add(nm(kr.id) + '、推定MAX値' + kr.nx + 'kgまであと' + n1(kr.r) + 'kg', kr.id);
+  // 5. 部位の偏り（今月の胸・背中・脚のセット数。最多が最少の2倍以上、最多10セット以上）
+  const mo = t0.slice(0, 7), pc = { chest: 0, back: 0, leg: 0 };
+  Object.keys(S.sessions).filter(d => d.slice(0, 7) === mo).forEach(d => S.sessions[d].items.forEach(i => { const e = K.m[i.ex], n = work(i.sets).length; if (e && n) partsOf(e).forEach(p => { if (p in pc) pc[p] += n; }); }));
+  const pv = Object.keys(pc).map(k => pc[k]), pmax = Math.max(...pv), pmin = Math.min(...pv);
+  if (pmax >= 10 && pmax >= pmin * 2) { const lo = Object.keys(pc).find(k => pc[k] === pmin), nmP = k => PARTS.find(p => p[0] === k)[1]; add('今月は胸' + pc.chest + '・背中' + pc.back + '・脚' + pc.leg + 'セット。' + nmP(lo) + 'が少なめです。'); }
+  // 6. 停滞：直近4回が、その前の回を一度も上回っていない（助言つき）
+  const st = Object.keys(K.ser).filter(id => { const a = K.ser[id], n = a.length; return !used[id] && recent(id) && n >= 5 && a.slice(n - 4).every(x => x.v <= a[n - 5].v); }).sort(byNew)[0];
+  if (st) add(nm(st) + 'は4回続けて伸びていません。回数か重さを変えてみるのも手です。', st);
+  // 7. 10〜60日空いた部位（全体が7日以上空いているときは出さない）
   if (idle < 7) {
     const gp = PARTS.filter(p => p[0] !== 'other' && K.partLast[p[0]]).map(p => [p[1], dayGap(K.partLast[p[0]], t0)]).filter(x => x[1] >= 10 && x[1] <= 60).sort((a, b) => b[1] - a[1])[0];
-    if (gp) out.push(gp[0] + 'は' + gp[1] + '日空いています。');
+    if (gp) add(gp[0] + 'は' + gp[1] + '日空いています。');
   }
+  // 8. 1年前との比較（BIG3。1年前の前後2週間の最高値と、直近60日の値。日替わりで1種目）
+  const ya = big.map(id => { const a = K.ser[id] || [], x = lastOf(id); if (!x || dayGap(x.d, t0) > 60) return null; const c = addDays(t0, -365), w = a.filter(y => Math.abs(dayGap(c, y.d)) <= 14); if (!w.length) return null; const v = Math.max(...w.map(y => y.v)); return { id, v, df: x.v - v }; }).filter(Boolean);
+  if (ya.length) { const y = rot(ya); add('1年前の' + nm(y.id) + 'は推定MAX値' + n1(y.v) + 'kg。今は' + sgn1(y.df) + 'kg'); }
+  // 9. 体重あたりの強さ（BIG3。直近60日の推定MAX値 ÷ その日の体重。日替わりで1種目）
+  const br = big.map(id => { const x = lastOf(id), bw = x && bodyAt(x.d); return x && bw && dayGap(x.d, t0) <= 60 ? { id, r: x.v / bw } : null; }).filter(Boolean);
+  if (br.length) { const y = rot(br); add(nm(y.id) + 'の推定MAX値は体重の' + y.r.toFixed(2) + '倍です。'); }
   if (!out.length) out.push('通算' + K.days + '日目です。');
   return out.slice(0, 2);
 }
